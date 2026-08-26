@@ -15,7 +15,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Plane, Building2, Car, Sailboat, Compass } from 'lucide-react';
 import type { BookingTab, BookingProvider, SearchParams } from './adapters/types';
-import FlightsWidget from './FlightsWidget';
+import FlightSearchForm from '@/components/flights/FlightSearchForm';
 
 interface BookingSearchProps {
   defaultTab?: BookingTab;
@@ -83,7 +83,7 @@ export default function BookingSearch({
       </div>
 
       {/* Widget area */}
-      <div className={`bg-white/95 backdrop-blur-sm ${activeTab === 'flights' && !provider ? '' : 'p-4 sm:p-6'}`}>
+      <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6">
         {provider ? (
           // ╔══ AFFILIATE HOOK ══╗
           // Provider widget mounts here
@@ -98,11 +98,11 @@ export default function BookingSearch({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Placeholder dispatcher — flights now uses live Travelpayouts widget;
+// Placeholder dispatcher — flights now uses live custom search form;
 // hotels/cars keep their static forms until those widgets are integrated.
 // ─────────────────────────────────────────────────────────────────────────────
 function BookingPlaceholder({ tab }: { tab: BookingTab }) {
-  if (tab === 'flights') return <FlightsWidget />;
+  if (tab === 'flights') return <FlightSearchForm />;
   if (tab === 'hotels')  return <HotelsPlaceholder />;
   if (tab === 'cars')    return <CarsPlaceholder />;
   return (
