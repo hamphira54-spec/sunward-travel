@@ -127,9 +127,11 @@ export default function FlightResultsList({ data }: FlightResultsListProps) {
       {/* Mock data notice */}
       {isMockData && (
         <div className="mb-5 px-4 py-3 rounded-lg bg-horizon/12 border border-horizon/25 text-xs text-ink/70">
-          <strong>Preview mode:</strong> Sample results are shown. Add your{' '}
-          <code className="font-mono bg-white/60 px-1 rounded">TRAVELPAYOUTS_API_TOKEN</code>{' '}
-          to <code className="font-mono bg-white/60 px-1 rounded">.env.local</code> to load real flight prices.
+          {data.apiError === 'no_token' ? (
+            <><strong>No API token:</strong> Set <code className="font-mono bg-white/60 px-1 rounded">TRAVELPAYOUTS_API_TOKEN</code> in Vercel environment variables.</>
+          ) : (
+            <><strong>API unavailable:</strong> Could not load live prices for this route — showing sample data.{data.apiError ? <> ({data.apiError})</> : null}</>
+          )}
         </div>
       )}
 

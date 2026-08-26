@@ -19,6 +19,12 @@ function formatTime(isoString: string): string {
   }
 }
 
+/** Shows time only if we have exact time info; otherwise shows the date */
+function formatTimeOrDate(isoString: string, hasExactTime?: boolean): string {
+  if (!hasExactTime) return formatDate(isoString);
+  return formatTime(isoString);
+}
+
 function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
@@ -64,7 +70,7 @@ export default function FlightResultCard({ result, adults }: FlightResultCardPro
             </div>
             <div>
               <p className="font-display font-700 text-sm text-ink">{result.airlineName}</p>
-              <p className="text-xs text-mist">{result.airline}</p>
+              {result.airline && <p className="text-xs text-mist">{result.airline}</p>}
             </div>
           </div>
 
@@ -72,16 +78,20 @@ export default function FlightResultCard({ result, adults }: FlightResultCardPro
           <div className="flex items-center gap-4 flex-1 min-w-[200px]">
             <div className="text-center">
               <p className="font-display font-700 text-lg text-ink leading-none">
-                {formatTime(result.departureAt)}
+                {formatTimeOrDate(result.departureAt, result.hasExactTime)}
               </p>
               <p className="text-xs text-mist mt-0.5">{result.origin}</p>
-              <p className="text-[10px] text-mist/70">{formatDate(result.departureAt)}</p>
+              {result.hasExactTime && (
+                <p className="text-[10px] text-mist/70">{formatDate(result.departureAt)}</p>
+              )}
             </div>
 
             <div className="flex-1 flex flex-col items-center gap-0.5 min-w-[80px]">
-              <p className="text-[10px] text-mist flex items-center gap-1">
-                <Clock size={9} />{formatDuration(result.duration)}
-              </p>
+              {result.duration > 0 && (
+                <p className="text-[10px] text-mist flex items-center gap-1">
+                  <Clock size={9} />{formatDuration(result.duration)}
+                </p>
+              )}
               <div className="w-full flex items-center gap-1">
                 <div className="h-px flex-1 bg-gray-200" />
                 <Plane size={10} className="text-mist rotate-45 shrink-0" />
