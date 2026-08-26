@@ -59,7 +59,7 @@ export default function RootLayout({
             ─────────────────────────────────────────────────────────────────── */}
         <Script
           id="travelpayouts-drive"
-          src="https://tpembars.com/NTY2Nzc3.js?t=566777"
+          src="https://tpembars.com/NTY2Nzk0.js?t=566794"
           strategy="afterInteractive"
           data-cmp-ab="2"
         />
