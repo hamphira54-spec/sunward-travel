@@ -15,6 +15,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Plane, Building2, Car, Sailboat, Compass } from 'lucide-react';
 import type { BookingTab, BookingProvider, SearchParams } from './adapters/types';
+import FlightsWidget from './FlightsWidget';
 
 interface BookingSearchProps {
   defaultTab?: BookingTab;
@@ -82,7 +83,7 @@ export default function BookingSearch({
       </div>
 
       {/* Widget area */}
-      <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6">
+      <div className={`bg-white/95 backdrop-blur-sm ${activeTab === 'flights' && !provider ? '' : 'p-4 sm:p-6'}`}>
         {provider ? (
           // ╔══ AFFILIATE HOOK ══╗
           // Provider widget mounts here
@@ -97,50 +98,16 @@ export default function BookingSearch({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Placeholder form — shown until a real affiliate provider is connected
+// Placeholder dispatcher — flights now uses live Travelpayouts widget;
+// hotels/cars keep their static forms until those widgets are integrated.
 // ─────────────────────────────────────────────────────────────────────────────
 function BookingPlaceholder({ tab }: { tab: BookingTab }) {
-  if (tab === 'flights') return <FlightsPlaceholder />;
+  if (tab === 'flights') return <FlightsWidget />;
   if (tab === 'hotels')  return <HotelsPlaceholder />;
   if (tab === 'cars')    return <CarsPlaceholder />;
   return (
     <div className="flex items-center justify-center py-8 text-mist text-sm">
       <span>Search coming soon — we&apos;re connecting the best {tab} deals for you.</span>
-    </div>
-  );
-}
-
-function FlightsPlaceholder() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
-      <div className="lg:col-span-1">
-        <label className="block text-xs font-medium text-mist mb-1 uppercase tracking-wide">From</label>
-        <input
-          type="text"
-          placeholder="City or airport"
-          className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-ocean/40 bg-sand"
-          readOnly
-        />
-      </div>
-      <div className="lg:col-span-1">
-        <label className="block text-xs font-medium text-mist mb-1 uppercase tracking-wide">To</label>
-        <input
-          type="text"
-          placeholder="City or airport"
-          className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-ocean/40 bg-sand"
-          readOnly
-        />
-      </div>
-      <div>
-        <label className="block text-xs font-medium text-mist mb-1 uppercase tracking-wide">Dates</label>
-        <input
-          type="text"
-          placeholder="Depart — Return"
-          className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-ocean/40 bg-sand"
-          readOnly
-        />
-      </div>
-      <ComingSoonButton />
     </div>
   );
 }
