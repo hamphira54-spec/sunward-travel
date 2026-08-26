@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Sora, Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import NavBar from '@/components/layout/NavBar';
 import Footer from '@/components/layout/Footer';
@@ -50,6 +51,18 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+
+        {/* ── Travelpayouts Drive — affiliate tracking script ───────────────────
+            strategy="afterInteractive" ensures this loads after the page is
+            interactive and never blocks rendering or hydration.
+            data-cmp-ab="2" is required by the Travelpayouts Drive SDK.
+            ─────────────────────────────────────────────────────────────────── */}
+        <Script
+          id="travelpayouts-drive"
+          src="https://tpembars.com/NTY2Nzc3.js?t=566777"
+          strategy="afterInteractive"
+          data-cmp-ab="2"
+        />
       </body>
     </html>
   );
