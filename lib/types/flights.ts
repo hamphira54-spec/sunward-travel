@@ -67,6 +67,27 @@ export interface TpCheapResponse {
   currency: string;
 }
 
+// ─── Travelpayouts v1 calendar prices ────────────────────────────────────────
+
+export interface TpCalendarTicket {
+  origin:        string;
+  destination:   string;
+  price:         number;
+  transfers:     number;
+  airline:       string;
+  flight_number: number;
+  departure_at:  string;   // ISO datetime
+  return_at?:    string;   // ISO datetime
+  expires_at?:   string;
+  duration?:     number;   // minutes (not always present)
+}
+
+export interface TpCalendarResponse {
+  success:  boolean;
+  data:     Record<string, TpCalendarTicket>; // key = "YYYY-MM-DD"
+  currency: string;
+}
+
 // ─── Travelpayouts v2 latest prices ──────────────────────────────────────────
 
 export interface TpLatestTicket {
