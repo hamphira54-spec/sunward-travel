@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SUNWARD TRAVEL — Design System Tokens
+   Tailwind v4 CSS-based theme configuration
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Colors ─────────────────────────────────────────────────────────────── */
+  --color-ocean:      #0D6E7A;   /* Deep teal — primary brand color */
+  --color-ocean-dark: #095663;   /* Darker teal for hover states */
+  --color-ocean-light:#1A8FA0;   /* Lighter teal for accents */
+  --color-horizon:    #F2C04A;   /* Golden amber — CTA accent */
+  --color-horizon-dark:#D9A832;  /* Deeper gold for hover */
+  --color-sand:       #FBF8F4;   /* Warm white — background */
+  --color-coral:      #E8735A;   /* Muted coral — secondary accent */
+  --color-coral-light:#F09480;
+  --color-ink:        #1A2631;   /* Near-black — body text */
+  --color-mist:       #6B8A99;   /* Muted blue-grey — supporting text */
+  --color-mist-light: #A8C0CC;
+  --color-white:      #FFFFFF;
+  --color-surface:    #F0EDE8;   /* Slightly darker warm white for cards */
+
+  /* ── Typography ──────────────────────────────────────────────────────────── */
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+
+  /* ── Spacing extras ──────────────────────────────────────────────────────── */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-88: 22rem;
+  --spacing-128: 32rem;
+
+  /* ── Border radius ───────────────────────────────────────────────────────── */
+  --radius-stamp:  50%;       /* passport stamp circles */
+  --radius-ticket: 0.75rem;   /* ticket card corners */
+
+  /* ── Shadows ─────────────────────────────────────────────────────────────── */
+  --shadow-card: 0 4px 24px -4px rgba(26, 38, 49, 0.12);
+  --shadow-card-hover: 0 12px 40px -8px rgba(13, 110, 122, 0.22);
+  --shadow-hero: 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Base styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  background-color: var(--color-sand);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Heading styles ──────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Passport Stamp Motif
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stamp-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2.5px dashed currentColor;
+  padding: 0.6em 0.8em;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Ticket / Perforated-edge Cards
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ticket-edge {
+  position: relative;
+}
+
+/* Perforated bottom edge via repeating radial gradient mask */
+.ticket-edge::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: var(--color-sand);
+  mask-image: radial-gradient(circle at 6px -4px, transparent 6px, black 7px);
+  mask-size: 16px 12px;
+  mask-repeat: repeat-x;
+  -webkit-mask-image: radial-gradient(circle at 6px -4px, transparent 6px, black 7px);
+  -webkit-mask-size: 16px 12px;
+  -webkit-mask-repeat: repeat-x;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Flight-path Dashed Line
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.flight-path {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flight-path::before {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-mist-light) 0px,
+    var(--color-mist-light) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Utility classes
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.section-padding {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (max-width: 640px) {
+  .section-padding {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .container-wide {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-wide {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* ── Focus ring ──────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-ocean);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Smooth card hover ───────────────────────────────────────────────────── */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover:hover {
+    transform: none;
+  }
+}
+
+/* ── Gradient text ───────────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-ocean), var(--color-ocean-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Hero overlay ────────────────────────────────────────────────────────── */
+.hero-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(26, 38, 49, 0.45) 0%,
+    rgba(26, 38, 49, 0.55) 50%,
+    rgba(26, 38, 49, 0.7) 100%
+  );
+}
+
+/* ── Booking search overrides ────────────────────────────────────────────── */
+.booking-search input::placeholder {
+  color: var(--color-mist);
+}
