@@ -3,6 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import TipsContent from '@/components/category/TipsContent';
+import TravelHero from '@/components/travel/TravelHero';
+import SectionHeading from '@/components/ui/SectionHeading';
+import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
 import { Car, Clock, Shield, CreditCard, MapPin, MessageCircle, ChevronDown, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -160,29 +163,14 @@ export default function AirportTransfersPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="relative h-[360px] sm:h-[420px] overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80"
-          alt="Airport departure terminal at dusk"
-          fill priority sizes="100vw" quality={80}
-          className="object-cover object-center scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/20 via-ink/50 to-ink/90" />
-        <div className="absolute bottom-24 sm:bottom-28 left-0 right-0 z-10">
-          <div className="max-w-5xl mx-auto px-6">
-            <p className="text-xs text-horizon/90 uppercase tracking-[0.2em] font-600 mb-2">
-              Sunward Travel
-            </p>
-            <h1 className="font-display font-700 text-4xl sm:text-5xl text-white leading-tight">
-              Airport Transfers
-            </h1>
-            <p className="mt-3 text-white/75 text-base max-w-xl leading-relaxed">
-              Private airport transfers without the hassle — fixed prices, professional
-              drivers, and flight tracking included.
-            </p>
-          </div>
-        </div>
-      </section>
+      <TravelHero
+        imageSrc="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80"
+        imageAlt="Airport departure terminal at dusk"
+        eyebrow="Sunward Travel"
+        heading="Airport Transfers"
+        description="Private airport transfers at fixed prices — professional drivers, flight tracking, free cancellation."
+        height="md"
+      />
 
       {/* ── Search card — overlaps hero ── */}
       <div className="relative z-20 -mt-14 pb-2">
@@ -220,14 +208,8 @@ export default function AirportTransfersPage() {
       {/* ── Value features grid ── */}
       <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-display font-700 text-2xl sm:text-3xl text-ink">
-              Why book a private transfer?
-            </h2>
-            <p className="text-mist text-sm mt-2 max-w-2xl mx-auto">
-              Arriving in a new city should feel exciting, not stressful. Here&apos;s what
-              separates a pre-booked transfer from a taxi queue.
-            </p>
+          <div className="mb-12">
+            <SectionHeading heading="Why Book a Private Transfer?" eyebrow="Benefits" subheading="A pre-booked transfer eliminates the stress of negotiating with taxi drivers after a long flight." />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map((f) => (
@@ -314,6 +296,11 @@ export default function AirportTransfersPage() {
               Learn more about how we earn.
             </Link>
           </p>
+        </div>
+      </section>
+      <section className="py-8 bg-sand border-t border-gray-100">
+        <div className="page-container">
+          <AffiliateDisclosure provider="Kiwitaxi" />
         </div>
       </section>
     </>

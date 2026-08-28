@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
+
 import Link from 'next/link';
 import FlightSearchForm from '@/components/flights/FlightSearchForm';
 import TipsContent from '@/components/category/TipsContent';
 import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
+import TravelHero from '@/components/travel/TravelHero';
+import SectionHeading from '@/components/ui/SectionHeading';
+import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
 import { Calendar, Clock, CreditCard, AlertCircle, TrendingDown, Luggage, ArrowRight } from 'lucide-react';
 
 // ── Widget URLs (brand colours, map widget removed — was showing blank) ────────
@@ -121,31 +124,14 @@ export default function FlightsPage() {
   return (
     <>
       {/* ── Hero — overflow-hidden only on image, card lives BELOW ── */}
-      <section className="relative h-[340px] sm:h-[380px] overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80"
-          alt="Airplane wing over clouds at golden hour"
-          fill priority sizes="100vw" quality={80}
-          className="object-cover object-center scale-105"
-        />
-        {/* Gradient — heavier at bottom so card overlaps cleanly */}
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/40 to-ink/90" />
-
-        {/* Hero text — sits comfortably in upper half */}
-        <div className="absolute bottom-20 sm:bottom-24 left-0 right-0 z-10">
-          <div className="max-w-5xl mx-auto px-6">
-            <p className="text-xs text-horizon/80 uppercase tracking-[0.2em] font-600 mb-2">
-              Sunward Travel
-            </p>
-            <h1 className="font-display font-700 text-4xl sm:text-5xl text-white leading-tight">
-              Search &amp; Compare Flights
-            </h1>
-            <p className="mt-2 text-white/65 text-base max-w-lg">
-              Hundreds of airlines, every route — find the right flight at the right price.
-            </p>
-          </div>
-        </div>
-      </section>
+      <TravelHero
+        imageSrc="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80"
+        imageAlt="Airplane wing above clouds at sunset"
+        eyebrow="Sunward Travel"
+        heading="Compare Flights Worldwide"
+        description="Search hundreds of airlines and find the best fares — then book directly with the airline."
+        height="md"
+      />
 
       {/* ── Search card — outside hero, overlaps via -mt-14 ── */}
       <div className="relative z-20 bg-transparent -mt-14 pb-2">
@@ -188,7 +174,7 @@ export default function FlightsPage() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="font-display font-700 text-2xl text-ink">Popular Routes</h2>
+              <SectionHeading align="left" heading="Popular Routes" eyebrow="Inspiration" />
               <p className="text-mist text-sm mt-1">Top-searched flights from Bangkok — click to search</p>
             </div>
           </div>
@@ -253,6 +239,11 @@ export default function FlightsPage() {
         intro="Our editorial team shares the strategies frequent travellers use to consistently pay less for flights — from booking windows to hidden tricks."
         tips={FLIGHT_TIPS}
       />
+      <section className="py-8 bg-sand border-t border-gray-100">
+        <div className="page-container">
+          <AffiliateDisclosure />
+        </div>
+      </section>
     </>
   );
 }

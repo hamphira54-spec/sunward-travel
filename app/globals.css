@@ -20,7 +20,7 @@
   --color-mist-light: #A8C0CC;
   --color-white:      #FFFFFF;
   --color-surface:    #F0EDE8;   /* Slightly darker warm white for cards */
-
+  --color-surface-dark: #E5E0DA;
   /* ── Typography ──────────────────────────────────────────────────────────── */
   --font-display: 'Sora', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
@@ -36,9 +36,11 @@
   --radius-ticket: 0.75rem;   /* ticket card corners */
 
   /* ── Shadows ─────────────────────────────────────────────────────────────── */
-  --shadow-card: 0 4px 24px -4px rgba(26, 38, 49, 0.12);
+  --shadow-soft: 0 2px 8px -2px rgba(26,38,49,0.08), 0 1px 3px rgba(26,38,49,0.06);
+  --shadow-card: 0 4px 16px -4px rgba(26,38,49,0.12), 0 2px 6px -2px rgba(26,38,49,0.08);
+  --shadow-elevated: 0 20px 60px -10px rgba(13,110,122,0.22), 0 4px 16px -4px rgba(0,0,0,0.10);
+  --shadow-hero: 0 32px 80px -16px rgba(13,110,122,0.28);
   --shadow-card-hover: 0 12px 40px -8px rgba(13, 110, 122, 0.22);
-  --shadow-hero: 0 0 0 1px rgba(255,255,255,0.05);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -229,3 +231,23 @@ h1, h2, h3, h4, h5, h6 {
 .booking-search input::placeholder {
   color: var(--color-mist);
 }
+
+.section-sm { padding-top: 3rem; padding-bottom: 3rem; }
+.section-md { padding-top: 5rem; padding-bottom: 5rem; }
+.section-lg { padding-top: 6rem; padding-bottom: 6rem; }
+@media (min-width: 768px) {
+  .section-sm { padding-top: 4rem; padding-bottom: 4rem; }
+  .section-md { padding-top: 6rem; padding-bottom: 6rem; }
+  .section-lg { padding-top: 8rem; padding-bottom: 8rem; }
+}
+
+.page-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+@media (min-width: 640px) { .page-container { padding-left: 2rem; padding-right: 2rem; } }
+@media (min-width: 1024px) { .page-container { padding-left: 3rem; padding-right: 3rem; } }

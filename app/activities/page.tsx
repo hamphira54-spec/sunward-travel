@@ -3,6 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import TipsContent from '@/components/category/TipsContent';
+import TravelHero from '@/components/travel/TravelHero';
+import AffiliateWidgetShell from '@/components/affiliate/AffiliateWidgetShell';
+import SectionHeading from '@/components/ui/SectionHeading';
+import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
 import {
   Star, MapPin, Clock, Users, Camera, ShieldCheck,
   Compass, Utensils, Waves, Landmark, Ship, ChefHat,
@@ -85,33 +89,18 @@ export default function ActivitiesPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="relative h-[360px] sm:h-[420px] overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1400&q=80"
-          alt="Tourists exploring a vibrant night market in Bangkok"
-          fill priority sizes="100vw" quality={80}
-          className="object-cover object-center scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/20 via-ink/50 to-ink/90" />
-        <div className="absolute bottom-24 sm:bottom-28 left-0 right-0 z-10">
-          <div className="max-w-5xl mx-auto px-6">
-            <p className="text-xs text-horizon/90 uppercase tracking-[0.2em] font-600 mb-2">
-              Sunward Travel
-            </p>
-            <h1 className="font-display font-700 text-4xl sm:text-5xl text-white leading-tight">
-              Tours &amp; Activities
-            </h1>
-            <p className="mt-3 text-white/80 text-base max-w-lg leading-relaxed">
-              Guided tours, day trips, and local experiences — book the moments
-              that make your trip unforgettable.
-            </p>
-          </div>
-        </div>
-      </section>
+      <TravelHero
+        imageSrc="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1400&q=80"
+        imageAlt="Tourists exploring a vibrant night market in Bangkok"
+        eyebrow="Sunward Travel"
+        heading="Tours & Activities"
+        description="Guided tours, day trips, and local experiences — book the moments that make your trip unforgettable."
+        height="md"
+      />
 
       {/* ── Category strip — replaces fake search form ── */}
       <div className="relative z-20 -mt-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="page-container">
           <div className="bg-white rounded-3xl shadow-[0_20px_60px_-10px_rgba(13,110,122,0.22),0_4px_16px_-4px_rgba(0,0,0,0.10)] border border-white/80 px-6 py-5">
             <p className="text-[10px] font-700 text-ink/40 uppercase tracking-widest mb-4">
               Browse by category
@@ -135,31 +124,28 @@ export default function ActivitiesPage() {
       <div className="h-12 bg-sand" />
 
       {/* ── Klook widget section ── */}
-      <section className="py-16 bg-white border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-8">
-            <span className="inline-block bg-horizon/20 text-ink text-[10px] font-700 uppercase tracking-widest px-2.5 py-1 rounded-full mb-3">
-              Via Klook
-            </span>
-            <h2 className="font-display font-700 text-2xl text-ink">Top Things to Do in Bangkok</h2>
-            <p className="text-mist text-sm mt-1">
-              Handpicked tours and experiences — book securely through our travel partner.
-            </p>
-          </div>
-          <TravelpayoutsWidget
-            src={KLOOK_SRC}
-            skeletonHeight={380}
-            timeout={14000}
-          />
+      <section className="section-md bg-white border-t border-gray-100">
+        <div className="page-container">
+          <AffiliateWidgetShell
+            eyebrow="Featured Experiences"
+            heading="Popular Experiences in Bangkok"
+            subheading="Handpicked tours, day trips, and activities — book securely through our travel partner."
+            attribution="Experiences provided by our travel partner."
+          >
+            <TravelpayoutsWidget src={KLOOK_SRC} skeletonHeight={380} timeout={14000} />
+          </AffiliateWidgetShell>
         </div>
       </section>
 
       {/* ── Popular destinations ── */}
-      <section className="py-16 bg-sand border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-4">
+      <section className="section-md bg-sand border-t border-gray-100">
+        <div className="page-container">
           <div className="mb-8">
-            <h2 className="font-display font-700 text-2xl text-ink">Popular Destinations for Activities</h2>
-            <p className="text-mist text-sm mt-1">Some of the world&apos;s best experiences are waiting</p>
+            <SectionHeading
+              heading="Popular Destinations for Activities"
+              subheading="Some of the world&apos;s best experiences are waiting"
+              align="left"
+            />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {DESTINATIONS.map((dest) => (
@@ -193,14 +179,14 @@ export default function ActivitiesPage() {
       />
 
       {/* ── Airport Transfer Cross-sell ── */}
-      <section className="py-16 bg-white border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-4">
+      <section className="section-md bg-white border-t border-gray-100">
+        <div className="page-container">
           <div className="mb-8">
-            <h2 className="font-display font-700 text-2xl text-ink">Need an Airport Transfer?</h2>
-            <p className="text-mist text-sm mt-1">
-              Get to your hotel without the taxi queue — fixed prices, professional
-              drivers, flight tracking included.
-            </p>
+            <SectionHeading
+              heading="Need an Airport Transfer?"
+              subheading="Get to your hotel without the taxi queue — fixed prices, professional drivers, flight tracking included."
+              align="left"
+            />
           </div>
           <div className="bg-sand rounded-2xl border border-gray-100 p-6 sm:p-8">
             <TravelpayoutsWidget
@@ -217,6 +203,13 @@ export default function ActivitiesPage() {
               </Link>
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* ── Affiliate Disclosure ── */}
+      <section className="py-8 bg-sand border-t border-gray-100">
+        <div className="page-container">
+          <AffiliateDisclosure provider="Klook and Kiwitaxi" />
         </div>
       </section>
     </>
