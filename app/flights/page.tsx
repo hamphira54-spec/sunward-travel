@@ -120,35 +120,67 @@ export default function FlightsPage() {
 
   return (
     <>
-      {/* ── Hero + embedded search ── */}
-      <section className="relative min-h-[420px] flex flex-col justify-end overflow-hidden">
+      {/* ── Hero — overflow-hidden only on image, card lives BELOW ── */}
+      <section className="relative h-[340px] sm:h-[380px] overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80"
           alt="Airplane wing over clouds at golden hour"
           fill priority sizes="100vw" quality={80}
-          className="object-cover object-center"
+          className="object-cover object-center scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/20 via-ink/45 to-ink/80" />
+        {/* Gradient — heavier at bottom so card overlaps cleanly */}
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/40 to-ink/90" />
 
-        <div className="relative z-10 max-w-5xl mx-auto w-full px-4 pb-0 pt-24">
-          <h1 className="font-display font-700 text-4xl sm:text-5xl text-white leading-tight">
-            Search &amp; Compare Flights
-          </h1>
-          <p className="mt-2 text-white/70 text-base max-w-xl">
-            Hundreds of airlines, every route — find the right flight at the right price.
-          </p>
-        </div>
-
-        {/* Floating search card */}
-        <div className="relative z-10 max-w-5xl mx-auto w-full px-4 mt-6 translate-y-10">
-          <div className="bg-white rounded-2xl shadow-[0_8px_40px_-8px_rgba(26,38,49,0.25)]">
-            <FlightSearchForm />
+        {/* Hero text — sits comfortably in upper half */}
+        <div className="absolute bottom-20 sm:bottom-24 left-0 right-0 z-10">
+          <div className="max-w-5xl mx-auto px-6">
+            <p className="text-xs text-horizon/80 uppercase tracking-[0.2em] font-600 mb-2">
+              Sunward Travel
+            </p>
+            <h1 className="font-display font-700 text-4xl sm:text-5xl text-white leading-tight">
+              Search &amp; Compare Flights
+            </h1>
+            <p className="mt-2 text-white/65 text-base max-w-lg">
+              Hundreds of airlines, every route — find the right flight at the right price.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Spacer for the floating card */}
-      <div className="h-20 bg-sand" />
+      {/* ── Search card — outside hero, overlaps via -mt-14 ── */}
+      <div className="relative z-20 bg-transparent -mt-14 pb-2">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          {/* Card */}
+          <div className="bg-white rounded-3xl shadow-[0_20px_60px_-10px_rgba(13,110,122,0.22),0_4px_16px_-4px_rgba(0,0,0,0.10)] border border-white/80">
+            {/* Card header strip */}
+            <div className="flex items-center gap-3 px-6 pt-5 pb-0 border-b border-gray-100">
+              <div className="w-1.5 h-6 rounded-full bg-ocean" />
+              <p className="font-display font-700 text-ink text-sm tracking-wide">
+                Where are you flying?
+              </p>
+            </div>
+            <FlightSearchForm />
+          </div>
+          {/* Trust badges */}
+          <div className="flex items-center justify-center gap-6 mt-4 flex-wrap">
+            <span className="text-xs text-white/70 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
+              1,000+ airlines compared
+            </span>
+            <span className="text-xs text-white/70 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
+              No booking fees
+            </span>
+            <span className="text-xs text-white/70 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
+              Best price guarantee
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Gap between search card and popular routes */}
+      <div className="h-10 bg-sand" />
 
       {/* ── Popular Routes ── */}
       <section className="py-16 bg-sand">
