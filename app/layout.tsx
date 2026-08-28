@@ -63,6 +63,38 @@ export default function RootLayout({
           strategy="afterInteractive"
           data-cmp-ab="2"
         />
+
+        {/* Organization + WebSite structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'Sunward Travel',
+                url: SITE_URL,
+                description: SITE_DESCRIPTION,
+                logo: {
+                  '@type': 'ImageObject',
+                  url: `${SITE_URL}/logo.png`,
+                },
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: 'Sunward Travel',
+                url: SITE_URL,
+                description: SITE_DESCRIPTION,
+                potentialAction: {
+                  '@type': 'SearchAction',
+                  target: `${SITE_URL}/flights?q={search_term_string}`,
+                  'query-input': 'required name=search_term_string',
+                },
+              },
+            ]),
+          }}
+        />
       </body>
     </html>
   );

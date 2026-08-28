@@ -3,7 +3,19 @@ import type { MetadataRoute } from 'next';
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
   return {
-    rules: { userAgent: '*', allow: '/', disallow: '/api/' },
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: [
+          '/api/',
+          '/book',
+          '/cars/book',
+          '/hotels/book',
+          '/flights/search',
+        ],
+      },
+    ],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

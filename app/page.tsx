@@ -11,9 +11,10 @@ import { FEATURED_DESTINATIONS } from '@/lib/destinations';
 import Link from 'next/link';
 import {
   Plane, Hotel, Compass, MapPin, Car,
-  Waves, Landmark, Utensils, Mountain, Users,
+  Waves, Landmark, Utensils, Mountain, Users, TreePine,
   ArrowRight,
 } from 'lucide-react';
+
 
 
 
@@ -53,6 +54,11 @@ const EXPERIENCES = [
   { label: 'Adventure',      icon: Mountain, href: '/destinations', grad: 'from-stone-700 to-stone-500' },
   { label: 'Family Travel',  icon: Users,    href: '/guides',       grad: 'from-ocean to-ocean-light' },
 ];
+
+const DEST_HREFS: Record<string, string> = {
+  'tokyo-japan': '/destinations/japan/tokyo',
+  'bali-indonesia': '/destinations/indonesia/bali',
+};
 
 export default function HomePage() {
   return (
@@ -107,7 +113,7 @@ export default function HomePage() {
               <DestinationCard
                 key={dest.id}
                 destination={dest}
-                href={`/guides/${dest.slug}`}
+                href={DEST_HREFS[dest.slug] ?? `/guides/${dest.slug}`}
                 size="md"
                 priority={i < 3}
               />
