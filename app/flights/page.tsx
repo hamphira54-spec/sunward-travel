@@ -163,19 +163,20 @@ export default function FlightsPage() {
           </div>
           {/* Trust badges */}
           <div className="flex items-center justify-center gap-6 mt-4 flex-wrap">
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
+            <span className="text-xs text-ink/55 flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
               1,000+ airlines compared
             </span>
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
+            <span className="text-xs text-ink/55 flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
               No booking fees
             </span>
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
+            <span className="text-xs text-ink/55 flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
-              Best price guarantee
+              Powered by Aviasales
             </span>
           </div>
+
         </div>
       </div>
 

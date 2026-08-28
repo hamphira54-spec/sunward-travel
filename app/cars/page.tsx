@@ -1,69 +1,15 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import CarSearchForm from '@/components/cars/CarSearchForm';
-import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import TipsContent from '@/components/category/TipsContent';
-import { Clock, MapPin, Shield, CreditCard, Star, FileText } from 'lucide-react';
+import { Clock, MapPin, Shield, CreditCard, Star, FileText, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Compare Car Rentals & Transfers — Sunward Travel',
+  title: 'Compare Car Rentals Worldwide | Sunward Travel',
   description:
-    'Search and compare car rental deals and airport transfers worldwide. Find the best rates from Rentalcars, Kayak, Kiwitaxi and more.',
+    'Search and compare car rental deals worldwide. Find the best rates from Rentalcars, Kayak, DiscoverCars and more — pick up at airports, city centres, and 50,000+ locations.',
 };
-
-// ── Kiwitaxi widget URLs (brand colours applied) ───────────────────────────────
-// Ocean #0D6E7A → %230D6E7A  |  Horizon #F2C04A → %23F2C04A
-// Sand  #FBF8F4 → %23FBF8F4  |  Ocean-dark #095663 → %23095663
-
-const KIWI_SHORT_SRC =
-  'https://tpwdg.com/content' +
-  '?currency=USD&trs=566794&shmarker=769903' +
-  '&language=en&theme=1&powered_by=true' +
-  '&campaign_id=1&promo_id=1486';
-
-const KIWI_FULL_SRC =
-  'https://tpwdg.com/content' +
-  '?currency=USD&trs=566794&shmarker=769903' +
-  '&locale=en&from=&to=&country=&powered_by=true' +
-  '&transfers_limit=10' +
-  '&bg_color=%23FBF8F4' +
-  '&button_color=%230D6E7A' +
-  '&button_font_color=%23ffffff' +
-  '&button_hover_color=%23095663' +
-  '&border_color=%23F2C04A' +
-  '&input_font_color=%236B8A99' +
-  '&input_bg_color=%23ffffff' +
-  '&input_label_color=%236B8A99' +
-  '&icon_bg_color=%23ffffff' +
-  '&icon_arrow_color=%236c7c8c' +
-  '&icon_bg_color_mobile=%23F2C04A' +
-  '&icon_arrow_color_mobile=%23ffffff' +
-  '&autocomplete_font_color=%231A2631' +
-  '&autocomplete_bg_color=%23ffffff' +
-  '&autocomplete_font_color_active=%23ffffff' +
-  '&autocomplete_bg_color_active=%230D6E7A' +
-  '&loader_color=%23F2C04A' +
-  '&empty_color=%231A2631' +
-  '&info_bg_color=%23FFF8E1' +
-  '&info_icon_color=%231A2631' +
-  '&info_caption_color=%231A2631' +
-  '&class_background=%23ffffff' +
-  '&class_font_color=%231A2631' +
-  '&class_header_color=%236B8A99' +
-  '&class_button_background=%230D6E7A' +
-  '&class_button_font_color=%23ffffff' +
-  '&class_button_background_hover=%23095663' +
-  '&class_comment_background=%23E5E0DA' +
-  '&class_comment_font=%236B8A99' +
-  '&more_font_color=%230D6E7A' +
-  '&notification_background=%23FFF8E1' +
-  '&notification_border_color=%23F2C04A' +
-  '&notification_color=%231A2631' +
-  '&transfer_background=%23F0EDE8' +
-  '&transfer_background_hover=%23E5E0DA' +
-  '&transfer_font_color=%231A2631' +
-  '&wtype=true' +
-  '&campaign_id=1&promo_id=2949';
 
 // ── Tips ──────────────────────────────────────────────────────────────────────
 const CAR_TIPS = [
@@ -117,10 +63,11 @@ export default function CarsPage() {
               Sunward Travel
             </p>
             <h1 className="font-display font-700 text-4xl sm:text-5xl text-white leading-tight">
-              Car Rentals &amp; Transfers
+              Compare Car Rentals
             </h1>
-            <p className="mt-2 text-white/65 text-base max-w-lg">
-              Compare car rentals and book airport transfers worldwide — pick up anywhere, from airports to city centres.
+            <p className="mt-2 text-white/75 text-base max-w-lg">
+              Search the best car rental rates worldwide — pick up at airports, city
+              centres, and over 50,000 locations.
             </p>
           </div>
         </div>
@@ -142,51 +89,42 @@ export default function CarsPage() {
           </div>
 
           {/* Trust badges */}
-          <div className="flex items-center justify-center gap-6 mt-4 flex-wrap">
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
-              Compare top rental brands
-            </span>
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
-              Free cancellation on most cars
-            </span>
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
-              No hidden fees
-            </span>
+          <div className="flex items-center justify-center gap-5 mt-4 flex-wrap">
+            {['Compare top rental brands', 'No hidden fees', 'Free cancellation on most cars'].map((label) => (
+              <span key={label} className="text-xs text-ink/55 flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="h-10 bg-sand" />
+      <div className="h-12 bg-sand" />
 
-      {/* ── Airport Transfers — Kiwitaxi quick form ── */}
+      {/* ── Airport Transfer Cross-sell ── */}
       <section className="py-12 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-6">
-            <span className="inline-block bg-horizon/20 text-ink text-[10px] font-700 uppercase tracking-widest px-2.5 py-1 rounded-full mb-3">
-              Airport Transfers
-            </span>
-            <h2 className="font-display font-700 text-2xl text-ink">Quick Shuttle Search</h2>
-            <p className="text-mist text-sm mt-1">
-              Book airport transfers with Kiwitaxi — fixed prices, no surge pricing
-            </p>
+          <div className="bg-ocean/5 border border-ocean/20 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <div className="w-12 h-12 rounded-2xl bg-ocean flex items-center justify-center text-white shrink-0">
+              <MapPin size={22} strokeWidth={1.8} />
+            </div>
+            <div className="flex-1">
+              <h2 className="font-display font-700 text-ink text-lg mb-1">
+                Need an airport transfer instead?
+              </h2>
+              <p className="text-mist text-sm">
+                Book a private airport transfer with a professional driver — fixed prices,
+                no meter, flight tracking included.
+              </p>
+            </div>
+            <Link
+              href="/airport-transfers"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-ocean text-white font-display font-700 text-sm hover:bg-ocean-dark transition-colors whitespace-nowrap shrink-0"
+            >
+              Find Transfers <ArrowRight size={14} />
+            </Link>
           </div>
-          <TravelpayoutsWidget src={KIWI_SHORT_SRC} />
-        </div>
-      </section>
-
-      {/* ── Full Kiwitaxi transfer form ── */}
-      <section className="py-12 bg-sand border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-6">
-            <h2 className="font-display font-700 text-2xl text-ink">Detailed Transfer Search</h2>
-            <p className="text-mist text-sm mt-1">
-              Compare all vehicle classes — economy to premium, with driver
-            </p>
-          </div>
-          <TravelpayoutsWidget src={KIWI_FULL_SRC} />
         </div>
       </section>
 

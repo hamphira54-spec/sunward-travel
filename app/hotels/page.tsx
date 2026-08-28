@@ -132,15 +132,15 @@ export default function HotelsPage() {
 
           {/* Trust badges */}
           <div className="flex items-center justify-center gap-6 mt-4 flex-wrap">
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
+            <span className="text-xs text-ink/55 flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
               Compare 500+ booking sites
             </span>
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
+            <span className="text-xs text-ink/55 flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
               Free cancellation options
             </span>
-            <span className="text-xs text-white/70 flex items-center gap-1.5">
+            <span className="text-xs text-ink/55 flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
               No hidden fees
             </span>

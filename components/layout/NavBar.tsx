@@ -8,17 +8,18 @@ const NAV_LINKS = [
   {
     label: 'Search',
     children: [
-      { label: 'Flights',    href: '/flights' },
-      { label: 'Hotels',     href: '/hotels' },
-      { label: 'Cruises',    href: '/cruises' },
-      { label: 'Car Rentals',href: '/cars' },
-      { label: 'Activities', href: '/activities' },
+      { label: 'Flights',            href: '/flights' },
+      { label: 'Hotels',             href: '/hotels' },
+      { label: 'Activities',         href: '/activities' },
+      { label: 'Airport Transfers',  href: '/airport-transfers' },
+      { label: 'Car Rentals',        href: '/cars' },
+      { label: 'Cruises',            href: '/cruises' },
     ],
   },
-  { label: 'Destinations', href: '/destinations' },
   { label: 'Guides',       href: '/guides' },
   { label: 'About',        href: '/about' },
 ];
+
 
 export default function NavBar() {
   const [isScrolled, setIsScrolled]   = useState(false);
