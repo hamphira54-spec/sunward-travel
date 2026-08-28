@@ -1,6 +1,7 @@
-import { ExternalLink, Plane, Clock, ArrowRight } from 'lucide-react';
+import { Plane, Clock, ArrowRight } from 'lucide-react';
 import type { FlightResult } from '@/lib/types/flights';
 import { findAirport } from '@/lib/data/airports';
+import AirlineLogo from '@/components/flights/AirlineLogo';
 
 interface FlightResultCardProps {
   result: FlightResult;
@@ -66,26 +67,7 @@ export default function FlightResultCard({ result, adults }: FlightResultCardPro
           {/* Airline */}
           <div className="flex items-center gap-3 min-w-[140px]">
             <div className="w-10 h-10 rounded-lg bg-surface flex items-center justify-center shrink-0 overflow-hidden border border-gray-100">
-              {result.airline ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={`https://pics.avs.io/40/40/${result.airline}.png`}
-                  alt={result.airlineName}
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  onError={(e) => {
-                    const t = e.currentTarget;
-                    t.style.display = 'none';
-                    const parent = t.parentElement;
-                    if (parent) {
-                      parent.innerHTML = `<span class="text-ocean text-xs font-700">${result.airline}</span>`;
-                    }
-                  }}
-                />
-              ) : (
-                <Plane size={18} className="text-ocean" />
-              )}
+              <AirlineLogo airline={result.airline} airlineName={result.airlineName} />
             </div>
             <div>
               <p className="font-display font-700 text-sm text-ink">{result.airlineName}</p>
