@@ -142,16 +142,15 @@ export default function FlightResultCard({ result, adults }: FlightResultCardPro
               <p className="text-[10px] text-mist capitalize">{result.currency}</p>
             </div>
             <a
-              href={result.bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
+              href={`/book?origin=${result.origin}&destination=${result.destination}&depart=${result.departureAt.slice(0,10)}${result.returnAt ? `&return=${result.returnAt.slice(0,10)}` : ''}&adults=${adults}&price=${result.price}&airline=${encodeURIComponent(result.airlineName)}&booking=${encodeURIComponent(result.bookingUrl)}`}
               className="flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-horizon text-ink text-xs font-700 hover:bg-horizon-dark transition-colors shadow-sm whitespace-nowrap"
               aria-label={`Book ${result.airlineName} for $${totalPrice}`}
             >
-              Book <ExternalLink size={11} />
+              Book →
             </a>
-            <p className="text-[9px] text-mist/60">Via Aviasales · Affiliate link</p>
+            <p className="text-[9px] text-mist/60">Powered by Travelpayouts</p>
           </div>
+
 
         </div>
       </div>
