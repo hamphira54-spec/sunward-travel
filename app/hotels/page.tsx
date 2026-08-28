@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import CategoryHero from '@/components/category/CategoryHero';
-import SearchPlaceholderZone from '@/components/category/SearchPlaceholderZone';
+import HotelSearchForm from '@/components/hotels/HotelSearchForm';
 import TipsContent from '@/components/category/TipsContent';
 import { Star, Clock, CreditCard, MapPin, Shield, Wifi } from 'lucide-react';
 
@@ -54,11 +54,9 @@ export default function HotelsPage() {
         tab="hotels"
       />
 
-      {/* ╔══ AFFILIATE WIDGET ZONE ══╗
-          Booking.com / Hotels.com widget goes here once approved.
-          Adapter: components/booking/adapters/types.ts → BookingProvider
-          ╚════════════════════════╝ */}
-      <SearchPlaceholderZone defaultTab="hotels" providerName="Booking.com" />
+      <section className="py-12 px-4 bg-sand">
+        <HotelSearchForm />
+      </section>
 
       <div className="pt-16">
         <TipsContent

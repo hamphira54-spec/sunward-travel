@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import CategoryHero from '@/components/category/CategoryHero';
-import SearchPlaceholderZone from '@/components/category/SearchPlaceholderZone';
 import TipsContent from '@/components/category/TipsContent';
-import { Calendar, Ship, Luggage, Utensils, CreditCard, MapPin } from 'lucide-react';
+import { Calendar, Ship, Luggage, Utensils, CreditCard, MapPin, ExternalLink } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Compare Cruise Deals Worldwide',
@@ -54,11 +53,37 @@ export default function CruisesPage() {
         tab="cruises"
       />
 
-      {/* ╔══ AFFILIATE WIDGET ZONE ══╗
-          Cruise comparison widget goes here (e.g. Cruises.com, ICruise affiliate).
-          Adapter: components/booking/adapters/types.ts → BookingProvider
-          ╚════════════════════════╝ */}
-      <SearchPlaceholderZone defaultTab="cruises" providerName="Cruise affiliate" />
+      <section className="py-16 px-4 bg-sand">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="font-display font-700 text-3xl text-ink">Find Your Perfect Cruise</h2>
+            <p className="text-mist mt-2">Compare itineraries from the world&apos;s top cruise lines</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { name: 'Cruises.com', desc: 'The largest online cruise agency — all major lines in one search', href: 'https://www.cruises.com/' },
+              { name: 'Virgin Voyages', desc: 'Adults-only cruises with all-inclusive dining and entertainment', href: 'https://www.virginvoyages.com/book/search' },
+              { name: 'Royal Caribbean', desc: 'Innovative megaships with record-breaking onboard experiences', href: 'https://www.royalcaribbean.com/cruises' },
+              { name: 'MSC Cruises', desc: 'Award-winning Mediterranean and world cruise itineraries', href: 'https://www.msccruises.com/en-gl/cruise-search' },
+            ].map(({ name, desc, href }) => (
+              <div key={name} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col justify-between gap-4">
+                <div>
+                  <p className="font-display font-700 text-ink">{name}</p>
+                  <p className="text-sm text-mist mt-1">{desc}</p>
+                </div>
+                <a href={href} target="_blank" rel="noopener noreferrer sponsored"
+                  className="self-start flex items-center gap-2 border border-ocean text-ocean hover:bg-ocean hover:text-white font-display font-700 text-sm px-4 py-2 rounded-lg transition-colors">
+                  Explore <ExternalLink size={12} />
+                </a>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-[10px] text-mist/60 mt-8">
+            Sunward Travel may earn a commission on bookings made via our links — at no extra cost to you.{' '}
+            <a href="/affiliate-disclosure" className="underline">Learn more</a>
+          </p>
+        </div>
+      </section>
 
       <div className="pt-16">
         <TipsContent
