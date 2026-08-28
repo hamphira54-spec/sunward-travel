@@ -107,7 +107,13 @@ export default async function BookPage({ searchParams }: BookPageProps) {
             <div className="h-48 bg-surface rounded-2xl animate-pulse" />
           }
         >
-          <BookingWidget origin={origin} destination={destination} />
+          <BookingWidget
+            origin={origin}
+            destination={destination}
+            departDate={depart}
+            returnDate={ret}
+            adults={adults}
+          />
         </Suspense>
       </div>
 
