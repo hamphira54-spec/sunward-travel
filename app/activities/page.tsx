@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import ActivitySearchForm from '@/components/activities/ActivitySearchForm';
 import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import TipsContent from '@/components/category/TipsContent';
 import { Star, MapPin, Clock, Users, Camera, ShieldCheck } from 'lucide-react';
@@ -11,7 +12,6 @@ export const metadata: Metadata = {
 };
 
 // ── Widget URLs ────────────────────────────────────────────────────────────────
-// Klook — Bangkok (city_id=10), Activities (category=3)
 const KLOOK_SRC =
   'https://tpwdg.com/content' +
   '?currency=USD&trs=566794&shmarker=769903' +
@@ -62,11 +62,10 @@ const CATEGORIES = [
   { label: 'Cooking Classes', emoji: '👨‍🍳', desc: 'Cook like a local' },
 ];
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default function ActivitiesPage() {
   return (
     <>
-      {/* ── Hero ── */}
+      {/* ── Hero — overflow-hidden scoped to image only ── */}
       <section className="relative h-[340px] sm:h-[380px] overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1400&q=80"
@@ -75,7 +74,7 @@ export default function ActivitiesPage() {
           className="object-cover object-center scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/40 to-ink/90" />
-        <div className="absolute bottom-10 left-0 right-0 z-10">
+        <div className="absolute bottom-20 sm:bottom-24 left-0 right-0 z-10">
           <div className="max-w-5xl mx-auto px-6">
             <p className="text-xs text-horizon/80 uppercase tracking-[0.2em] font-600 mb-2">
               Sunward Travel
@@ -89,6 +88,39 @@ export default function ActivitiesPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Search card — outside hero, overlaps via -mt-14 ── */}
+      <div className="relative z-20 -mt-14 pb-2">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="bg-white rounded-3xl shadow-[0_20px_60px_-10px_rgba(13,110,122,0.22),0_4px_16px_-4px_rgba(0,0,0,0.10)] border border-white/80">
+            <div className="flex items-center gap-3 px-6 pt-5 pb-0 border-b border-gray-100">
+              <div className="w-1.5 h-6 rounded-full bg-ocean" />
+              <p className="font-display font-700 text-ink text-sm tracking-wide">
+                What do you want to do?
+              </p>
+            </div>
+            <ActivitySearchForm />
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex items-center justify-center gap-6 mt-4 flex-wrap">
+            <span className="text-xs text-white/70 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
+              100,000+ experiences
+            </span>
+            <span className="text-xs text-white/70 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
+              Free cancellation on most tours
+            </span>
+            <span className="text-xs text-white/70 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-ocean/80 flex items-center justify-center text-white text-[9px]">✓</span>
+              Verified reviews
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="h-10 bg-sand" />
 
       {/* ── Activity categories ── */}
       <section className="py-10 bg-sand border-b border-gray-100">
@@ -107,11 +139,14 @@ export default function ActivitiesPage() {
       </section>
 
       {/* ── Klook widget ── */}
-      <section className="py-14 bg-sand">
+      <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-6">
+          <div className="mb-8">
+            <span className="inline-block bg-horizon/20 text-ink text-[10px] font-700 uppercase tracking-widest px-2.5 py-1 rounded-full mb-3">
+              Klook Integration
+            </span>
             <h2 className="font-display font-700 text-2xl text-ink">Top Activities in Bangkok</h2>
-            <p className="text-mist text-sm mt-1">Handpicked tours and experiences — book securely via Klook</p>
+            <p className="text-mist text-sm mt-1">Handpicked tours and experiences — book securely via our partner Klook</p>
           </div>
           <TravelpayoutsWidget src={KLOOK_SRC} />
         </div>
