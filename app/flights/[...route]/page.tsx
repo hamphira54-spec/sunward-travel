@@ -128,8 +128,8 @@ export default async function FlightRouteBookingPage({
   return (
     <main className="min-h-screen bg-sand">
 
-      {/* Banner */}
-      <div className="bg-gradient-to-r from-ocean to-ink text-white">
+      {/* Banner — pt-16 clears the fixed navbar */}
+      <div className="bg-gradient-to-r from-ocean to-ink text-white pt-16">
         <div className="max-w-5xl mx-auto px-6 py-8">
           <p className="text-xs text-white/60 uppercase tracking-widest mb-3">Complete your booking</p>
           <div className="flex items-center gap-4 flex-wrap">
