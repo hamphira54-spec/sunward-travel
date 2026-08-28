@@ -3,7 +3,35 @@ import Image from 'next/image';
 import Link from 'next/link';
 import FlightSearchForm from '@/components/flights/FlightSearchForm';
 import TipsContent from '@/components/category/TipsContent';
+import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import { Calendar, Clock, CreditCard, AlertCircle, TrendingDown, Luggage, ArrowRight } from 'lucide-react';
+
+// ── Widget URLs (brand colours, map widget removed — was showing blank) ────────
+const CALENDAR_SRC =
+  'https://tpwdg.com/content' +
+  '?currency=usd&trs=566794&shmarker=769903' +
+  '&searchUrl=sunward-travel.vercel.app%2Fflights' +
+  '&locale=en&powered_by=true' +
+  '&one_way=false&only_direct=false&period=year&range=7%2C14' +
+  '&primary=%230D6E7A' +
+  '&color_background=%23FBF8F4' +
+  '&dark=%231A2631&light=%23FBF8F4' +
+  '&achieve=%23F2C04A' +
+  '&promo_id=4041&campaign_id=100';
+
+const SCHEDULE_SRC =
+  'https://tpwdg.com/content' +
+  '?currency=usd&trs=566794&shmarker=769903' +
+  '&color_button=%23F2C04A' +
+  '&target_host=sunward-travel.vercel.app%2Fflights' +
+  '&locale=en&powered_by=true' +
+  '&origin=BKK&destination=NRT' +
+  '&with_fallback=true&non_direct_flights=false&min_lines=10' +
+  '&border_radius=8' +
+  '&color_background=%23FBF8F4' +
+  '&color_text=%231A2631' +
+  '&color_border=%23E5E0DA' +
+  '&promo_id=2811&campaign_id=100';
 
 export const metadata: Metadata = {
   title: 'Compare Flights Worldwide — Sunward Travel',
@@ -160,6 +188,29 @@ export default function FlightsPage() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* ── Tips ── */}
+      {/* ── Pricing Calendar ── */}
+      <section className="py-12 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="mb-6">
+            <h2 className="font-display font-700 text-2xl text-ink">Best Time to Fly</h2>
+            <p className="text-mist text-sm mt-1">See which dates have the lowest fares</p>
+          </div>
+          <TravelpayoutsWidget src={CALENDAR_SRC} />
+        </div>
+      </section>
+
+      {/* ── Schedule ── */}
+      <section className="py-12 bg-sand">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="mb-6">
+            <h2 className="font-display font-700 text-2xl text-ink">Flight Schedule</h2>
+            <p className="text-mist text-sm mt-1">Browse available flights and departure times — Bangkok to Tokyo</p>
+          </div>
+          <TravelpayoutsWidget src={SCHEDULE_SRC} />
         </div>
       </section>
 
