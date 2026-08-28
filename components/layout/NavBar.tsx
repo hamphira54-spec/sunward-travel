@@ -12,6 +12,7 @@ const NAV_LINKS = [
       { label: 'Hotels',     href: '/hotels' },
       { label: 'Cruises',    href: '/cruises' },
       { label: 'Car Rentals',href: '/cars' },
+      { label: 'Activities', href: '/activities' },
     ],
   },
   { label: 'Destinations', href: '/destinations' },
