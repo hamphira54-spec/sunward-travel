@@ -8,8 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:seed": "prisma db seed"
+    "db:migrate": "prisma migrate deploy",
+    "db:status": "prisma migrate status",
+    "db:seed": "prisma db seed",
+    "db:parity": "ts-node --project scripts/tsconfig.json scripts/db-parity.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
