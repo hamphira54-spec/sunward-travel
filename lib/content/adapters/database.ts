@@ -169,13 +169,51 @@ export async function getRelatedEvents(slug: string, limit = 3): Promise<TravelE
 
 // ─── Mappers ─────────────────────────────────────────────────────────────
 
+function validateInlineNodes(nodes: any[]): any[] {
+  if (!Array.isArray(nodes)) return [];
+  return nodes.map((node) => {
+    if (!node || typeof node !== 'object') return null;
+    if (node.type === 'text' && typeof node.content === 'string') return node;
+    if (node.type === 'strong' && typeof node.content === 'string') return node;
+    if (node.type === 'link' && typeof node.content === 'string' && typeof node.href === 'string') return node;
+    return null;
+  }).filter(Boolean);
+}
+
+function validateContentBlocks(blocks: any): any[] | undefined {
+  if (!blocks) return undefined;
+  if (!Array.isArray(blocks)) return [];
+
+  return blocks.map((block) => {
+    if (!block || typeof block !== 'object' || !block.type) return null;
+    switch (block.type) {
+      case 'paragraph':
+        return { type: 'paragraph', nodes: validateInlineNodes(block.nodes) };
+      case 'heading':
+        return { type: 'heading', level: block.level === 2 || block.level === 3 ? block.level : 2, id: block.id, text: block.text || '' };
+      case 'image':
+        return { type: 'image', src: block.src || '', alt: block.alt || '', caption: block.caption, credit: block.credit, width: block.width, height: block.height };
+      case 'list':
+        return { type: 'list', ordered: !!block.ordered, items: Array.isArray(block.items) ? block.items.map((i: any) => ({ nodes: validateInlineNodes(i.nodes) })) : [] };
+      case 'quote':
+        return { type: 'quote', nodes: validateInlineNodes(block.nodes), attribution: block.attribution };
+      case 'callout':
+        return { type: 'callout', variant: ['tip', 'info', 'warning'].includes(block.variant) ? block.variant : 'info', heading: block.heading, nodes: validateInlineNodes(block.nodes) };
+      case 'divider':
+        return { type: 'divider' };
+      default:
+        return null;
+    }
+  }).filter(Boolean);
+}
+
 function mapGuide(row: any): TravelGuide {
   return {
     ...row,
     tags: row.tags as any,
     heroImage: row.heroImage as any,
     cardImage: row.cardImage as any,
-    body: row.body as any,
+    body: validateContentBlocks(row.body) as any,
     seo: row.seo as any,
     affiliateCTAs: row.affiliateCTAs as any,
     tocSections: row.tocSections as any,
@@ -185,7 +223,7 @@ function mapGuide(row: any): TravelGuide {
 function mapNews(row: any): TravelNews {
   return {
     ...row,
-    body: row.body as any,
+    body: validateContentBlocks(row.body) || [],
     heroImage: row.heroImage as any,
     tags: row.tags as any,
     author: row.author as any,
@@ -198,7 +236,7 @@ function mapNews(row: any): TravelNews {
 function mapEvent(row: any): TravelEvent {
   return {
     ...row,
-    body: row.body as any,
+    body: validateContentBlocks(row.body) || [],
     heroImage: row.heroImage as any,
     venue: row.venue as any,
     sourceReferences: row.sourceReferences as any,
