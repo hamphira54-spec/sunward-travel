@@ -101,7 +101,7 @@ export default function ActivitiesPage() {
       {/* ── Category strip — replaces fake search form ── */}
       <div className="relative z-20 -mt-10">
         <div className="page-container">
-          <div className="bg-white rounded-3xl shadow-[0_20px_60px_-10px_rgba(13,110,122,0.22),0_4px_16px_-4px_rgba(0,0,0,0.10)] border border-white/80 px-6 py-5">
+          <div className="bg-white rounded-3xl shadow-[0_20px_60px_-10px_rgba(92,61,46,0.18),0_4px_16px_-4px_rgba(0,0,0,0.08)] border border-white/80 px-6 py-5">
             <p className="text-[10px] font-700 text-ink/40 uppercase tracking-widest mb-4">
               Browse by category
             </p>

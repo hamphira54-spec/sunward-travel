@@ -1,16 +1,16 @@
 import type { Metadata } from 'next';
-import { Sora, Inter } from 'next/font/google';
+import { Fraunces, Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import NavBar from '@/components/layout/NavBar';
 import Footer from '@/components/layout/Footer';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/metadata';
 
-const sora = Sora({
+const fraunces = Fraunces({
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '900'],
 });
 
 const inter = Inter({
@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sora.variable} ${inter.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col font-body bg-sand text-ink antialiased">
         <NavBar />
         <main id="main-content" className="flex-1" tabIndex={-1}>

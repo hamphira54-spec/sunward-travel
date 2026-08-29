@@ -6,41 +6,62 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme {
-  /* ── Colors ─────────────────────────────────────────────────────────────── */
-  --color-ocean:      #0D6E7A;   /* Deep teal — primary brand color */
-  --color-ocean-dark: #095663;   /* Darker teal for hover states */
-  --color-ocean-light:#1A8FA0;   /* Lighter teal for accents */
-  --color-horizon:    #F2C04A;   /* Golden amber — CTA accent */
-  --color-horizon-dark:#D9A832;  /* Deeper gold for hover */
-  --color-sand:       #FBF8F4;   /* Warm white — background */
-  --color-coral:      #E8735A;   /* Muted coral — secondary accent */
-  --color-coral-light:#F09480;
-  --color-ink:        #1A2631;   /* Near-black — body text */
-  --color-mist:       #6B8A99;   /* Muted blue-grey — supporting text */
-  --color-mist-light: #A8C0CC;
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SUNWARD TRAVEL — Visual Identity V2
+     Warm, sun-drenched, editorial palette
+     Variable NAMES preserved for Tailwind compatibility.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* ── Primary — Burnt Orange ───────────────────────────────────────────── */
+  --color-ocean:      #E8622C;   /* Primary brand — burnt orange */
+  --color-ocean-dark: #C74A1E;   /* Terracotta — hover / active */
+  --color-ocean-light:#F4A825;   /* Golden amber — light accent */
+
+  /* ── Secondary — Warm Gold ────────────────────────────────────────────── */
+  --color-horizon:    #FFD166;   /* Warm gold — CTA highlight */
+  --color-horizon-dark:#F4A825;  /* Golden amber — gold hover */
+
+  /* ── Backgrounds ─────────────────────────────────────────────────────── */
+  --color-sand:       #FFF8F0;   /* Cream — primary page background */
+  --color-surface:    #F7EBDD;   /* Sand — card / alternate section bg */
+  --color-surface-dark: #D7BEAA; /* Border strong */
+
+  /* ── Earth Accents ────────────────────────────────────────────────────── */
+  --color-coral:      #8B5E3C;   /* Earth brown — supporting accent */
+  --color-coral-light:#A87450;   /* Earth light */
+  --color-earth-deep: #5C3D2E;   /* Deep earth — premium dark surfaces */
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  --color-ink:        #2B221C;   /* Warm charcoal — primary text */
+  --color-mist:       #76675D;   /* Warm brown-grey — supporting text */
+  --color-mist-light: #E9D9CA;   /* Warm border */
   --color-white:      #FFFFFF;
-  --color-surface:    #F0EDE8;   /* Slightly darker warm white for cards */
-  --color-surface-dark: #E5E0DA;
-  /* ── Typography ──────────────────────────────────────────────────────────── */
-  --font-display: 'Sora', system-ui, sans-serif;
+
+  /* ── Semantic aliases ─────────────────────────────────────────────────── */
+  --color-cream:      #FFF8F0;   /* Page background alias */
+  --color-border:     #E9D9CA;   /* Standard warm border */
+  --color-border-strong: #D7BEAA;
+
+  /* ── Fonts ────────────────────────────────────────────────────────────── */
+  --font-display: 'Fraunces', Georgia, serif;
   --font-body:    'Inter', system-ui, sans-serif;
 
-  /* ── Spacing extras ──────────────────────────────────────────────────────── */
+  /* ── Spacing extras ──────────────────────────────────────────────────── */
   --spacing-18: 4.5rem;
   --spacing-22: 5.5rem;
   --spacing-88: 22rem;
   --spacing-128: 32rem;
 
-  /* ── Border radius ───────────────────────────────────────────────────────── */
-  --radius-stamp:  50%;       /* passport stamp circles */
-  --radius-ticket: 0.75rem;   /* ticket card corners */
+  /* ── Border radius ───────────────────────────────────────────────────── */
+  --radius-stamp:  50%;
+  --radius-ticket: 0.75rem;
 
-  /* ── Shadows ─────────────────────────────────────────────────────────────── */
-  --shadow-soft: 0 2px 8px -2px rgba(26,38,49,0.08), 0 1px 3px rgba(26,38,49,0.06);
-  --shadow-card: 0 4px 16px -4px rgba(26,38,49,0.12), 0 2px 6px -2px rgba(26,38,49,0.08);
-  --shadow-elevated: 0 20px 60px -10px rgba(13,110,122,0.22), 0 4px 16px -4px rgba(0,0,0,0.10);
-  --shadow-hero: 0 32px 80px -16px rgba(13,110,122,0.28);
-  --shadow-card-hover: 0 12px 40px -8px rgba(13, 110, 122, 0.22);
+  /* ── Shadows — warm neutral (no blue/teal tints) ─────────────────────── */
+  --shadow-soft:     0 2px 8px -2px rgba(44,34,28,0.08), 0 1px 3px rgba(44,34,28,0.06);
+  --shadow-card:     0 8px 24px rgba(92,61,46,0.08);
+  --shadow-elevated: 0 18px 50px rgba(92,61,46,0.14);
+  --shadow-hero:     0 32px 80px -16px rgba(92,61,46,0.22);
+  --shadow-card-hover: 0 12px 40px -8px rgba(92,61,46,0.16);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -221,9 +242,9 @@ h1, h2, h3, h4, h5, h6 {
 .hero-overlay {
   background: linear-gradient(
     to bottom,
-    rgba(26, 38, 49, 0.45) 0%,
-    rgba(26, 38, 49, 0.55) 50%,
-    rgba(26, 38, 49, 0.7) 100%
+    rgba(43, 34, 28, 0.45) 0%,
+    rgba(43, 34, 28, 0.55) 50%,
+    rgba(43, 34, 28, 0.72) 100%
   );
 }
 

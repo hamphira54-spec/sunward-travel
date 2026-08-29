@@ -9,8 +9,8 @@ export default function HeroSection() {
     >
       {/* Background image — tropical beach / mountain / city mix */}
       <Image
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=85"
-        alt="Mountain lake with crystal clear turquoise water reflecting snow-capped peaks"
+        src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=85"
+        alt="Warm golden sunrise over a scenic travel destination"
         fill
         priority
         quality={85}

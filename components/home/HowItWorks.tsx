@@ -27,7 +27,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section className="section-padding bg-ocean" aria-labelledby="how-it-works-heading">
+    <section className="section-padding bg-earth-deep" aria-labelledby="how-it-works-heading">
       <div className="container-wide">
         {/* Header */}
         <ScrollReveal className="text-center mb-14">
