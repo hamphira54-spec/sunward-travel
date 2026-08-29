@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
-import NavBar from '@/components/layout/NavBar';
-import Footer from '@/components/layout/Footer';
+import PublicLayoutShell from '@/components/layout/PublicLayoutShell';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/metadata';
 
 const fraunces = Fraunces({
@@ -46,11 +45,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col font-body bg-sand text-ink antialiased">
-        <NavBar />
-        <main id="main-content" className="flex-1" tabIndex={-1}>
+        <PublicLayoutShell>
           {children}
-        </main>
-        <Footer />
+        </PublicLayoutShell>
 
         {/* ── Travelpayouts Drive — affiliate tracking script ───────────────────
             strategy="afterInteractive" ensures this loads after the page is
