@@ -11,6 +11,7 @@ import {
 import { DESTINATION_BY_SLUG, COUNTRY_BY_SLUG } from '@/lib/destinations-v2';
 import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
+import ContentRenderer from '@/components/content/ContentRenderer';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 const SITE_NAME = 'Sunward Travel';
@@ -42,265 +43,6 @@ export async function generateMetadata({
   };
 }
 
-// Article content map — structured React blocks, no dangerouslySetInnerHTML
-const ARTICLE_CONTENT: Record<string, React.ReactNode> = {
-  'best-time-to-visit-bali': (
-    <>
-      <p>
-        Bali&apos;s tropical climate means it&apos;s warm year-round &mdash; but the difference
-        between dry season and wet season shapes your experience dramatically.
-        Here&apos;s a month-by-month breakdown so you can plan the perfect trip.
-      </p>
-
-      <h2 id="dry-season" data-section-id="dry-season">
-        Dry Season: May &ndash; September (Best Overall)
-      </h2>
-      <p>
-        This is Bali&apos;s most popular time to visit &mdash; and for good reason. Days are
-        reliably sunny, humidity is lower, and the ocean is calm and clear for
-        snorkelling and diving around Nusa Penida. Expect busy beaches in
-        Seminyak and Kuta, higher accommodation rates, and rice terraces at
-        their most photogenic as the harvest season approaches.
-      </p>
-
-      <h2 id="shoulder-season" data-section-id="shoulder-season">
-        Shoulder Season: April and October
-      </h2>
-      <p>
-        These transitional months offer a sweet spot: decent weather, lower
-        prices than peak season, and fewer crowds. April still sees occasional
-        showers; October can bring the first rains of the wet season but often
-        stays dry through mid-month.
-      </p>
-
-      <h2 id="wet-season" data-section-id="wet-season">
-        Wet Season: November &ndash; March
-      </h2>
-      <p>
-        Rain doesn&apos;t mean staying indoors &mdash; Bali&apos;s wet season typically brings
-        short, intense afternoon downpours rather than all-day rain. The island
-        turns impossibly lush and green, hotel rates drop significantly, and the
-        spiritual calendar peaks with major temple ceremonies around the
-        Balinese New Year (Nyepi) in March.
-      </p>
-
-      <h2 id="special-events" data-section-id="special-events">
-        Special Events Worth Planning Around
-      </h2>
-      <ul>
-        <li>
-          <strong>Nyepi (March)</strong> &mdash; The Balinese Day of Silence.
-          The entire island shuts down for 24 hours. A profound, unique experience.
-        </li>
-        <li>
-          <strong>Galungan &amp; Kuningan</strong> &mdash; A 10-day festival
-          celebrating ancestral spirits. Villages are decorated with penjor bamboo poles.
-        </li>
-        <li>
-          <strong>Bali Arts Festival (June&ndash;July)</strong> &mdash;
-          Month-long celebration of Balinese culture, dance, and music in Denpasar.
-        </li>
-      </ul>
-
-      <h2 id="recommendation" data-section-id="recommendation">
-        Our Recommendation
-      </h2>
-      <p>
-        For first-time visitors: aim for <strong>May or September</strong> &mdash;
-        you get dry-season reliability at slightly lower prices than July&ndash;August
-        peak. Experienced travellers who want Bali&apos;s soul over its Instagram moments
-        should consider January for the festivals and dramatically lower costs.
-      </p>
-    </>
-  ),
-
-  'cheapest-ways-to-fly-to-europe': (
-    <>
-      <p>
-        Finding a cheap transatlantic flight requires timing, flexibility, and knowing
-        which tools actually work. These nine strategies are based on how real budget
-        travellers consistently find fares well below the average.
-      </p>
-
-      <h2 id="booking-window" data-section-id="booking-window">Book at the Right Time</h2>
-      <p>
-        For transatlantic routes, the optimal booking window is roughly
-        3&ndash;6 months before departure for peak summer and 6&ndash;10 weeks out for
-        shoulder and off-peak dates. Last-minute fares to Europe from North America are
-        almost always expensive. The best deals appear mid-week (Tuesday&ndash;Wednesday)
-        and during off-peak periods (November through March, excluding holidays).
-      </p>
-
-      <h2 id="budget-airlines" data-section-id="budget-airlines">Use Budget Airlines Strategically</h2>
-      <p>
-        European budget carriers like Ryanair, easyJet, Wizz Air, and Vueling connect
-        dozens of secondary cities at very low fares &mdash; but only once you&apos;re
-        already in Europe. Use them for the intra-European leg. For the transatlantic
-        crossing, airlines like Icelandair, LEVEL, and Norse Atlantic have operated
-        low-cost long-haul routes. Availability changes &mdash; always check directly
-        before assuming a route exists.
-      </p>
-
-      <h2 id="flexible-dates" data-section-id="flexible-dates">Stay Flexible on Dates</h2>
-      <p>
-        Even a two-day shift can save $150&ndash;300 on a transatlantic ticket.
-        Tuesday and Wednesday departures are usually the cheapest. Arriving back
-        mid-week also helps. Use a calendar view or flexible-date tool when searching
-        rather than searching a single date.
-      </p>
-
-      <h2 id="fare-alerts" data-section-id="fare-alerts">Set Fare Alerts</h2>
-      <p>
-        Google Flights&apos; price tracking, Kayak Explore, and dedicated alert services
-        monitor routes and email you when fares drop. These are most useful if your
-        travel dates are flexible and you can move quickly &mdash; sale fares often
-        last 24&ndash;48 hours.
-      </p>
-
-      <h2 id="positioning-flights" data-section-id="positioning-flights">Consider Positioning Flights</h2>
-      <p>
-        If you live near a smaller regional airport, check whether flying first to a
-        major hub (New York JFK, London Heathrow, Amsterdam, or Frankfurt) and then
-        onward is cheaper overall than a direct routing. Sometimes paying $60&ndash;80
-        for a positioning flight saves $400 on the transatlantic portion.
-      </p>
-
-      <h2 id="travel-credit-cards" data-section-id="travel-credit-cards">Leverage Travel Credit Cards</h2>
-      <p>
-        Sign-up bonuses on travel credit cards can cover round-trip transatlantic
-        flights in premium cabins for points equivalent to $200&ndash;400. If you use
-        credit cards responsibly and pay them monthly, this is a genuine strategy
-        &mdash; not a myth.
-      </p>
-
-      <h2 id="indirect-routes" data-section-id="indirect-routes">Try Indirect Routes</h2>
-      <p>
-        A one-stop itinerary through Reykjavik, Dublin, or Lisbon is often
-        20&ndash;35% cheaper than non-stop. The layover adds time but the savings
-        are real. Icelandair&apos;s stopover policy lets you spend days in Reykjavik
-        at no extra fare cost.
-      </p>
-
-      <h2 id="shoulder-season" data-section-id="shoulder-season">Travel in Shoulder Season</h2>
-      <p>
-        May, early June, and September are Europe&apos;s sweet spot &mdash; warm enough
-        for outdoor travel, crowds below peak, and fares 20&ndash;40% lower than
-        July&ndash;August. October is excellent for city travel before the cold sets in.
-      </p>
-
-      <h2 id="nearby-airports" data-section-id="nearby-airports">Check Nearby Airports</h2>
-      <p>
-        Flying into secondary airports near your destination &mdash; Beauvais instead
-        of CDG, Stansted instead of Heathrow, Charleroi instead of Brussels &mdash;
-        can be significantly cheaper. Factor in the cost and time of ground transport
-        before deciding.
-      </p>
-
-      <p>
-        No single strategy works every time. The travellers who consistently find cheap
-        transatlantic fares combine flexibility, monitoring, and speed. If you see a
-        genuinely good fare, book it &mdash; they disappear quickly.
-      </p>
-    </>
-  ),
-
-  'tokyo-first-timer-guide': (
-    <>
-      <p>
-        Tokyo can feel overwhelming before you arrive and remarkably navigable once
-        you do. Japan&apos;s capital has excellent signage in English, a famously
-        punctual transport network, and locals who are almost universally helpful to
-        confused visitors. This guide covers everything you need for a first visit
-        to work smoothly.
-      </p>
-
-      <h2 id="getting-there" data-section-id="getting-there">Getting to Tokyo</h2>
-      <p>
-        Most international flights land at Narita International Airport (NRT), about
-        60km from central Tokyo, or Haneda Airport (HND), much closer to the city
-        centre. From Narita, the Narita Express (N&apos;EX) train takes about 53 minutes
-        to Shinjuku and costs around &yen;3,070 one-way. From Haneda, the Tokyo
-        Monorail or Keikyu line connect to the city in 20&ndash;30 minutes. Airport
-        limousine buses are also available to major hotels.
-      </p>
-
-      <h2 id="getting-around" data-section-id="getting-around">
-        Getting Around: IC Card &amp; Trains
-      </h2>
-      <p>
-        Buy a Suica or Pasmo IC card at the airport on arrival. Load money on it and
-        tap in/out of every subway, JR train, and even many buses. It also works at
-        convenience stores, vending machines, and some restaurants. Tokyo&apos;s train
-        network is extensive but logical &mdash; Google Maps works excellently for
-        routing and shows real-time platform and departure information.
-      </p>
-
-      <h2 id="best-neighbourhoods" data-section-id="best-neighbourhoods">
-        Best Neighbourhoods to Stay In
-      </h2>
-      <p>
-        Shinjuku is the most convenient base: great transport connections, endless
-        food and shopping, and central to the JR network. Shibuya suits younger
-        travellers and those focused on nightlife and fashion. Asakusa has the
-        old-city atmosphere and is close to cultural sites like Senso-ji.
-        Akihabara and Akasaka are quieter but still well-connected.
-      </p>
-
-      <h2 id="money-tipping" data-section-id="money-tipping">
-        Money, Tipping &amp; Costs
-      </h2>
-      <p>
-        Japan is still very much a cash society &mdash; carry yen at all times.
-        Tipping is not customary and can be considered rude in some contexts.
-        Never leave a tip at a restaurant or for a taxi. ATMs at 7-Eleven,
-        Japan Post, and some convenience stores accept foreign cards reliably.
-        Budget roughly &yen;5,000&ndash;8,000 per day for food eating at local
-        restaurants.
-      </p>
-
-      <h2 id="cultural-etiquette" data-section-id="cultural-etiquette">
-        Cultural Etiquette to Know
-      </h2>
-      <p>
-        Remove shoes when entering a home or traditional restaurant with tatami
-        mats. Do not eat or drink while walking &mdash; it&apos;s considered impolite.
-        On trains, keep your phone on silent and avoid phone calls. Bow slightly when
-        thanking or greeting people. Queuing is always single-file and orderly.
-        Rubbish bins are scarce &mdash; carry a small bag for your waste.
-      </p>
-
-      <h2 id="what-to-eat" data-section-id="what-to-eat">What to Eat in Tokyo</h2>
-      <p>
-        Tokyo has more Michelin stars than any other city in the world and also has
-        the best convenience store food you will ever eat. Don&apos;t skip: ramen
-        (especially in the back streets of Shinjuku), sushi at Tsukiji Outer Market
-        or a standing sushi bar, tonkatsu, tempura, and yakitori. Convenience stores
-        (7-Eleven, FamilyMart, Lawson) have legitimately excellent onigiri and hot
-        food for &yen;150&ndash;300.
-      </p>
-
-      <h2 id="must-see" data-section-id="must-see">Must-See Attractions</h2>
-      <p>
-        <strong>Senso-ji Temple (Asakusa)</strong> &mdash; beautiful at dawn before
-        crowds arrive. <strong>Shibuya Crossing</strong> &mdash; most atmospheric at
-        night. <strong>Shinjuku Gyoen</strong> &mdash; best garden for cherry blossoms.
-        <strong>teamLab Borderless/Planets</strong> &mdash; digital art, book ahead.
-        Tokyo Skytree for city views. Meiji Shrine for tranquillity inside the city.
-      </p>
-
-      <h2 id="day-trips" data-section-id="day-trips">Day Trips from Tokyo</h2>
-      <p>
-        <strong>Nikko</strong> (2 hours by Tobu line) &mdash; ornate shrines and
-        waterfalls. <strong>Kamakura</strong> (1 hour by JR) &mdash; Great Buddha and
-        coastal temples. <strong>Hakone</strong> (1.5 hours, Hakone Free Pass) &mdash;
-        Mount Fuji views, hot springs, open-air sculpture museum.
-        <strong>Kyoto</strong> (2.5 hours by Shinkansen) &mdash; feasible as a very
-        long day trip but better as an overnight.
-      </p>
-    </>
-  ),
-};
-
 export default async function GuidePage({
   params,
 }: {
@@ -310,7 +52,6 @@ export default async function GuidePage({
   const guide = GUIDE_BY_SLUG[slug];
   if (!guide) notFound();
 
-  const content = ARTICLE_CONTENT[slug];
   const relatedGuides = getRelatedGuides(slug, 3);
 
   // Destination back-link
@@ -461,7 +202,9 @@ export default async function GuidePage({
 
                 {/* Article body */}
                 <div className="prose-styles">
-                  {content ?? (
+                  {guide.body && guide.body.length > 0 ? (
+                    <ContentRenderer blocks={guide.body} />
+                  ) : (
                     <div className="bg-white rounded-xl p-8 text-center text-mist border border-gray-100">
                       <p className="font-medium">Full article content coming soon.</p>
                       <p className="text-sm mt-1">{guide.excerpt}</p>
@@ -481,7 +224,7 @@ export default async function GuidePage({
                         <Link
                           key={cta.type}
                           href={cta.href}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-ocean text-white text-xs font-700 hover:bg-ocean-dark transition-colors"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-interactive text-white text-xs font-700 hover:bg-interactive-dark transition-colors"
                         >
                           {cta.label} <ArrowRight size={11} />
                         </Link>

@@ -106,7 +106,7 @@ export default async function FlightRouteBookingPage({
         <div className="text-center">
           <p className="font-display font-700 text-ink text-2xl mb-2">Route not found</p>
           <p className="text-mist mb-6">We couldn&apos;t parse this flight route.</p>
-          <Link href="/flights" className="inline-flex items-center gap-2 bg-ocean text-white font-display font-700 px-5 py-2.5 rounded-xl">
+          <Link href="/flights" className="inline-flex items-center gap-2 bg-interactive text-white font-display font-700 px-5 py-2.5 rounded-xl">
             ← Search Flights
           </Link>
         </div>

@@ -42,6 +42,14 @@
   --color-border:     #E9D9CA;   /* Standard warm border */
   --color-border-strong: #D7BEAA;
 
+  /* ── Interactive elements — WCAG AA accessible button colors ─────────────────
+     --color-interactive: #C74A1E achieves 4.71:1 contrast with white text.
+     Use bg-interactive (not bg-ocean) for all <button> and <Link> CTAs
+     that display white text. bg-ocean (#E8622C) is for decorative accents only.
+     ──────────────────────────────────────────────────────────────────────── */
+  --color-interactive:      #C74A1E;   /* Terracotta — 4.71:1 with white — WCAG AA ✓ */
+  --color-interactive-dark: #A83910;   /* Deeper terracotta — hover / active */
+
   /* ── Fonts ────────────────────────────────────────────────────────────── */
   --font-display: 'Fraunces', Georgia, serif;
   --font-body:    'Inter', system-ui, sans-serif;
