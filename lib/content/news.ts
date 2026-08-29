@@ -101,10 +101,30 @@ export interface TravelNews {
    * Do not set trending: true in static data.
    */
   trending?: boolean;
+  /** Estimated reading time in minutes */
+  readingTimeMinutes?: number;
 
   // ── SEO ──────────────────────────────────────────────────────────────────
   seo: SEOFields;
 }
+
+// ─── Category labels ──────────────────────────────────────────────────────────
+
+/**
+ * Human-readable labels for each news category slug.
+ * Use these for UI display — never format slugs directly.
+ */
+export const NEWS_CATEGORY_LABELS: Record<NewsCategory, string> = {
+  'aviation':          'Aviation',
+  'hotels':            'Hotels',
+  'destinations':      'Destinations',
+  'attractions':       'Attractions',
+  'transportation':    'Transportation',
+  'travel-industry':   'Travel Industry',
+  'travel-technology': 'Travel Technology',
+  'border-visa':       'Border & Visa',
+  'cruises':           'Cruises',
+};
 
 // ─── Future data access functions (stubs for architecture) ───────────────────
 // These will be implemented when the /news route is built.

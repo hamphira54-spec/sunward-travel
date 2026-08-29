@@ -13,6 +13,7 @@ const TRAVEL_SERVICES = [
 const EXPLORE_LINKS = [
   { label: 'Destinations',  href: '/destinations' },
   { label: 'Travel Guides', href: '/guides' },
+  { label: 'Travel News',   href: '/news' },
 ];
 
 const COMPANY_LINKS = [

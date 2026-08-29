@@ -12,11 +12,10 @@ import { DESTINATIONS } from '@/lib/destinations-v2';
 import {
   Plane, Hotel, Compass, MapPin, Car,
   Waves, Landmark, Utensils, Mountain, Users, TreePine,
-  ArrowRight,
+  ArrowRight, Newspaper
 } from 'lucide-react';
-
-
-
+import { getRecentNews } from '@/lib/content/repository';
+import NewsCard from '@/components/news/NewsCard';
 
 export const metadata: Metadata = {
   title: 'Sunward Travel — Compare Flights, Hotels & Experiences Worldwide',
@@ -61,6 +60,41 @@ const HOMEPAGE_DESTINATIONS = DESTINATIONS.filter((d) =>
   ['bangkok', 'bali', 'tokyo', 'siem-reap', 'singapore', 'phuket'].includes(d.slug)
 );
 
+function HomeNewsSection() {
+  const latestNews = getRecentNews(4);
+  if (latestNews.length === 0) return null;
+
+  return (
+    <section className="section-lg bg-white border-t border-gray-100">
+      <div className="page-container">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="text-[11px] font-700 uppercase tracking-widest text-ocean mb-2">Editorial</p>
+            <h2 className="font-display font-700 text-ink" style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)' }}>
+              Latest Travel News
+            </h2>
+          </div>
+          <Link
+            href="/news"
+            className="hidden sm:flex items-center gap-1.5 text-ocean text-sm font-700 hover:gap-2.5 transition-all shrink-0 mb-1"
+          >
+            All stories <ArrowRight size={14} />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {latestNews.map((article) => (
+            <NewsCard key={article.slug} news={article} variant="standard" />
+          ))}
+        </div>
+        <div className="text-center mt-6 sm:hidden">
+          <Link href="/news" className="inline-flex items-center gap-1.5 text-ocean text-sm font-700">
+            All travel stories <ArrowRight size={14} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -198,6 +232,9 @@ export default function HomePage() {
 
       {/* Travel Guides */}
       <ArticlesPreview />
+
+      {/* Latest Travel News — only renders when published news exists */}
+      <HomeNewsSection />
 
       {/* Newsletter */}
       <NewsletterSignup />

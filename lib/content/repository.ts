@@ -27,6 +27,12 @@ import {
   type TravelGuide,
   type GuideCategory,
 } from '@/lib/guides';
+import {
+  NEWS_ARTICLES,
+  NEWS_BY_SLUG,
+  FEATURED_NEWS,
+} from '@/lib/news';
+import type { NewsCategory, TravelNews } from '@/lib/content/news';
 
 // ─── Guide queries ────────────────────────────────────────────────────────────
 
@@ -110,6 +116,120 @@ export function getRelatedGuidesFor(
   return _getRelatedGuides(slug, limit);
 }
 
+// ─── News queries ─────────────────────────────────────────────────────────────
+
+/**
+ * Returns all published news articles, sorted by publishedAt descending.
+ * Filters out draft/archived/scheduled content.
+ */
+export function getAllPublishedNews(limit?: number): TravelNews[] {
+  const published = NEWS_ARTICLES.filter(
+    (n) => n.publication.status === 'published'
+  ).sort((a, b) => {
+    const aDate = a.publication.publishedAt ?? '';
+    const bDate = b.publication.publishedAt ?? '';
+    return bDate.localeCompare(aDate);
+  });
+  return limit ? published.slice(0, limit) : published;
+}
+
+/**
+ * Returns a single published news article by URL slug.
+ * Returns undefined if not found or not published.
+ */
+export function getNewsBySlug(slug: string): TravelNews | undefined {
+  const article = NEWS_BY_SLUG[slug];
+  if (!article) return undefined;
+  if (article.publication.status !== 'published') return undefined;
+  return article;
+}
+
+/**
+ * Returns featured published news articles.
+ */
+export function getFeaturedNews(limit?: number): TravelNews[] {
+  const featured = FEATURED_NEWS.filter(
+    (n) => n.publication.status === 'published'
+  ).sort((a, b) => {
+    const aDate = a.publication.publishedAt ?? '';
+    const bDate = b.publication.publishedAt ?? '';
+    return bDate.localeCompare(aDate);
+  });
+  return limit ? featured.slice(0, limit) : featured;
+}
+
+/**
+ * Returns published news articles sorted by publishedAt descending.
+ */
+export function getRecentNews(limit?: number): TravelNews[] {
+  return getAllPublishedNews(limit);
+}
+
+/**
+ * Returns published news articles for a specific category.
+ */
+export function getNewsByCategory(
+  category: NewsCategory,
+  limit?: number
+): TravelNews[] {
+  const filtered = getAllPublishedNews().filter(
+    (n) => n.category === category
+  );
+  return limit ? filtered.slice(0, limit) : filtered;
+}
+
+/**
+ * Returns published news articles related to a specific destination slug.
+ */
+export function getNewsByDestination(destinationSlug: string): TravelNews[] {
+  return getAllPublishedNews().filter(
+    (n) => n.destinationSlug === destinationSlug
+  );
+}
+
+/**
+ * Returns published news articles related to a specific country slug.
+ * Includes both country-level and destination-specific articles for that country.
+ */
+export function getNewsByCountry(countrySlug: string): TravelNews[] {
+  return getAllPublishedNews().filter(
+    (n) => n.countrySlug === countrySlug || n.destinationSlug === countrySlug
+  );
+}
+
+/**
+ * Returns related news articles for a given slug.
+ * Scoring:
+ *   same destination: 4 pts
+ *   same country:     3 pts
+ *   same category:    2 pts
+ *   shared tag:       1 pt each
+ * Only returns articles with score > 0. Excludes the current article.
+ */
+export function getRelatedNews(
+  slug: string,
+  limit = 3
+): TravelNews[] {
+  const current = NEWS_BY_SLUG[slug];
+  if (!current) return [];
+
+  return getAllPublishedNews()
+    .filter((n) => n.slug !== slug)
+    .map((n) => {
+      let score = 0;
+      if (current.destinationSlug && n.destinationSlug === current.destinationSlug) score += 4;
+      if (current.countrySlug && n.countrySlug === current.countrySlug) score += 3;
+      if (n.category === current.category) score += 2;
+      const sharedTags = n.tags.filter((t) => current.tags.includes(t)).length;
+      score += sharedTags;
+      return { article: n, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ article }) => article);
+}
+
 // ─── Future: unified content query helpers ────────────────────────────────────
 // These stubs document the contract for future multi-type content queries.
 // Implement when /news and /events are built.
@@ -138,3 +258,5 @@ export function getRelatedGuidesFor(
 
 export type { TravelGuide, GuideCategory };
 export { GUIDES, GUIDE_BY_SLUG, FEATURED_GUIDES };
+export type { TravelNews };
+export { NEWS_ARTICLES, NEWS_BY_SLUG, FEATURED_NEWS };

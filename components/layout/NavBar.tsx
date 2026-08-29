@@ -16,6 +16,7 @@ const EXPLORE_ITEMS = [
 const NAV_LINKS = [
   { label: 'Destinations', href: '/destinations' },
   { label: 'Guides',       href: '/guides' },
+  { label: 'Travel News',  href: '/news' },
   { label: 'About',        href: '/about' },
 ];
 
