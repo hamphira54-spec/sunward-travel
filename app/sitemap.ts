@@ -5,7 +5,7 @@ import { getAllPublishedNews, getAllPublishedEvents } from '@/lib/content/reposi
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -52,7 +52,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // News articles - only published items, sorted by date descending
-  const newsRoutes: MetadataRoute.Sitemap = getAllPublishedNews().map((n) => ({
+  const news = await getAllPublishedNews();
+  const newsRoutes: MetadataRoute.Sitemap = news.map((n) => ({
     url: `${BASE_URL}/news/${n.slug}`,
     lastModified: n.publication.updatedAt
       ? new Date(n.publication.updatedAt)
@@ -64,7 +65,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Events articles
-  const eventRoutes: MetadataRoute.Sitemap = getAllPublishedEvents().map((e) => ({
+  const events = await getAllPublishedEvents();
+  const eventRoutes: MetadataRoute.Sitemap = events.map((e) => ({
     url: `${BASE_URL}/events/${e.slug}`,
     lastModified: e.publication.updatedAt
       ? new Date(e.publication.updatedAt)
