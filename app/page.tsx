@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 import HeroSection from '@/components/home/HeroSection';
 import HowItWorks from '@/components/home/HowItWorks';
 import ArticlesPreview from '@/components/home/ArticlesPreview';
@@ -6,9 +8,7 @@ import NewsletterSignup from '@/components/home/NewsletterSignup';
 import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import AffiliateWidgetShell from '@/components/affiliate/AffiliateWidgetShell';
 import SectionHeading from '@/components/ui/SectionHeading';
-import DestinationCard from '@/components/ui/DestinationCard';
-import { FEATURED_DESTINATIONS } from '@/lib/destinations';
-import Link from 'next/link';
+import { DESTINATIONS } from '@/lib/destinations-v2';
 import {
   Plane, Hotel, Compass, MapPin, Car,
   Waves, Landmark, Utensils, Mountain, Users, TreePine,
@@ -55,10 +55,12 @@ const EXPERIENCES = [
   { label: 'Family Travel',  icon: Users,    href: '/guides',       grad: 'from-ocean to-ocean-light' },
 ];
 
-const DEST_HREFS: Record<string, string> = {
-  'tokyo-japan': '/destinations/japan/tokyo',
-  'bali-indonesia': '/destinations/indonesia/bali',
-};
+// Show 6 featured destinations from the Phase E destination engine.
+// All hrefs are real pages — no broken fallback links.
+const HOMEPAGE_DESTINATIONS = DESTINATIONS.filter((d) =>
+  ['bangkok', 'bali', 'tokyo', 'siem-reap', 'singapore', 'phuket'].includes(d.slug)
+);
+
 
 export default function HomePage() {
   return (
@@ -109,14 +111,37 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FEATURED_DESTINATIONS.slice(0, 6).map((dest, i) => (
-              <DestinationCard
-                key={dest.id}
-                destination={dest}
-                href={DEST_HREFS[dest.slug] ?? `/guides/${dest.slug}`}
-                size="md"
-                priority={i < 3}
-              />
+            {HOMEPAGE_DESTINATIONS.map((dest, i) => (
+              <Link
+                key={dest.slug}
+                href={`/destinations/${dest.countrySlug}/${dest.slug}`}
+                className="group relative h-60 rounded-2xl overflow-hidden block shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <Image
+                  src={dest.cardImage.src}
+                  alt={dest.cardImage.alt}
+                  fill
+                  sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+                  quality={70}
+                  priority={i < 3}
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
+                <div className="absolute top-3 left-3">
+                  <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-[10px] font-700 uppercase tracking-wider border border-white/20">
+                    {dest.badge}
+                  </span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className="font-display font-700 text-white text-lg leading-tight group-hover:text-horizon transition-colors">
+                    {dest.name}
+                  </p>
+                  <p className="text-white/60 text-xs mt-0.5">{dest.country}</p>
+                  <p className="text-white/50 text-[11px] mt-1.5 leading-snug line-clamp-2">
+                    {dest.tagline}
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
           <div className="text-center mt-6 sm:hidden">
@@ -126,6 +151,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
 
       {/* Traveller Reviews */}
       <section className="section-md bg-white border-t border-b border-gray-100">

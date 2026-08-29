@@ -251,3 +251,99 @@ h1, h2, h3, h4, h5, h6 {
 }
 @media (min-width: 640px) { .page-container { padding-left: 2rem; padding-right: 2rem; } }
 @media (min-width: 1024px) { .page-container { padding-left: 3rem; padding-right: 3rem; } }
+
+/* ── Article / Prose Typography ──────────────────────────────────────────── */
+/* Used by .prose-styles wrapper inside guide/article pages.
+   Max-width capped at ~720px for comfortable reading column.             */
+.prose-styles {
+  font-size: clamp(1rem, 2vw, 1.0625rem); /* 16–17px */
+  line-height: 1.75;
+  color: var(--color-ink);
+}
+
+.prose-styles p {
+  margin-top: 0;
+  margin-bottom: 1.25em;
+}
+
+.prose-styles h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  line-height: 1.3;
+  color: var(--color-ink);
+  margin-top: 2.25em;
+  margin-bottom: 0.6em;
+  scroll-margin-top: 5rem; /* compensate for sticky navbar */
+}
+
+.prose-styles h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+  line-height: 1.35;
+  color: var(--color-ink);
+  margin-top: 1.75em;
+  margin-bottom: 0.5em;
+  scroll-margin-top: 5rem;
+}
+
+.prose-styles ul,
+.prose-styles ol {
+  padding-left: 1.4em;
+  margin-bottom: 1.25em;
+}
+
+.prose-styles li {
+  margin-bottom: 0.4em;
+}
+
+.prose-styles strong {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.prose-styles a {
+  color: var(--color-ocean);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-styles a:hover {
+  color: var(--color-ocean-dark);
+}
+
+.prose-styles blockquote {
+  border-left: 3px solid var(--color-ocean);
+  padding-left: 1.25em;
+  margin-left: 0;
+  color: var(--color-mist);
+  font-style: italic;
+}
+
+/* Responsive tables */
+.prose-styles table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  overflow-x: auto;
+  display: block;
+}
+
+.prose-styles th,
+.prose-styles td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-surface-dark);
+  text-align: left;
+}
+
+.prose-styles th {
+  background: var(--color-sand);
+  font-weight: 700;
+}
+
+/* Scroll target anchors — ensure heading appears below sticky nav */
+[data-section-id] {
+  scroll-margin-top: 5.5rem;
+}
+

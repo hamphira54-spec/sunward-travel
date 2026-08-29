@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
-import { GUIDES, DESTINATIONS, COUNTRIES } from '@/lib/destinations-v2';
+import { DESTINATIONS, COUNTRIES } from '@/lib/destinations-v2';
+import { GUIDES } from '@/lib/guides';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 

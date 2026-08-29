@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import {
   COUNTRIES, COUNTRY_BY_SLUG, DESTINATIONS_BY_COUNTRY,
-  getGuidesForCountry,
 } from '@/lib/destinations-v2';
+import { getGuidesForCountry, CATEGORY_LABELS } from '@/lib/guides';
 import TravelHero from '@/components/travel/TravelHero';
 import SectionHeading from '@/components/ui/SectionHeading';
 import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
@@ -192,8 +192,8 @@ export default async function CountryPage({
                 >
                   <div className="relative h-40 overflow-hidden">
                     <Image
-                      src={guide.imageUrl}
-                      alt={guide.imageAlt}
+                      src={guide.cardImage.src}
+                      alt={guide.cardImage.alt}
                       fill
                       sizes="(max-width:640px) 100vw, 33vw"
                       quality={70}
@@ -201,10 +201,10 @@ export default async function CountryPage({
                     />
                   </div>
                   <div className="p-4 flex-1 flex flex-col">
-                    <span className="text-[10px] text-coral font-700 uppercase tracking-wider mb-1.5">{guide.category}</span>
+                    <span className="text-[10px] text-coral font-700 uppercase tracking-wider mb-1.5">{CATEGORY_LABELS[guide.category]}</span>
                     <h3 className="font-display font-700 text-ink text-sm leading-snug group-hover:text-ocean transition-colors">{guide.title}</h3>
                     <p className="text-mist text-xs mt-1.5 flex items-center gap-1">
-                      <Clock size={10} /> {guide.readTime}
+                      <Clock size={10} /> {guide.readingTimeMinutes} min read
                     </p>
                   </div>
                 </Link>
