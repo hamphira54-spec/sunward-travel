@@ -54,6 +54,8 @@ model Destination {
   guides Guide[]
   news   News[]
   events Event[]
+
+  @@index([countrySlug])
 }
 
 model Guide {
@@ -81,6 +83,12 @@ model Guide {
   destination     Destination? @relation(fields: [destinationSlug], references: [slug])
   destinationSlug String?
   destinationLabel String
+
+  @@index([status])
+  @@index([category])
+  @@index([countrySlug])
+  @@index([destinationSlug])
+  @@index([featured])
 }
 
 model News {
@@ -104,6 +112,11 @@ model News {
   countrySlug     String?
   destination     Destination? @relation(fields: [destinationSlug], references: [slug])
   destinationSlug String?
+
+  @@index([category])
+  @@index([countrySlug])
+  @@index([destinationSlug])
+  @@index([featured])
 }
 
 model Event {
@@ -133,6 +146,12 @@ model Event {
   countrySlug     String?
   destination     Destination? @relation(fields: [destinationSlug], references: [slug])
   destinationSlug String?
+
+  @@index([lifecycleStatus])
+  @@index([category])
+  @@index([countrySlug])
+  @@index([destinationSlug])
+  @@index([featured])
 }
 
 model Author {
