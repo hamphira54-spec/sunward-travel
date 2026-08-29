@@ -29,3 +29,26 @@ The script will prompt for Email, Password, and Display Name. It uses the Supaba
 - **RBAC**: The \AdminUser\ table has a \ole\ field initialized to \SUPER_ADMIN\, which can be expanded for Editors/Authors.
 - **Audit Logging**: Can be attached to server actions in Phase L2.
 
+
+## Production Auth Configuration
+- NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be added to Vercel environment variables.
+- SUPABASE_SERVICE_ROLE_KEY is NOT required in the production runtime, only during CLI provisioning.
+
+## Generic Login Error Behavior
+- All login failures return the exact same generic error: 'Invalid email, password, or access permissions.' This prevents user enumeration.
+
+## Service Role Handling
+- SUPABASE_SERVICE_ROLE_KEY is exclusively used by the server-side provisioning script. Normal app operations use anonymous/session keys.
+
+## Trust Boundary
+- Browser -> Next.js Server -> Prisma -> PostgreSQL
+- Browser does not directly query Supabase tables. Prisma handles all data authorization.
+
+## Authorization Matrix & Test Results
+- Anonymous -> /admin: Redirects to /admin/login
+- Invalid credentials or Non-Admin: Generic error
+- Disabled Admin: Generic error, signed out
+- Active Admin: Access granted
+
+## Future MFA Recommendation
+- Supabase Enrollment Flow can be integrated later for Multi-Factor Authentication via the Supabase Auth API.

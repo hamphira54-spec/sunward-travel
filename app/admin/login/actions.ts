@@ -20,8 +20,7 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    // Return generic error for security
-    return { error: 'Invalid login credentials' };
+    return { error: 'Invalid email, password, or access permissions.' };
   }
 
   // Check if this user is a recognized admin
@@ -32,7 +31,7 @@ export async function login(formData: FormData) {
   if (!adminUser || adminUser.status !== 'ACTIVE') {
     // Sign out immediately if not an active admin
     await supabase.auth.signOut();
-    return { error: 'Access denied: not an active administrator' };
+    return { error: 'Invalid email, password, or access permissions.' };
   }
 
   // Update last login

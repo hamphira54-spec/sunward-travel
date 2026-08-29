@@ -70,7 +70,7 @@ async function main() {
     await supabase.auth.admin.deleteUser(authUserId);
     console.log('Rolled back Supabase Auth user.');
   } finally {
-    await prisma.`$disconnect();
+    await prisma.$disconnect();
     rl.close();
   }
 }
