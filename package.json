@@ -11,10 +11,13 @@
     "db:migrate": "prisma migrate deploy",
     "db:status": "prisma migrate status",
     "db:seed": "prisma db seed",
-    "db:parity": "ts-node --project scripts/tsconfig.json -r tsconfig-paths/register scripts/db-parity.ts"
+    "db:parity": "ts-node --project scripts/tsconfig.json -r dotenv/config -r tsconfig-paths/register scripts/db-parity.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@supabase/ssr": "^0.12.5",
+    "@supabase/supabase-js": "^2.112.4",
+    "dotenv": "^17.4.2",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.511.0",
     "next": "^15.3.4",

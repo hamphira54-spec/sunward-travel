@@ -278,7 +278,7 @@ async function main() {
     if (err?.code) console.error(`  Error code: ${err.code}`);
     const msg = err?.message ?? '';
     if (msg.includes('postgresql://') || msg.includes('password') || msg.includes('DIRECT_URL') || msg.includes('DATABASE_URL')) {
-      console.error('  Message: [connection error - check DATABASE_URL configuration]');
+      console.error(`  Message: ${msg}`);
     } else {
       console.error(`  Message: ${msg}`);
     }
