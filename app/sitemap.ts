@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { DESTINATIONS, COUNTRIES } from '@/lib/destinations-v2';
 import { GUIDES } from '@/lib/guides';
-import { getAllPublishedNews } from '@/lib/content/repository';
+import { getAllPublishedNews, getAllPublishedEvents } from '@/lib/content/repository';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 
@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/destinations`,         lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE_URL}/guides`,               lastModified: now, changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${BASE_URL}/news`,                 lastModified: now, changeFrequency: 'daily',   priority: 0.8 },
+    { url: `${BASE_URL}/events`,               lastModified: now, changeFrequency: 'daily',   priority: 0.8 },
     { url: `${BASE_URL}/about`,                lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${BASE_URL}/contact`,              lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE_URL}/privacy-policy`,       lastModified: now, changeFrequency: 'yearly',  priority: 0.2 },
@@ -50,7 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // News articles — only published items, sorted by date descending
+  // News articles - only published items, sorted by date descending
   const newsRoutes: MetadataRoute.Sitemap = getAllPublishedNews().map((n) => ({
     url: `${BASE_URL}/news/${n.slug}`,
     lastModified: n.publication.updatedAt
@@ -62,5 +63,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...countryRoutes, ...destinationRoutes, ...guideRoutes, ...newsRoutes];
+  // Events articles
+  const eventRoutes: MetadataRoute.Sitemap = getAllPublishedEvents().map((e) => ({
+    url: `${BASE_URL}/events/${e.slug}`,
+    lastModified: e.publication.updatedAt
+      ? new Date(e.publication.updatedAt)
+      : e.publication.publishedAt
+        ? new Date(e.publication.publishedAt)
+        : now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticRoutes, ...countryRoutes, ...destinationRoutes, ...guideRoutes, ...newsRoutes, ...eventRoutes];
 }

@@ -8,6 +8,7 @@ import {
   getRelatedDestinations,
 } from '@/lib/destinations-v2';
 import { getGuidesForDestination, CATEGORY_LABELS } from '@/lib/guides';
+import { getEventsByDestination } from '@/lib/content/repository';
 import TravelHero from '@/components/travel/TravelHero';
 import SectionHeading from '@/components/ui/SectionHeading';
 import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
@@ -15,6 +16,7 @@ import AffiliateWidgetShell from '@/components/affiliate/AffiliateWidgetShell';
 import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 import TravelServiceLinks from '@/components/travel/TravelServiceLinks';
+import { EventCard } from '@/components/events/EventCard';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 
@@ -46,13 +48,20 @@ export async function generateMetadata({
 
   return {
     title: `${dest.name} Travel Guide: Things to Do & Trip Planning | Sunward Travel`,
-    description: `Discover things to do in ${dest.name}, travel tips, flights, airport transfers, and useful information for planning your trip to ${dest.country}.`,
-    alternates: { canonical },
+    description: dest.shortDescription,
+    alternates: {
+      canonical,
+    },
     openGraph: {
       title: `${dest.name} Travel Guide | Sunward Travel`,
       description: dest.shortDescription,
       url: canonical,
-      images: [{ url: dest.heroImage.src, alt: dest.heroImage.alt }],
+      images: [
+        {
+          url: dest.heroImage.src,
+          alt: dest.heroImage.alt,
+        },
+      ],
     },
   };
 }
@@ -62,20 +71,19 @@ export default async function DestinationPage({
 }: {
   params: Promise<{ country: string; destination: string }>;
 }) {
-  const { country: countrySlug, destination: destSlug } = await params;
-  const dest = DESTINATION_BY_SLUG[destSlug];
+  const p = await params;
+  const dest = DESTINATION_BY_SLUG[p.destination];
+  if (!dest || dest.countrySlug !== p.country) notFound();
 
-  // 404 if destination doesn't exist or doesn't belong to this country
-  if (!dest || dest.countrySlug !== countrySlug) notFound();
-
-  const country = COUNTRY_BY_SLUG[countrySlug];
-  const guides = getGuidesForDestination(destSlug);
+  const country = COUNTRY_BY_SLUG[p.country];
+  const guides = getGuidesForDestination(dest.slug).slice(0, 3);
+  const events = getEventsByDestination(dest.slug).slice(0, 3);
   const related = getRelatedDestinations(dest);
 
   const crumbs = [
     { label: 'Home', href: '/' },
     { label: 'Destinations', href: '/destinations' },
-    { label: country?.name ?? countrySlug, href: `/destinations/${countrySlug}` },
+    { label: country?.name ?? p.country, href: `/destinations/${p.country}` },
     { label: dest.name },
   ];
 
@@ -266,6 +274,31 @@ export default async function DestinationPage({
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ocean text-white text-sm font-700 hover:bg-ocean-dark transition-colors"
               >
                 Search Hotels <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Global Events */}
+      {events.length > 0 && (
+        <section className="section-md bg-white border-t border-gray-100">
+          <div className="page-container">
+            <SectionHeading
+              eyebrow="Events & Festivals"
+              heading={`What's happening in ${dest.name}`}
+              align="left"
+            />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {events.map((event) => (
+                <div key={event.slug} className="h-full">
+                  <EventCard event={event} variant="compact" />
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 text-center md:text-left">
+              <Link href={`/events?category=all`} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-surface text-ink text-sm font-700 hover:bg-gray-100 transition-colors">
+                View All Events <ArrowRight size={14} />
               </Link>
             </div>
           </div>

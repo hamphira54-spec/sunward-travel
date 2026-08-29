@@ -14,8 +14,9 @@ import {
   Waves, Landmark, Utensils, Mountain, Users, TreePine,
   ArrowRight, Newspaper
 } from 'lucide-react';
-import { getRecentNews } from '@/lib/content/repository';
+import { getRecentNews, getUpcomingEvents } from '@/lib/content/repository';
 import NewsCard from '@/components/news/NewsCard';
+import { EventCard } from '@/components/events/EventCard';
 
 export const metadata: Metadata = {
   title: 'Sunward Travel — Compare Flights, Hotels & Experiences Worldwide',
@@ -59,6 +60,42 @@ const EXPERIENCES = [
 const HOMEPAGE_DESTINATIONS = DESTINATIONS.filter((d) =>
   ['bangkok', 'bali', 'tokyo', 'siem-reap', 'singapore', 'phuket'].includes(d.slug)
 );
+
+function HomeEventsSection() {
+  const upcomingEvents = getUpcomingEvents(4);
+  if (upcomingEvents.length === 0) return null;
+
+  return (
+    <section className="section-lg bg-surface border-t border-gray-100">
+      <div className="page-container">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="text-[11px] font-700 uppercase tracking-widest text-ocean mb-2">Global Events</p>
+            <h2 className="font-display font-700 text-ink" style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)' }}>
+              What&apos;s Happening Around the World
+            </h2>
+          </div>
+          <Link
+            href="/events"
+            className="hidden sm:flex items-center gap-1.5 text-ocean text-sm font-700 hover:gap-2.5 transition-all shrink-0 mb-1"
+          >
+            All events <ArrowRight size={14} />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {upcomingEvents.map((event) => (
+            <EventCard key={event.slug} event={event} variant="compact" />
+          ))}
+        </div>
+        <div className="text-center mt-6 sm:hidden">
+          <Link href="/events" className="inline-flex items-center gap-1.5 text-ocean text-sm font-700">
+            View all events <ArrowRight size={14} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function HomeNewsSection() {
   const latestNews = getRecentNews(4);
@@ -232,6 +269,9 @@ export default function HomePage() {
 
       {/* Travel Guides */}
       <ArticlesPreview />
+
+      {/* Global Events */}
+      <HomeEventsSection />
 
       {/* Latest Travel News — only renders when published news exists */}
       <HomeNewsSection />

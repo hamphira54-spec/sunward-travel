@@ -17,6 +17,7 @@ const NAV_LINKS = [
   { label: 'Destinations', href: '/destinations' },
   { label: 'Guides',       href: '/guides' },
   { label: 'Travel News',  href: '/news' },
+  { label: 'Events',       href: '/events' },
   { label: 'About',        href: '/about' },
 ];
 

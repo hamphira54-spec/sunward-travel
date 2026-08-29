@@ -14,6 +14,7 @@ const EXPLORE_LINKS = [
   { label: 'Destinations',  href: '/destinations' },
   { label: 'Travel Guides', href: '/guides' },
   { label: 'Travel News',   href: '/news' },
+  { label: 'Events',        href: '/events' },
 ];
 
 const COMPANY_LINKS = [

@@ -33,6 +33,8 @@ import {
   FEATURED_NEWS,
 } from '@/lib/news';
 import type { NewsCategory, TravelNews } from '@/lib/content/news';
+import { EVENT_ARTICLES, EVENTS_BY_SLUG, FEATURED_EVENTS } from '@/lib/events';
+import type { EventCategory, TravelEvent } from '@/lib/content/events';
 
 // ─── Guide queries ────────────────────────────────────────────────────────────
 
@@ -230,6 +232,69 @@ export function getRelatedNews(
     .map(({ article }) => article);
 }
 
+// ─── Event queries ─────────────────────────────────────────────────────────────
+
+export function getAllPublishedEvents(limit?: number): TravelEvent[] {
+  const published = EVENT_ARTICLES.filter(
+    (e) => e.publication.status === 'published'
+  ).sort((a, b) => a.startDate.localeCompare(b.startDate));
+  return limit ? published.slice(0, limit) : published;
+}
+
+export function getEventBySlug(slug: string): TravelEvent | undefined {
+  const event = EVENTS_BY_SLUG[slug];
+  if (!event || event.publication.status !== 'published') return undefined;
+  return event;
+}
+
+export function getUpcomingEvents(limit?: number): TravelEvent[] {
+  const now = new Date().toISOString();
+  const upcoming = getAllPublishedEvents().filter(
+    (e) => e.lifecycleStatus !== 'cancelled' && e.lifecycleStatus !== 'completed' && (e.endDate ? e.endDate >= now : e.startDate >= now)
+  );
+  return limit ? upcoming.slice(0, limit) : upcoming;
+}
+
+export function getFeaturedEvents(limit?: number): TravelEvent[] {
+  const featured = FEATURED_EVENTS.filter(
+    (e) => e.publication.status === 'published'
+  ).sort((a, b) => a.startDate.localeCompare(b.startDate));
+  return limit ? featured.slice(0, limit) : featured;
+}
+
+export function getEventsByCategory(category: EventCategory, limit?: number): TravelEvent[] {
+  const filtered = getAllPublishedEvents().filter((e) => e.category === category);
+  return limit ? filtered.slice(0, limit) : filtered;
+}
+
+export function getEventsByDestination(destinationSlug: string): TravelEvent[] {
+  return getUpcomingEvents().filter((e) => e.destinationSlug === destinationSlug);
+}
+
+export function getEventsByCountry(countrySlug: string): TravelEvent[] {
+  return getUpcomingEvents().filter((e) => e.countrySlug === countrySlug || e.destinationSlug === countrySlug);
+}
+
+export function getRelatedEvents(slug: string, limit = 3): TravelEvent[] {
+  const current = EVENTS_BY_SLUG[slug];
+  if (!current) return [];
+
+  return getUpcomingEvents()
+    .filter((e) => e.slug !== slug)
+    .map((e) => {
+      let score = 0;
+      if (current.destinationSlug && e.destinationSlug === current.destinationSlug) score += 4;
+      if (current.countrySlug && e.countrySlug === current.countrySlug) score += 3;
+      if (e.category === current.category) score += 2;
+      score += e.tags.filter((t) => current.tags.includes(t)).length;
+      return { event: e, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ event }) => event);
+}
+
 // ─── Future: unified content query helpers ────────────────────────────────────
 // These stubs document the contract for future multi-type content queries.
 // Implement when /news and /events are built.
@@ -256,7 +321,5 @@ export function getRelatedNews(
 // Pages that previously imported directly from lib/guides.ts can migrate
 // to importing from here instead for better storage-layer isolation.
 
-export type { TravelGuide, GuideCategory };
-export { GUIDES, GUIDE_BY_SLUG, FEATURED_GUIDES };
-export type { TravelNews };
-export { NEWS_ARTICLES, NEWS_BY_SLUG, FEATURED_NEWS };
+export type { TravelGuide, GuideCategory, TravelNews, TravelEvent };
+export { GUIDES, GUIDE_BY_SLUG, FEATURED_GUIDES, NEWS_ARTICLES, NEWS_BY_SLUG, FEATURED_NEWS, EVENT_ARTICLES, EVENTS_BY_SLUG, FEATURED_EVENTS };
