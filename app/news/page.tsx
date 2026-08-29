@@ -49,9 +49,9 @@ function FilterFallback() {
   );
 }
 
-export default function NewsPage() {
-  const allNews = getAllPublishedNews();
-  const featuredNews = getFeaturedNews(1);
+export default async function NewsPage() {
+  const allNews = await getAllPublishedNews();
+  const featuredNews = await getFeaturedNews(1);
   const featuredArticle = featuredNews[0] ?? null;
 
   return (

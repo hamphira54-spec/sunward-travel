@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Country {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  continent        String
+  region           String
+  shortDescription String
+  heroImage        Json
+  cardImage        Json
+  airportCodes     Json
+  featured         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  destinations Destination[]
+  guides       Guide[]
+  news         News[]
+  events       Event[]
+}
+
+model Destination {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  country          String
+  continent        String
+  region           String
+  tagline          String
+  shortDescription String
+  overview         String
+  heroImage        Json
+  cardImage        Json
+  badge            String
+  facts            Json
+  featured         Boolean  @default(false)
+  affiliate        Json
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  countryRel Country @relation(fields: [countrySlug], references: [slug])
+  countrySlug String
+
+  relatedDestinations Json
+
+  guides Guide[]
+  news   News[]
+  events Event[]
+}
+
+model Guide {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  title              String
+  excerpt            String
+  category           String
+  tags               Json
+  heroImage          Json
+  cardImage          Json
+  author             String?
+  publishedAt        String
+  updatedAt          String?
+  readingTimeMinutes Int
+  featured           Boolean  @default(false)
+  body               Json?
+  status             String?
+  seo                Json
+  affiliateCTAs      Json
+  tocSections        Json
+
+  country         Country?     @relation(fields: [countrySlug], references: [slug])
+  countrySlug     String?
+  destination     Destination? @relation(fields: [destinationSlug], references: [slug])
+  destinationSlug String?
+  destinationLabel String
+}
+
+model News {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  title              String
+  excerpt            String
+  body               Json
+  heroImage          Json
+  category           String
+  tags               Json
+  author             Json
+  publication        Json
+  sourceReferences   Json?
+  featured           Boolean  @default(false)
+  trending           Boolean  @default(false)
+  readingTimeMinutes Int?
+  seo                Json
+
+  country         Country?     @relation(fields: [countrySlug], references: [slug])
+  countrySlug     String?
+  destination     Destination? @relation(fields: [destinationSlug], references: [slug])
+  destinationSlug String?
+}
+
+model Event {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  title              String
+  excerpt            String
+  body               Json
+  heroImage          Json
+  venue              Json?
+  startDate          String
+  endDate            String?
+  timezone           String?
+  allDay             Boolean?
+  category           String
+  officialUrl        String?
+  ticketUrl          String?
+  sourceReferences   Json?
+  organizer          String?
+  lifecycleStatus    String
+  publication        Json
+  featured           Boolean  @default(false)
+  seo                Json
+  tags               Json
+
+  country         Country?     @relation(fields: [countrySlug], references: [slug])
+  countrySlug     String?
+  destination     Destination? @relation(fields: [destinationSlug], references: [slug])
+  destinationSlug String?
+}
+
+model Author {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  bio       String?
+  avatarUrl String?
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  caption   String?
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+}

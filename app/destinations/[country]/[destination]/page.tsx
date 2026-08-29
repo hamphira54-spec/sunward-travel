@@ -76,8 +76,8 @@ export default async function DestinationPage({
   if (!dest || dest.countrySlug !== p.country) notFound();
 
   const country = COUNTRY_BY_SLUG[p.country];
-  const guides = getGuidesForDestination(dest.slug).slice(0, 3);
-  const events = getEventsByDestination(dest.slug).slice(0, 3);
+  const guides = (await getGuidesForDestination(dest.slug)).slice(0, 3);
+  const events = (await getEventsByDestination(dest.slug)).slice(0, 3);
   const related = getRelatedDestinations(dest);
 
   const crumbs = [

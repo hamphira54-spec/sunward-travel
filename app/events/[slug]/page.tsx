@@ -13,7 +13,7 @@ interface EventPageProps {
 }
 
 export async function generateStaticParams() {
-  const events = getAllPublishedEvents();
+  const events = await getAllPublishedEvents();
   return events.map((e) => ({
     slug: e.slug,
   }));
@@ -21,7 +21,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
   const p = await params;
-  const event = getEventBySlug(p.slug);
+  const event = await getEventBySlug(p.slug);
   
   if (!event) return {};
 
@@ -38,14 +38,14 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
 
 export default async function EventPage({ params }: EventPageProps) {
   const p = await params;
-  const event = getEventBySlug(p.slug);
+  const event = await getEventBySlug(p.slug);
 
   if (!event) {
     notFound();
   }
 
-  const relatedEvents = getRelatedEvents(event.slug, 3);
-  const relatedGuides = getRelatedGuidesFor(event.slug, 3);
+  const relatedEvents = await getRelatedEvents(event.slug, 3);
+  const relatedGuides = await getRelatedGuidesFor(event.slug, 3);
   const dateString = formatEventDate(event.startDate, event.endDate, event.timezone, event.allDay);
 
   const eventSchema = {

@@ -1,325 +1,132 @@
-// ─────────────────────────────────────────────────────────────────────────────
 // lib/content/repository.ts
-// SUNWARD TRAVEL — Content Data Access Layer
-//
-// This module provides a thin boundary between page components and the
-// underlying content storage mechanism.
-//
-// CURRENT storage: Static TypeScript arrays in lib/guides.ts
-// FUTURE storage:  Supabase/PostgreSQL, headless CMS, or hybrid
-//
-// The goal: page components call functions from this module, not directly
-// from lib/guides.ts or future DB clients. When the storage changes,
-// only this file needs to be updated — not every page.
-//
-// Naming convention:
-//   get*         — returns data (never throws, returns undefined/[] on miss)
-//   getPublished* — only returns status: 'published' content
-// ─────────────────────────────────────────────────────────────────────────────
 
-import {
-  GUIDES,
-  GUIDE_BY_SLUG,
-  FEATURED_GUIDES,
-  getRelatedGuides as _getRelatedGuides,
-  getGuidesForDestination,
-  getGuidesForCountry,
-  type TravelGuide,
-  type GuideCategory,
-} from '@/lib/guides';
-import {
-  NEWS_ARTICLES,
-  NEWS_BY_SLUG,
-  FEATURED_NEWS,
-} from '@/lib/news';
-import type { NewsCategory, TravelNews } from '@/lib/content/news';
-import { EVENT_ARTICLES, EVENTS_BY_SLUG, FEATURED_EVENTS } from '@/lib/events';
-import type { EventCategory, TravelEvent } from '@/lib/content/events';
+import * as staticAdapter from './adapters/static';
+// import * as databaseAdapter from './adapters/database'; // Future
+
+import type { TravelGuide, GuideCategory } from '@/lib/guides';
+import type { TravelNews, NewsCategory } from '@/lib/content/news';
+import type { TravelEvent, EventCategory } from '@/lib/content/events';
+
+// For now, always use staticAdapter, unless CONTENT_SOURCE is explicitly set
+// In a real environment, you'd dynamically import or switch
+const isDatabase = process.env.CONTENT_SOURCE === 'database';
+
+// Helper to pick the right adapter
+const adapter = isDatabase ? (require('./adapters/database') as typeof staticAdapter) : staticAdapter;
 
 // ─── Guide queries ────────────────────────────────────────────────────────────
 
-/**
- * Returns all published guides.
- * Filters out draft/archived content (currently all guides are published).
- * Future: queries DB with status = 'published' filter.
- */
-export function getPublishedGuides(): TravelGuide[] {
-  return GUIDES.filter((g) => !g.status || g.status === 'published');
+export function getPublishedGuides(): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getPublishedGuides();
 }
 
-/**
- * Returns a single guide by URL slug.
- * Returns undefined if not found or not published.
- */
-export function getGuideBySlug(slug: string): TravelGuide | undefined {
-  const guide = GUIDE_BY_SLUG[slug];
-  if (!guide) return undefined;
-  if (guide.status && guide.status !== 'published') return undefined;
-  return guide;
+export function getGuideBySlug(slug: string): TravelGuide | undefined | Promise<TravelGuide | undefined> {
+  return adapter.getGuideBySlug(slug);
 }
 
-/**
- * Returns featured guides, optionally limited.
- * Future: queries DB with featured = true AND status = 'published'.
- */
-export function getFeaturedGuides(limit?: number): TravelGuide[] {
-  const guides = FEATURED_GUIDES;
-  return limit ? guides.slice(0, limit) : guides;
+export function getFeaturedGuides(limit?: number): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getFeaturedGuides(limit);
 }
 
-/**
- * Returns guides sorted by publishedAt descending (most recent first).
- */
-export function getRecentGuides(limit?: number): TravelGuide[] {
-  const sorted = getPublishedGuides().sort(
-    (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
-  return limit ? sorted.slice(0, limit) : sorted;
+export function getRecentGuides(limit?: number): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getRecentGuides(limit);
 }
 
-/**
- * Returns all published guides for a specific destination.
- */
-export function getGuidesByDestination(destinationSlug: string): TravelGuide[] {
-  return getGuidesForDestination(destinationSlug);
+export function getGuidesByDestination(destinationSlug: string): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getGuidesByDestination(destinationSlug);
 }
 
-/**
- * Returns all published guides for a specific country.
- */
-export function getGuidesByCountry(countrySlug: string): TravelGuide[] {
-  return getGuidesForCountry(countrySlug);
+export function getGuidesByCountry(countrySlug: string): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getGuidesByCountry(countrySlug);
 }
 
-/**
- * Returns all published guides matching a specific category.
- */
-export function getGuidesByCategory(category: GuideCategory): TravelGuide[] {
-  return getPublishedGuides().filter((g) => g.category === category);
+export function getGuidesByCategory(category: GuideCategory): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getGuidesByCategory(category);
 }
 
-/**
- * Returns all published guides that include a specific tag.
- */
-export function getGuidesByTag(tag: string): TravelGuide[] {
-  return getPublishedGuides().filter((g) => g.tags.includes(tag));
+export function getGuidesByTag(tag: string): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getGuidesByTag(tag);
 }
 
-/**
- * Returns related guides for a given guide slug.
- * Scores by: same destination (4pts) > same category (3pts) > same country (2pts) > shared tags (1pt each).
- * Excludes the current guide. Only returns guides with score > 0.
- */
-export function getRelatedGuidesFor(
-  slug: string,
-  limit = 3
-): TravelGuide[] {
-  return _getRelatedGuides(slug, limit);
+export function getRelatedGuidesFor(slug: string, limit = 3): TravelGuide[] | Promise<TravelGuide[]> {
+  return adapter.getRelatedGuidesFor(slug, limit);
 }
 
 // ─── News queries ─────────────────────────────────────────────────────────────
 
-/**
- * Returns all published news articles, sorted by publishedAt descending.
- * Filters out draft/archived/scheduled content.
- */
-export function getAllPublishedNews(limit?: number): TravelNews[] {
-  const published = NEWS_ARTICLES.filter(
-    (n) => n.publication.status === 'published'
-  ).sort((a, b) => {
-    const aDate = a.publication.publishedAt ?? '';
-    const bDate = b.publication.publishedAt ?? '';
-    return bDate.localeCompare(aDate);
-  });
-  return limit ? published.slice(0, limit) : published;
+export function getAllPublishedNews(limit?: number): TravelNews[] | Promise<TravelNews[]> {
+  return adapter.getAllPublishedNews(limit);
 }
 
-/**
- * Returns a single published news article by URL slug.
- * Returns undefined if not found or not published.
- */
-export function getNewsBySlug(slug: string): TravelNews | undefined {
-  const article = NEWS_BY_SLUG[slug];
-  if (!article) return undefined;
-  if (article.publication.status !== 'published') return undefined;
-  return article;
+export function getNewsBySlug(slug: string): TravelNews | undefined | Promise<TravelNews | undefined> {
+  return adapter.getNewsBySlug(slug);
 }
 
-/**
- * Returns featured published news articles.
- */
-export function getFeaturedNews(limit?: number): TravelNews[] {
-  const featured = FEATURED_NEWS.filter(
-    (n) => n.publication.status === 'published'
-  ).sort((a, b) => {
-    const aDate = a.publication.publishedAt ?? '';
-    const bDate = b.publication.publishedAt ?? '';
-    return bDate.localeCompare(aDate);
-  });
-  return limit ? featured.slice(0, limit) : featured;
+export function getFeaturedNews(limit?: number): TravelNews[] | Promise<TravelNews[]> {
+  return adapter.getFeaturedNews(limit);
 }
 
-/**
- * Returns published news articles sorted by publishedAt descending.
- */
-export function getRecentNews(limit?: number): TravelNews[] {
-  return getAllPublishedNews(limit);
+export function getRecentNews(limit?: number): TravelNews[] | Promise<TravelNews[]> {
+  return adapter.getRecentNews(limit);
 }
 
-/**
- * Returns published news articles for a specific category.
- */
-export function getNewsByCategory(
-  category: NewsCategory,
-  limit?: number
-): TravelNews[] {
-  const filtered = getAllPublishedNews().filter(
-    (n) => n.category === category
-  );
-  return limit ? filtered.slice(0, limit) : filtered;
+export function getNewsByCategory(category: NewsCategory, limit?: number): TravelNews[] | Promise<TravelNews[]> {
+  return adapter.getNewsByCategory(category, limit);
 }
 
-/**
- * Returns published news articles related to a specific destination slug.
- */
-export function getNewsByDestination(destinationSlug: string): TravelNews[] {
-  return getAllPublishedNews().filter(
-    (n) => n.destinationSlug === destinationSlug
-  );
+export function getNewsByDestination(destinationSlug: string): TravelNews[] | Promise<TravelNews[]> {
+  return adapter.getNewsByDestination(destinationSlug);
 }
 
-/**
- * Returns published news articles related to a specific country slug.
- * Includes both country-level and destination-specific articles for that country.
- */
-export function getNewsByCountry(countrySlug: string): TravelNews[] {
-  return getAllPublishedNews().filter(
-    (n) => n.countrySlug === countrySlug || n.destinationSlug === countrySlug
-  );
+export function getNewsByCountry(countrySlug: string): TravelNews[] | Promise<TravelNews[]> {
+  return adapter.getNewsByCountry(countrySlug);
 }
 
-/**
- * Returns related news articles for a given slug.
- * Scoring:
- *   same destination: 4 pts
- *   same country:     3 pts
- *   same category:    2 pts
- *   shared tag:       1 pt each
- * Only returns articles with score > 0. Excludes the current article.
- */
-export function getRelatedNews(
-  slug: string,
-  limit = 3
-): TravelNews[] {
-  const current = NEWS_BY_SLUG[slug];
-  if (!current) return [];
-
-  return getAllPublishedNews()
-    .filter((n) => n.slug !== slug)
-    .map((n) => {
-      let score = 0;
-      if (current.destinationSlug && n.destinationSlug === current.destinationSlug) score += 4;
-      if (current.countrySlug && n.countrySlug === current.countrySlug) score += 3;
-      if (n.category === current.category) score += 2;
-      const sharedTags = n.tags.filter((t) => current.tags.includes(t)).length;
-      score += sharedTags;
-      return { article: n, score };
-    })
-    .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(({ article }) => article);
+export function getRelatedNews(slug: string, limit = 3): TravelNews[] | Promise<TravelNews[]> {
+  return adapter.getRelatedNews(slug, limit);
 }
 
 // ─── Event queries ─────────────────────────────────────────────────────────────
 
-export function getAllPublishedEvents(limit?: number): TravelEvent[] {
-  const published = EVENT_ARTICLES.filter(
-    (e) => e.publication.status === 'published'
-  ).sort((a, b) => a.startDate.localeCompare(b.startDate));
-  return limit ? published.slice(0, limit) : published;
+export function getAllPublishedEvents(limit?: number): TravelEvent[] | Promise<TravelEvent[]> {
+  return adapter.getAllPublishedEvents(limit);
 }
 
-export function getEventBySlug(slug: string): TravelEvent | undefined {
-  const event = EVENTS_BY_SLUG[slug];
-  if (!event || event.publication.status !== 'published') return undefined;
-  return event;
+export function getEventBySlug(slug: string): TravelEvent | undefined | Promise<TravelEvent | undefined> {
+  return adapter.getEventBySlug(slug);
 }
 
-export function getUpcomingEvents(limit?: number): TravelEvent[] {
-  const now = new Date().toISOString();
-  const upcoming = getAllPublishedEvents().filter(
-    (e) => e.lifecycleStatus !== 'cancelled' && e.lifecycleStatus !== 'completed' && (e.endDate ? e.endDate >= now : e.startDate >= now)
-  );
-  return limit ? upcoming.slice(0, limit) : upcoming;
+export function getUpcomingEvents(limit?: number): TravelEvent[] | Promise<TravelEvent[]> {
+  return adapter.getUpcomingEvents(limit);
 }
 
-export function getFeaturedEvents(limit?: number): TravelEvent[] {
-  const featured = FEATURED_EVENTS.filter(
-    (e) => e.publication.status === 'published'
-  ).sort((a, b) => a.startDate.localeCompare(b.startDate));
-  return limit ? featured.slice(0, limit) : featured;
+export function getFeaturedEvents(limit?: number): TravelEvent[] | Promise<TravelEvent[]> {
+  return adapter.getFeaturedEvents(limit);
 }
 
-export function getEventsByCategory(category: EventCategory, limit?: number): TravelEvent[] {
-  const filtered = getAllPublishedEvents().filter((e) => e.category === category);
-  return limit ? filtered.slice(0, limit) : filtered;
+export function getEventsByCategory(category: EventCategory, limit?: number): TravelEvent[] | Promise<TravelEvent[]> {
+  return adapter.getEventsByCategory(category, limit);
 }
 
-export function getEventsByDestination(destinationSlug: string): TravelEvent[] {
-  return getUpcomingEvents().filter((e) => e.destinationSlug === destinationSlug);
+export function getEventsByDestination(destinationSlug: string): TravelEvent[] | Promise<TravelEvent[]> {
+  return adapter.getEventsByDestination(destinationSlug);
 }
 
-export function getEventsByCountry(countrySlug: string): TravelEvent[] {
-  return getUpcomingEvents().filter((e) => e.countrySlug === countrySlug || e.destinationSlug === countrySlug);
+export function getEventsByCountry(countrySlug: string): TravelEvent[] | Promise<TravelEvent[]> {
+  return adapter.getEventsByCountry(countrySlug);
 }
 
-export function getRelatedEvents(slug: string, limit = 3): TravelEvent[] {
-  const current = EVENTS_BY_SLUG[slug];
-  if (!current) return [];
-
-  return getUpcomingEvents()
-    .filter((e) => e.slug !== slug)
-    .map((e) => {
-      let score = 0;
-      if (current.destinationSlug && e.destinationSlug === current.destinationSlug) score += 4;
-      if (current.countrySlug && e.countrySlug === current.countrySlug) score += 3;
-      if (e.category === current.category) score += 2;
-      score += e.tags.filter((t) => current.tags.includes(t)).length;
-      return { event: e, score };
-    })
-    .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(({ event }) => event);
+export function getRelatedEvents(slug: string, limit = 3): TravelEvent[] | Promise<TravelEvent[]> {
+  return adapter.getRelatedEvents(slug, limit);
 }
-
-// ─── Future: unified content query helpers ────────────────────────────────────
-// These stubs document the contract for future multi-type content queries.
-// Implement when /news and /events are built.
-
-// /**
-//  * Returns recently published content across all types.
-//  * Useful for homepage "Latest" sections.
-//  */
-// export function getRecentContent(
-//   types: ContentType[],
-//   limit?: number
-// ): (TravelGuide | TravelNews | TravelEvent)[] { ... }
-
-// /**
-//  * Returns content associated with a specific destination.
-//  * Cross-type: guides + news + events all linked to destinationSlug.
-//  */
-// export function getContentByDestination(
-//   destinationSlug: string,
-//   types?: ContentType[]
-// ): (TravelGuide | TravelNews | TravelEvent)[] { ... }
-
-// ─── Re-exports for convenience ───────────────────────────────────────────────
-// Pages that previously imported directly from lib/guides.ts can migrate
-// to importing from here instead for better storage-layer isolation.
 
 export type { TravelGuide, GuideCategory, TravelNews, TravelEvent };
-export { GUIDES, GUIDE_BY_SLUG, FEATURED_GUIDES, NEWS_ARTICLES, NEWS_BY_SLUG, FEATURED_NEWS, EVENT_ARTICLES, EVENTS_BY_SLUG, FEATURED_EVENTS };
+export const GUIDES = staticAdapter.GUIDES;
+export const GUIDE_BY_SLUG = staticAdapter.GUIDE_BY_SLUG;
+export const FEATURED_GUIDES = staticAdapter.FEATURED_GUIDES;
+export const NEWS_ARTICLES = staticAdapter.NEWS_ARTICLES;
+export const NEWS_BY_SLUG = staticAdapter.NEWS_BY_SLUG;
+export const FEATURED_NEWS = staticAdapter.FEATURED_NEWS;
+export const EVENT_ARTICLES = staticAdapter.EVENT_ARTICLES;
+export const EVENTS_BY_SLUG = staticAdapter.EVENTS_BY_SLUG;
+export const FEATURED_EVENTS = staticAdapter.FEATURED_EVENTS;

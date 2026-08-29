@@ -20,8 +20,9 @@ import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 const SITE_NAME = 'Sunward Travel';
 
-export function generateStaticParams() {
-  return getAllPublishedNews().map((n) => ({ slug: n.slug }));
+export async function generateStaticParams() {
+  const news = await getAllPublishedNews();
+  return news.map((n) => ({ slug: n.slug }));
 }
 
 export async function generateMetadata({
@@ -30,7 +31,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = getNewsBySlug(slug);
+  const article = await getNewsBySlug(slug);
   if (!article) return { title: 'Article Not Found' };
   const canonical = `${SITE_URL}/news/${slug}`;
   return {
@@ -81,19 +82,19 @@ export default async function NewsArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = getNewsBySlug(slug);
+  const article = await getNewsBySlug(slug);
   if (!article) notFound();
 
-  const relatedNews   = getRelatedNews(slug, 3);
+  const relatedNews   = await getRelatedNews(slug, 3);
   const destEntry     = article.destinationSlug ? DESTINATION_BY_SLUG[article.destinationSlug] : null;
   const countryEntry  = article.countrySlug     ? COUNTRY_BY_SLUG[article.countrySlug]         : null;
 
   // Related guides via destination or country
   const relatedGuides = (
     article.destinationSlug
-      ? getGuidesByDestination(article.destinationSlug)
+      ? await getGuidesByDestination(article.destinationSlug)
       : article.countrySlug
-        ? getGuidesByCountry(article.countrySlug)
+        ? await getGuidesByCountry(article.countrySlug)
         : []
   ).slice(0, 2);
 

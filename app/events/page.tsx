@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   }
 };
 
-export default function EventsPage() {
-  const upcomingEvents = getUpcomingEvents();
-  const featuredEvent = getFeaturedEvents(1)[0];
+export default async function EventsPage() {
+  const upcomingEvents = await getUpcomingEvents();
+  const featuredEvent = (await getFeaturedEvents(1))[0];
 
   return (
     <main className="pb-24 pt-12">

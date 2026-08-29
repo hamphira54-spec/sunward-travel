@@ -61,8 +61,8 @@ const HOMEPAGE_DESTINATIONS = DESTINATIONS.filter((d) =>
   ['bangkok', 'bali', 'tokyo', 'siem-reap', 'singapore', 'phuket'].includes(d.slug)
 );
 
-function HomeEventsSection() {
-  const upcomingEvents = getUpcomingEvents(4);
+async function HomeEventsSection() {
+  const upcomingEvents = await getUpcomingEvents(4);
   if (upcomingEvents.length === 0) return null;
 
   return (
@@ -97,8 +97,8 @@ function HomeEventsSection() {
   );
 }
 
-function HomeNewsSection() {
-  const latestNews = getRecentNews(4);
+async function HomeNewsSection() {
+  const latestNews = await getRecentNews(4);
   if (latestNews.length === 0) return null;
 
   return (
