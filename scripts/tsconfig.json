@@ -1,9 +1,19 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": false,
+    "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "noEmit": false
+    "resolveJsonModule": true,
+    "baseUrl": "..",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": ["*.ts"]
+  "include": ["./*.ts", "../prisma/*.ts"]
 }
