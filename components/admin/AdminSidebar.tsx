@@ -10,6 +10,7 @@ import {
   CalendarDays,
   Users,
   ChevronRight,
+  Globe,
 } from 'lucide-react';
 
 interface NavItem {
@@ -34,7 +35,8 @@ const NAV_GROUPS: NavGroup[] = [
   {
     heading: 'Content',
     items: [
-      { label: 'Destinations', href: '/admin/destinations', icon: MapPin, soon: true },
+      { label: 'Countries', href: '/admin/countries', icon: Globe },
+      { label: 'Destinations', href: '/admin/destinations', icon: MapPin },
       { label: 'Travel Guides', href: '/admin/guides', icon: BookOpen, soon: true },
       { label: 'News & Articles', href: '/admin/news', icon: Newspaper, soon: true },
       { label: 'Events', href: '/admin/events', icon: CalendarDays, soon: true },
@@ -119,7 +121,7 @@ export default function AdminSidebar({ role }: AdminSidebarProps) {
       {/* Sidebar footer */}
       <div className="px-4 py-4 border-t border-[#2B221C]">
         <p className="text-[10px] text-[#4A3D36] text-center">
-          Sunward Admin · Phase L2
+          Sunward Admin · Phase L3
         </p>
       </div>
     </aside>
