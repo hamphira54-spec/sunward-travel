@@ -73,7 +73,7 @@ export default async function AdminDashboard() {
           {admin.displayName ?? admin.email.split("@")[0]}
         </h1>
         <p className="text-[#76675D] text-sm mt-1">
-          Sunward Travel CMS · Phase L2 Foundation
+          Sunward Travel CMS · Phase L3 Active
         </p>
       </div>
 
@@ -188,7 +188,7 @@ export default async function AdminDashboard() {
             {[
               { phase: "L1", label: "Auth & Admin Architecture", done: true },
               { phase: "L2", label: "Dashboard & Navigation Foundation", done: true },
-              { phase: "L3", label: "Destinations & Countries CRUD", done: false },
+              { phase: "L3", label: "Destinations & Countries CRUD", done: true },
               { phase: "L4", label: "Travel Guides CRUD", done: false },
               { phase: "L5", label: "News & Events CRUD", done: false },
               { phase: "L6", label: "Media Library", done: false },
