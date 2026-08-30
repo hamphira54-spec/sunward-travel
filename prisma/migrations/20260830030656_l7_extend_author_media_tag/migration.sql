@@ -1,0 +1,25 @@
+/*
+  Phase L7: Extend Author, Media, Tag models with additional fields.
+  All new NOT NULL columns use DEFAULT CURRENT_TIMESTAMP to safely handle existing rows.
+*/
+-- AlterTable
+ALTER TABLE "Author" ADD COLUMN "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN "title" TEXT,
+ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Media" ADD COLUMN "credit" TEXT,
+ADD COLUMN "height" INTEGER,
+ADD COLUMN "mimeType" TEXT,
+ADD COLUMN "sizeBytes" INTEGER,
+ADD COLUMN "storageKey" TEXT,
+ADD COLUMN "storageProvider" TEXT,
+ADD COLUMN "title" TEXT,
+ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN "width" INTEGER;
+
+-- AlterTable
+ALTER TABLE "Tag" ADD COLUMN "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN "description" TEXT,
+ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+

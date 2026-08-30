@@ -11,6 +11,9 @@ import {
   Users,
   ChevronRight,
   Globe,
+  Tag,
+  Image as ImageIcon,
+  UserCog,
 } from 'lucide-react';
 
 interface NavItem {
@@ -40,6 +43,14 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Travel Guides', href: '/admin/guides', icon: BookOpen },
       { label: 'News & Articles', href: '/admin/news', icon: Newspaper },
       { label: 'Events', href: '/admin/events', icon: CalendarDays },
+    ],
+  },
+  {
+    heading: 'Library',
+    items: [
+      { label: 'Authors', href: '/admin/authors', icon: UserCog },
+      { label: 'Tags', href: '/admin/tags', icon: Tag },
+      { label: 'Media', href: '/admin/media', icon: ImageIcon },
     ],
   },
   {
@@ -121,7 +132,7 @@ export default function AdminSidebar({ role }: AdminSidebarProps) {
       {/* Sidebar footer */}
       <div className="px-4 py-4 border-t border-[#2B221C]">
         <p className="text-[10px] text-[#4A3D36] text-center">
-          Sunward Admin · Phase L3
+          Sunward Admin · Phase L7
         </p>
       </div>
     </aside>

@@ -159,22 +159,37 @@ model Author {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
+  title     String?
   bio       String?
   avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Media {
-  id        String   @id @default(cuid())
-  url       String
-  alt       String?
-  caption   String?
-  createdAt DateTime @default(now())
+  id              String   @id @default(cuid())
+  url             String
+  alt             String?
+  title           String?
+  caption         String?
+  credit          String?
+  mimeType        String?
+  width           Int?
+  height          Int?
+  sizeBytes       Int?
+  storageProvider String?
+  storageKey      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Tag {
-  id   String @id @default(cuid())
-  name String @unique
-  slug String @unique
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model AdminUser {
