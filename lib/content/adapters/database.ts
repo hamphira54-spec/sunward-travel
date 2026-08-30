@@ -114,7 +114,27 @@ export async function getNewsByCountry(countrySlug: string): Promise<TravelNews[
 }
 
 export async function getRelatedNews(slug: string, limit = 3): Promise<TravelNews[]> {
-  return [];
+  const current = await getNewsBySlug(slug);
+  if (!current) return [];
+
+  const allNews = await getAllPublishedNews();
+  return allNews
+    .filter((n) => n.slug !== slug)
+    .map((n) => {
+      let score = 0;
+      if (current.destinationSlug && n.destinationSlug === current.destinationSlug) score += 4;
+      if (current.countrySlug && n.countrySlug === current.countrySlug) score += 3;
+      if (n.category === current.category) score += 2;
+      const sharedTags = Array.isArray(n.tags) && Array.isArray(current.tags) 
+        ? n.tags.filter((t) => current.tags.includes(t)).length 
+        : 0;
+      score += sharedTags;
+      return { article: n, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.article);
 }
 
 // ─── Event queries ─────────────────────────────────────────────────────────────

@@ -105,6 +105,21 @@ export async function upsertNews(prevState: any, formData: FormData) {
       body,
     };
 
+    if (Array.isArray(data.sourceReferences)) {
+      for (const src of data.sourceReferences) {
+        if (!src.name) throw new Error('Source reference missing name.');
+        if (!src.url) throw new Error('Source reference missing url.');
+        try {
+          const u = new URL(src.url);
+          if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+            throw new Error(`Invalid URL protocol in source reference: ${src.url}`);
+          }
+        } catch (e) {
+          throw new Error(`Invalid URL format in source reference: ${src.url}`);
+        }
+      }
+    }
+
     if (data.publication.status === 'published') {
       if (!data.title) throw new Error('Title is required for published news.');
       if (!data.slug) throw new Error('Slug is required for published news.');
@@ -116,6 +131,13 @@ export async function upsertNews(prevState: any, formData: FormData) {
     const existingSlug = await prisma.news.findUnique({ where: { slug: data.slug } });
     if (existingSlug && existingSlug.id !== id) {
       throw new Error(`The slug "${data.slug}" is already used by another news article.`);
+    }
+
+    if (data.countrySlug && data.destinationSlug) {
+      const dest = await prisma.destination.findUnique({ where: { slug: data.destinationSlug } });
+      if (dest && dest.country !== data.countrySlug) {
+        throw new Error(`Destination ${dest.name} does not belong to Country ${data.countrySlug}.`);
+      }
     }
 
     if (isNew) {
