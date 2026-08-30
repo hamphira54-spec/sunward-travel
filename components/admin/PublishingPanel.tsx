@@ -46,7 +46,11 @@ export function PublishingPanel({
     setError(null);
     try {
       if (isDirty) {
-        await onSaveRequested();
+        const saved = await onSaveRequested();
+        if (saved === false) {
+          setError('Validation failed. Please fix errors and save before transitioning.');
+          return;
+        }
       }
       const res = await submitPublishingAction(contentType, contentId, action);
       if (res.error) {

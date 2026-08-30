@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { transitionContentStatus } from '@/lib/publishing/service';
-import type { ContentType } from '@/lib/publishing/types';
 
 export async function GET(request: Request) {
+  const authHeader = request.headers.get('authorization');
+  const cronSecret = process.env.CRON_SECRET;
+  
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const now = new Date();
   
   try {

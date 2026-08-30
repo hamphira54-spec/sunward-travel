@@ -213,6 +213,7 @@ export async function getRelatedEvents(slug: string, limit = 3): Promise<TravelE
 function mapGuide(row: any): TravelGuide {
   return {
     ...row,
+    status: row.publishStatus, // Explicit mapping to avoid split-brain
     tags: row.tags as any,
     heroImage: row.heroImage as any,
     cardImage: row.cardImage as any,
@@ -226,11 +227,14 @@ function mapGuide(row: any): TravelGuide {
 function mapNews(row: any): TravelNews {
   return {
     ...row,
+    publication: {
+      ...(row.publication || {}),
+      status: row.publishStatus
+    }, // Explicit mapping to avoid split-brain
     body: validateContentBlocks(row.body) as any,
     heroImage: row.heroImage as any,
     tags: row.tags as any,
     author: row.author as any,
-    publication: row.publication as any,
     sourceReferences: row.sourceReferences as any,
     seo: row.seo as any,
   };
@@ -239,11 +243,14 @@ function mapNews(row: any): TravelNews {
 function mapEvent(row: any): TravelEvent {
   return {
     ...row,
+    publication: {
+      ...(row.publication || {}),
+      status: row.publishStatus
+    }, // Explicit mapping to avoid split-brain
     body: validateContentBlocks(row.body) as any,
     heroImage: row.heroImage as any,
     venue: row.venue as any,
     sourceReferences: row.sourceReferences as any,
-    publication: row.publication as any,
     seo: row.seo as any,
     tags: row.tags as any,
   };
