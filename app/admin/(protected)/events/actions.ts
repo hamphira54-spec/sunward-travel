@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import prisma from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin, requireRole } from '@/lib/auth/requireAdmin';
 import { validateContentBlocks } from '@/lib/content/validation';
 import type { ContentStatus } from '@/lib/content/types';
 import type { EventCategory, EventStatus } from '@/lib/content/events';
@@ -288,7 +288,7 @@ export async function upsertEvent(formData: FormData) {
 }
 
 export async function deleteEvent(id: string) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
 
   try {
     await prisma.event.delete({ where: { id } });
@@ -301,3 +301,5 @@ export async function deleteEvent(id: string) {
   revalidatePath('/events');
   return { success: true };
 }
+
+

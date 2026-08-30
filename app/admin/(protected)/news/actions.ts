@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin, requireRole } from '@/lib/auth/requireAdmin';
 import { redirect } from 'next/navigation';
 import { validateContentBlocks } from '@/lib/content/validation';
 
@@ -159,9 +159,11 @@ export async function upsertNews(prevState: any, formData: FormData) {
 }
 
 export async function deleteNews(id: string) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
   await prisma.news.delete({ where: { id } });
   revalidatePath('/admin/news');
   revalidatePath('/news');
   return { success: true };
 }
+
+

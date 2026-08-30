@@ -15,14 +15,17 @@ export async function requireAdmin() {
     where: { authUserId: data.user.id }
   });
 
-  if (!adminUser) {
-    redirect('/admin/login');
-  }
-
-  if (adminUser.status !== 'ACTIVE') {
+  if (!adminUser || adminUser.status !== 'ACTIVE') {
     redirect('/admin/login');
   }
 
   return adminUser;
 }
 
+export async function requireRole(allowedRoles: string[]) {
+  const admin = await requireAdmin();
+  if (!allowedRoles.includes(admin.role)) {
+    throw new Error('Forbidden: Insufficient privileges');
+  }
+  return admin;
+}

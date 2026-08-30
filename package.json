@@ -26,6 +26,7 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@axe-core/puppeteer": "^4.13.0",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",

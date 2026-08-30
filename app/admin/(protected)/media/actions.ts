@@ -1,7 +1,7 @@
 'use server';
 
 import 'server-only';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin, requireRole } from '@/lib/auth/requireAdmin';
 import prisma from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -33,7 +33,7 @@ export async function updateMedia(formData: FormData) {
 }
 
 export async function deleteMedia(id: string) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
 
   try {
     const media = await prisma.media.findUnique({ where: { id } });
@@ -76,3 +76,5 @@ export async function deleteMedia(id: string) {
   revalidatePath('/admin/media');
   redirect('/admin/media');
 }
+
+

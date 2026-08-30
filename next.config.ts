@@ -35,7 +35,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://tpembars.com https://*.travelpayouts.com https://*.klook.com https://*.kiwitaxi.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://plus.unsplash.com https://pics.avs.io https://*.supabase.co https://*.klook.com https://*.travelpayouts.com; frame-src 'self' https://*.klook.com https://*.travelpayouts.com https://*.kiwitaxi.com https://*.hotellook.com; connect-src 'self' https://*.supabase.co https://*.travelpayouts.com;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://tpembars.com https://*.travelpayouts.com https://*.klook.com https://*.kiwitaxi.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://plus.unsplash.com https://pics.avs.io https://*.supabase.co https://*.klook.com https://*.travelpayouts.com; frame-src 'self' https://*.klook.com https://*.travelpayouts.com https://*.kiwitaxi.com https://*.hotellook.com; connect-src 'self' https://*.supabase.co https://*.travelpayouts.com;"
           }
         ],
       },
@@ -44,3 +44,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+

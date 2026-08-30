@@ -1,7 +1,7 @@
 'use server';
 
 import 'server-only';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin, requireRole } from '@/lib/auth/requireAdmin';
 import prisma from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -11,7 +11,7 @@ function normalizeSlug(raw: string): string {
 }
 
 export async function upsertTag(formData: FormData) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
 
   try {
     const id = formData.get('id') as string;
@@ -50,7 +50,7 @@ export async function upsertTag(formData: FormData) {
 }
 
 export async function deleteTag(id: string) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
 
   try {
     const tag = await prisma.tag.findUnique({ where: { id } });
@@ -91,3 +91,5 @@ export async function deleteTag(id: string) {
   revalidatePath('/admin/tags');
   redirect('/admin/tags');
 }
+
+

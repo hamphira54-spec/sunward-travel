@@ -2,12 +2,12 @@
 
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin, requireRole } from '@/lib/auth/requireAdmin';
 import { redirect } from 'next/navigation';
 
 export async function upsertDestination(prevState: any, formData: FormData) {
   try {
-    await requireAdmin();
+    await requireRole(['ADMIN', 'SUPER_ADMIN']);
 
     const id = formData.get('id') as string | null;
     const isNew = !id;
@@ -60,9 +60,11 @@ export async function upsertDestination(prevState: any, formData: FormData) {
 }
 
 export async function deleteDestination(id: string) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
   await prisma.destination.delete({ where: { id } });
   revalidatePath('/admin/destinations');
   revalidatePath('/destinations');
   redirect('/admin/destinations');
 }
+
+

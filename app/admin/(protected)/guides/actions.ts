@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin, requireRole } from '@/lib/auth/requireAdmin';
 import { redirect } from 'next/navigation';
 import { validateContentBlocks } from '@/lib/content/validation';
 
@@ -111,9 +111,11 @@ export async function upsertGuide(prevState: any, formData: FormData) {
 }
 
 export async function deleteGuide(id: string) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
   await prisma.guide.delete({ where: { id } });
   revalidatePath('/admin/guides');
   revalidatePath('/guides');
   return { success: true };
 }
+
+

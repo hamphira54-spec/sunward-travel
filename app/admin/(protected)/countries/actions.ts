@@ -2,12 +2,12 @@
 
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin, requireRole } from '@/lib/auth/requireAdmin';
 import { redirect } from 'next/navigation';
 
 export async function upsertCountry(prevState: any, formData: FormData) {
   try {
-    await requireAdmin();
+    await requireRole(['ADMIN', 'SUPER_ADMIN']);
 
     const id = formData.get('id') as string | null;
     const isNew = !id;
@@ -46,9 +46,11 @@ export async function upsertCountry(prevState: any, formData: FormData) {
 }
 
 export async function deleteCountry(id: string) {
-  await requireAdmin();
+  await requireRole(['ADMIN', 'SUPER_ADMIN']);
   await prisma.country.delete({ where: { id } });
   revalidatePath('/admin/countries');
   revalidatePath('/destinations');
   redirect('/admin/countries');
 }
+
+
