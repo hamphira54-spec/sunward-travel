@@ -9,9 +9,10 @@ interface GuideFormProps {
   initialData?: any;
   countries: any[];
   destinations: any[];
+  authors?: any[];
 }
 
-export default function GuideForm({ initialData, countries, destinations }: GuideFormProps) {
+export default function GuideForm({ initialData, countries, destinations, authors = [] }: GuideFormProps) {
   const [state, formAction, isPending] = useActionState(upsertGuide, null);
 
   const defaultHeroImage = initialData?.heroImage ? JSON.stringify(initialData.heroImage, null, 2) : '{\n  "src": "",\n  "alt": ""\n}';
@@ -144,13 +145,20 @@ export default function GuideForm({ initialData, countries, destinations }: Guid
 
               <div className="space-y-1">
                 <label className="text-sm font-medium text-[#2B221C]">Author</label>
-                <input
-                  type="text"
+                <select
                   name="author"
-                  defaultValue={initialData?.author}
-                  placeholder="Defaults to you"
-                  className="w-full border border-[#E9D9CA] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8622C]"
-                />
+                  defaultValue={initialData?.author || ''}
+                  className="w-full border border-[#E9D9CA] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8622C] bg-white"
+                >
+                  <option value="">Default (Admin User)</option>
+                  {authors.map((a, idx) => (
+                    <option key={idx} value={a.name}>{a.name}</option>
+                  ))}
+                  {/* Preserve existing custom author if it's not in the authors table */}
+                  {initialData?.author && !authors.find(a => a.name === initialData.author) && (
+                    <option value={initialData.author}>{initialData.author} (Legacy)</option>
+                  )}
+                </select>
               </div>
 
               <div className="flex items-center gap-2 pt-2">

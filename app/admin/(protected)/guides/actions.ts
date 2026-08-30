@@ -79,6 +79,19 @@ export async function upsertGuide(prevState: any, formData: FormData) {
       body,
     };
 
+    if (data.status === 'published') {
+      if (!data.title) throw new Error('Title is required for published guides.');
+      if (!data.slug) throw new Error('Slug is required for published guides.');
+      if (!data.category) throw new Error('Category is required for published guides.');
+      if (!data.publishedAt) throw new Error('Published At date is required for published guides.');
+      if (!data.body || data.body.length === 0) throw new Error('Content blocks are required to publish a guide.');
+    }
+
+    const existingSlug = await prisma.guide.findUnique({ where: { slug: data.slug } });
+    if (existingSlug && existingSlug.id !== id) {
+      throw new Error(`The slug "${data.slug}" is already used by another guide.`);
+    }
+
     if (isNew) {
       await prisma.guide.create({ data });
     } else {

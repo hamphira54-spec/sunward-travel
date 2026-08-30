@@ -11,10 +11,11 @@ export default async function EditGuidePage({ params }: { params: Promise<{ id: 
   await requireAdmin();
   const { id } = await params;
   
-  const [guide, countries, destinations] = await Promise.all([
+  const [guide, countries, destinations, authors] = await Promise.all([
     prisma.guide.findUnique({ where: { id } }),
     prisma.country.findMany({ select: { slug: true, name: true }, orderBy: { name: 'asc' } }),
     prisma.destination.findMany({ select: { slug: true, name: true, country: true }, orderBy: { name: 'asc' } }),
+    prisma.author.findMany({ select: { name: true }, orderBy: { name: 'asc' } }),
   ]);
 
   if (!guide) {
@@ -47,7 +48,7 @@ export default async function EditGuidePage({ params }: { params: Promise<{ id: 
         )}
       </div>
 
-      <GuideForm initialData={guide} countries={countries} destinations={destinations} />
+      <GuideForm initialData={guide} countries={countries} destinations={destinations} authors={authors} />
     </div>
   );
 }
