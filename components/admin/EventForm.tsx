@@ -75,8 +75,12 @@ export default function EventForm({
     if (result?.error) {
       setError(result.error);
       setIsPending(false);
+      return;
     }
-    // On success, the server action redirects — no client-side navigation needed
+    
+    // On success, navigate back to events list
+    setIsDirty(false);
+    router.push('/admin/events');
   }
 
   async function handleDelete() {
@@ -476,3 +480,4 @@ export default function EventForm({
     </form>
   );
 }
+
