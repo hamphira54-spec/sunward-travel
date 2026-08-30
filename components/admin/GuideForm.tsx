@@ -184,7 +184,7 @@ export default function GuideForm({ initialData, countries, destinations, author
                   className="w-full border border-[#E9D9CA] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8622C] bg-white"
                 >
                   <option value="draft">Draft</option>
-                  <option value="review">Review</option>
+                  <option value="in_review">Review</option>
                   <option value="scheduled">Scheduled</option>
                   <option value="published">Published</option>
                   <option value="archived">Archived</option>
