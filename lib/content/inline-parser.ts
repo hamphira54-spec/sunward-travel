@@ -33,7 +33,8 @@ export function parseInlineNodes(text: string): InlineNode[] {
     } else if (match[3]) {
       // It's a link
       const href = match[5];
-      const isExternal = href.startsWith('http');
+      const isExternal = href.toLowerCase().startsWith('http');
+      if (href.toLowerCase().startsWith('javascript:') || href.toLowerCase().startsWith('data:') || href.toLowerCase().startsWith('vbscript:') || href.toLowerCase().startsWith('file:') || href.startsWith('//')) { continue; } // UX defense
       nodes.push({ type: 'link', content: match[4], href, external: isExternal });
     }
     

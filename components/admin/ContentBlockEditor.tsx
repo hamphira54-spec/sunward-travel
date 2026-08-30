@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import { Plus, Trash2, ArrowUp, ArrowDown, Copy, Image as ImageIcon } from 'lucide-react';
 import { parseInlineNodes, serializeInlineNodes } from '@/lib/content/inline-parser';
 import MediaPicker from './MediaPicker';
+import { ContentBlock, InlineNode, ListItem } from '@/lib/content/blocks';
 
 interface ContentBlockEditorProps {
-  initialBlocks?: any[];
+  initialBlocks?: ContentBlock[];
 }
 
 export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockEditorProps) {
-  const [blocks, setBlocks] = useState<any[]>(initialBlocks);
+  const [blocks, setBlocks] = useState<ContentBlock[]>(initialBlocks);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -28,35 +29,31 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
   }, [blocks]);
 
   const addBlock = (type: string) => {
-    let newBlock: any = { type };
+    let newBlock: ContentBlock;
     switch (type) {
       case 'paragraph':
-        newBlock.nodes = [];
+        newBlock = { type: 'paragraph', nodes: [] };
         break;
       case 'heading':
-        newBlock.level = 2;
-        newBlock.text = '';
-        newBlock.id = '';
+        newBlock = { type: 'heading', level: 2, text: '', id: '' };
         break;
       case 'image':
-        newBlock.src = '';
-        newBlock.alt = '';
+        newBlock = { type: 'image', src: '', alt: '' };
         break;
       case 'list':
-        newBlock.ordered = false;
-        newBlock.items = [{ nodes: [] }];
+        newBlock = { type: 'list', ordered: false, items: [{ nodes: [] }] };
         break;
       case 'quote':
-        newBlock.nodes = [];
-        newBlock.attribution = '';
+        newBlock = { type: 'quote', nodes: [], attribution: '' };
         break;
       case 'callout':
-        newBlock.variant = 'info';
-        newBlock.heading = '';
-        newBlock.nodes = [];
+        newBlock = { type: 'callout', variant: 'info', heading: '', nodes: [] };
         break;
       case 'divider':
+        newBlock = { type: 'divider' };
         break;
+      default:
+        return;
     }
     setBlocks([...blocks, newBlock]);
   };
@@ -94,14 +91,14 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
     setBlocks(newBlocks);
   };
 
-  const updateBlock = (index: number, updates: any) => {
+  const updateBlock = (index: number, updates: Partial<ContentBlock>) => {
     const newBlocks = [...blocks];
-    newBlocks[index] = { ...newBlocks[index], ...updates };
+    newBlocks[index] = { ...newBlocks[index], ...updates } as ContentBlock;
     setBlocks(newBlocks);
   };
 
   // Helper for inline nodes text area
-  const InlineEditor = ({ nodes, onChange, label = "Text Content (Supports **bold** and [link](url))" }: { nodes: any[], onChange: (n: any[]) => void, label?: string }) => {
+  const InlineEditor = ({ nodes, onChange, label = "Text Content (Supports **bold** and [link](url))" }: { nodes: InlineNode[], onChange: (n: InlineNode[]) => void, label?: string }) => {
     const [text, setText] = useState(() => serializeInlineNodes(nodes));
     
     // Update internal state when external nodes change (e.g. duplicate or reorder)
@@ -155,17 +152,17 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
                   )}
                 </div>
                 <div className="flex items-center gap-1">
-                  <button type="button" onClick={() => moveBlock(idx, 'up')} disabled={idx === 0} className="p-1 text-[#76675D] hover:bg-[#F0EDE8] rounded disabled:opacity-30">
+                  <button type="button" onClick={() => moveBlock(idx, 'up')} disabled={idx === 0} aria-label="Move Block Up" className="p-1 text-[#76675D] hover:bg-[#F0EDE8] rounded disabled:opacity-30">
                     <ArrowUp className="w-4 h-4" />
                   </button>
-                  <button type="button" onClick={() => moveBlock(idx, 'down')} disabled={idx === blocks.length - 1} className="p-1 text-[#76675D] hover:bg-[#F0EDE8] rounded disabled:opacity-30">
+                  <button type="button" onClick={() => moveBlock(idx, 'down')} disabled={idx === blocks.length - 1} aria-label="Move Block Down" className="p-1 text-[#76675D] hover:bg-[#F0EDE8] rounded disabled:opacity-30">
                     <ArrowDown className="w-4 h-4" />
                   </button>
                   <div className="w-px h-4 bg-[#E9D9CA] mx-1" />
-                  <button type="button" onClick={() => duplicateBlock(idx)} className="p-1 text-[#76675D] hover:bg-[#F0EDE8] rounded" title="Duplicate">
+                  <button type="button" onClick={() => duplicateBlock(idx)} aria-label="Duplicate Block" className="p-1 text-[#76675D] hover:bg-[#F0EDE8] rounded" title="Duplicate">
                     <Copy className="w-4 h-4" />
                   </button>
-                  <button type="button" onClick={() => removeBlock(idx)} className="p-1 text-red-500 hover:bg-red-50 rounded ml-1" title="Delete">
+                  <button type="button" onClick={() => removeBlock(idx)} aria-label="Delete Block" className="p-1 text-red-500 hover:bg-red-50 rounded ml-1" title="Delete">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -188,7 +185,7 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
                           <label className="block text-xs font-medium text-[#76675D] mb-1">Level</label>
                           <select
                             value={block.level || 2}
-                            onChange={(e) => updateBlock(idx, { level: parseInt(e.target.value) })}
+                            onChange={(e) => updateBlock(idx, { level: parseInt(e.target.value) as 2 | 3 })}
                             className="w-full border border-[#E9D9CA] rounded-md px-2 py-1.5 text-sm"
                           >
                             <option value={2}>H2</option>
@@ -273,7 +270,7 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
                           <label className="block text-xs font-medium text-[#76675D] mb-1">Variant</label>
                           <select
                             value={block.variant || 'info'}
-                            onChange={(e) => updateBlock(idx, { variant: e.target.value })}
+                            onChange={(e) => updateBlock(idx, { variant: e.target.value as 'tip' | 'info' | 'warning' })}
                             className="w-full border border-[#E9D9CA] rounded-md px-2 py-1.5 text-sm"
                           >
                             <option value="info">Info</option>
@@ -326,7 +323,7 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
                       </div>
                       
                       <div className="space-y-2 pl-2 border-l-2 border-[#E9D9CA]">
-                        {(block.items || []).map((item: any, itemIdx: number) => (
+                        {(block.items || []).map((item: ListItem, itemIdx: number) => (
                           <div key={itemIdx} className="flex gap-2">
                             <div className="pt-2 text-[#76675D]">
                               {block.ordered ? `${itemIdx + 1}.` : '•'}
@@ -342,6 +339,39 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
                                 label=""
                               />
                             </div>
+                            
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (itemIdx === 0) return;
+                                const newItems = [...(block.items || [])];
+                                const temp = newItems[itemIdx];
+                                newItems[itemIdx] = newItems[itemIdx - 1];
+                                newItems[itemIdx - 1] = temp;
+                                updateBlock(idx, { items: newItems });
+                              }}
+                              disabled={itemIdx === 0}
+                              aria-label="Move List Item Up"
+                              className="p-1.5 text-[#76675D] hover:text-[#0D6E7A] disabled:opacity-30 rounded h-fit mt-1"
+                            >
+                              <ArrowUp className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (itemIdx === (block.items || []).length - 1) return;
+                                const newItems = [...(block.items || [])];
+                                const temp = newItems[itemIdx];
+                                newItems[itemIdx] = newItems[itemIdx + 1];
+                                newItems[itemIdx + 1] = temp;
+                                updateBlock(idx, { items: newItems });
+                              }}
+                              disabled={itemIdx === (block.items || []).length - 1}
+                              aria-label="Move List Item Down"
+                              className="p-1.5 text-[#76675D] hover:text-[#0D6E7A] disabled:opacity-30 rounded h-fit mt-1"
+                            >
+                              <ArrowDown className="w-4 h-4" />
+                            </button>
                             <button
                               type="button"
                               onClick={() => {
@@ -349,10 +379,12 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
                                 newItems.splice(itemIdx, 1);
                                 updateBlock(idx, { items: newItems });
                               }}
+                              aria-label="Delete List Item"
                               className="p-1.5 text-[#76675D] hover:text-red-500 rounded h-fit mt-1"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
+
                           </div>
                         ))}
                         <button

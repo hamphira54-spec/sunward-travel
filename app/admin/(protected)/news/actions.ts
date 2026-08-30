@@ -37,7 +37,7 @@ export async function upsertNews(prevState: any, formData: FormData) {
     const destinationSlug = formData.get('destinationSlug') as string | null;
 
     const rawBody = JSON.parse((formData.get('body') as string) || '[]');
-    const body = validateContentBlocks(rawBody) || [];
+    const body = validateContentBlocks(rawBody);
     
     let readingTimeMinutes = parseInt((formData.get('readingTimeMinutes') as string) || '0', 10);
     if (readingTimeMinutes <= 0) {

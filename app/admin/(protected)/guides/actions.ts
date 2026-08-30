@@ -46,7 +46,7 @@ export async function upsertGuide(prevState: any, formData: FormData) {
     }
 
     const rawBody = JSON.parse((formData.get('body') as string) || '[]');
-    const body = validateContentBlocks(rawBody) || [];
+    const body = validateContentBlocks(rawBody);
     
     // Auto calculate if readingTimeMinutes is not explicitly set or is 0
     let readingTimeMinutes = parseInt((formData.get('readingTimeMinutes') as string) || '0', 10);

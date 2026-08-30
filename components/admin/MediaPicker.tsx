@@ -72,7 +72,7 @@ export default function MediaPicker({ value, onChange, label = 'Image' }: MediaP
               className="bg-white text-[#0D6E7A] text-xs font-medium px-2 py-1 rounded-lg border border-[#E9D9CA] hover:bg-[#F5EDE5]">
               Change
             </button>
-            <button type="button" onClick={handleClear}
+            <button type="button" onClick={handleClear} aria-label="Clear Media"
               className="bg-white text-red-500 p-1 rounded-lg border border-[#E9D9CA] hover:bg-red-50">
               <X className="w-3.5 h-3.5" />
             </button>
@@ -93,7 +93,7 @@ export default function MediaPicker({ value, onChange, label = 'Image' }: MediaP
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-[#E9D9CA]">
               <h2 className="font-bold text-[#2B221C]">Select Media</h2>
-              <button type="button" onClick={() => setOpen(false)}><X className="w-5 h-5 text-gray-500" /></button>
+              <button type="button" onClick={() => setOpen(false)} aria-label="Close Media Picker"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
 
             <div className="p-4 border-b border-[#E9D9CA]">
@@ -101,7 +101,7 @@ export default function MediaPicker({ value, onChange, label = 'Image' }: MediaP
                 <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search alt text, title..."
                   className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#0D6E7A] focus:outline-none" />
-                <button type="button" onClick={() => loadMedia(search)}
+                <button type="button" onClick={() => loadMedia(search)} aria-label="Search Media"
                   className="bg-[#0D6E7A] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#095663]">
                   <Search className="w-4 h-4" />
                 </button>
