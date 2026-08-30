@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
 import { useActionState, useState, useEffect } from 'react';
 import { upsertNews } from '@/app/admin/(protected)/news/actions';
@@ -18,6 +19,7 @@ interface NewsFormProps {
 export default function NewsForm({ initialData, countries, destinations, authors, tags = [] }: NewsFormProps & { tags?: any[] }) {
   const [state, formAction, isPending] = useActionState(upsertNews, null);
   const [isDirty, setIsDirty] = useState(false);
+  const router = useRouter();
   
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -43,13 +45,21 @@ export default function NewsForm({ initialData, countries, destinations, authors
   const defaultSourceReferences = initialData?.sourceReferences ? JSON.stringify(initialData.sourceReferences, null, 2) : '[]';
 
   const pub = initialData?.publication || {};
+  
+  useEffect(() => {
+    if (state?.success) {
+      setIsDirty(false);
+      router.push('/admin/news');
+    }
+  }, [state, router]);
+
   const defaultPublishedAt = pub.publishedAt ? pub.publishedAt.slice(0, 16) : new Date().toISOString().slice(0, 16);
   const status = pub.status || 'draft';
 
   const author = initialData?.author || {};
 
   return (
-    <form action={formAction} onChange={() => setIsDirty(true)} onSubmit={() => setIsDirty(false)} className="space-y-8">
+    <form action={formAction} onChange={() => setIsDirty(true)}  className="space-y-8">
       {state?.error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-md border border-red-200">
           {state.error}

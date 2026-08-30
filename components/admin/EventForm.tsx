@@ -95,7 +95,7 @@ export default function EventForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl pb-24">
+    <form onSubmit={handleSubmit} onChange={() => setIsDirty(true)} className="space-y-8 max-w-4xl pb-24">
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg font-medium">
           ⚠ {error}

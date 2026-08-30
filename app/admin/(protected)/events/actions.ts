@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import prisma from '@/lib/db';
 import { requireAdmin } from '@/lib/auth/requireAdmin';
-import { validateContentBlocks } from '@/lib/content/adapters/database';
+import { validateContentBlocks } from '@/lib/content/validation';
 import type { ContentStatus } from '@/lib/content/types';
 import type { EventCategory, EventStatus } from '@/lib/content/events';
 
@@ -284,7 +284,7 @@ export async function upsertEvent(formData: FormData) {
 
   revalidatePath('/admin/events');
   revalidatePath('/events');
-  redirect('/admin/events');
+  return { success: true };
 }
 
 export async function deleteEvent(id: string) {
@@ -299,5 +299,5 @@ export async function deleteEvent(id: string) {
 
   revalidatePath('/admin/events');
   revalidatePath('/events');
-  redirect('/admin/events');
+  return { success: true };
 }

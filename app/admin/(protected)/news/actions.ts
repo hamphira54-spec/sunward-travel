@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAdmin } from '@/lib/auth/requireAdmin';
 import { redirect } from 'next/navigation';
-import { validateContentBlocks } from '@/lib/content/adapters/database';
+import { validateContentBlocks } from '@/lib/content/validation';
 
 function calculateReadingTime(blocks: any[]): number {
   if (!blocks || !Array.isArray(blocks)) return 1;
@@ -155,7 +155,7 @@ export async function upsertNews(prevState: any, formData: FormData) {
 
   revalidatePath('/admin/news');
   revalidatePath('/news');
-  redirect('/admin/news');
+  return { success: true };
 }
 
 export async function deleteNews(id: string) {
@@ -163,5 +163,5 @@ export async function deleteNews(id: string) {
   await prisma.news.delete({ where: { id } });
   revalidatePath('/admin/news');
   revalidatePath('/news');
-  redirect('/admin/news');
+  return { success: true };
 }

@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
 import { useActionState, useState, useEffect } from 'react';
 import { upsertGuide } from '@/app/admin/(protected)/guides/actions';
@@ -18,6 +19,7 @@ interface GuideFormProps {
 export default function GuideForm({ initialData, countries, destinations, authors = [], tags = [] }: GuideFormProps & { tags?: any[] }) {
   const [state, formAction, isPending] = useActionState(upsertGuide, null);
   const [isDirty, setIsDirty] = useState(false);
+  const router = useRouter();
   
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -44,10 +46,18 @@ export default function GuideForm({ initialData, countries, destinations, author
   const defaultAffiliateCTAs = initialData?.affiliateCTAs ? JSON.stringify(initialData.affiliateCTAs, null, 2) : '[]';
   const defaultToc = initialData?.tocSections ? JSON.stringify(initialData.tocSections, null, 2) : '[]';
 
+  
+  useEffect(() => {
+    if (state?.success) {
+      setIsDirty(false);
+      router.push('/admin/guides');
+    }
+  }, [state, router]);
+
   const defaultPublishedAt = initialData?.publishedAt || new Date().toISOString().slice(0, 16);
 
   return (
-    <form action={formAction} onChange={() => setIsDirty(true)} onSubmit={() => setIsDirty(false)} className="space-y-8">
+    <form action={formAction} onChange={() => setIsDirty(true)}  className="space-y-8">
       {state?.error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-md border border-red-200">
           {state.error}

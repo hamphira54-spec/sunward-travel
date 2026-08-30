@@ -163,7 +163,7 @@ export default function HotelsPage() {
                   <div className="relative z-10 p-4 w-full flex items-end justify-between">
                     <div>
                       <span className="text-[10px] text-horizon font-600 uppercase tracking-widest"
-                        dangerouslySetInnerHTML={{ __html: dest.tag }} />
+                        >{dest.tag}</span>
                       <p className="font-display font-700 text-white text-xl leading-tight">{dest.city}</p>
                       <p className="text-white/60 text-xs mt-0.5">{dest.country}</p>
                     </div>

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAdmin } from '@/lib/auth/requireAdmin';
 import { redirect } from 'next/navigation';
-import { validateContentBlocks } from '@/lib/content/adapters/database';
+import { validateContentBlocks } from '@/lib/content/validation';
 
 function calculateReadingTime(blocks: any[]): number {
   if (!blocks || !Array.isArray(blocks)) return 1;
@@ -107,7 +107,7 @@ export async function upsertGuide(prevState: any, formData: FormData) {
 
   revalidatePath('/admin/guides');
   revalidatePath('/guides');
-  redirect('/admin/guides');
+  return { success: true };
 }
 
 export async function deleteGuide(id: string) {
@@ -115,5 +115,5 @@ export async function deleteGuide(id: string) {
   await prisma.guide.delete({ where: { id } });
   revalidatePath('/admin/guides');
   revalidatePath('/guides');
-  redirect('/admin/guides');
+  return { success: true };
 }
