@@ -166,12 +166,12 @@ export default async function AdminEventsPage({
                         {hasSources ? (
                           <span className="inline-flex items-center gap-1 text-xs text-green-700 font-medium">
                             <CheckCircle className="w-3.5 h-3.5" />
-                            {sources.length} Source(s)
+                            {sources.length} source{sources.length !== 1 ? 's' : ''} attached
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-xs text-red-600 font-medium">
+                          <span className="inline-flex items-center gap-1 text-xs text-gray-500 font-medium">
                             <Clock className="w-3.5 h-3.5" />
-                            Unverified
+                            No sources
                           </span>
                         )}
                       </td>
