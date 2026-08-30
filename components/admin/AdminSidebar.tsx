@@ -37,7 +37,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Countries', href: '/admin/countries', icon: Globe },
       { label: 'Destinations', href: '/admin/destinations', icon: MapPin },
-      { label: 'Travel Guides', href: '/admin/guides', icon: BookOpen, soon: true },
+      { label: 'Travel Guides', href: '/admin/guides', icon: BookOpen },
       { label: 'News & Articles', href: '/admin/news', icon: Newspaper, soon: true },
       { label: 'Events', href: '/admin/events', icon: CalendarDays, soon: true },
     ],

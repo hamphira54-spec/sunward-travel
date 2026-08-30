@@ -169,7 +169,7 @@ export async function getRelatedEvents(slug: string, limit = 3): Promise<TravelE
 
 // ─── Mappers ─────────────────────────────────────────────────────────────
 
-function validateInlineNodes(nodes: any[]): any[] {
+export function validateInlineNodes(nodes: any[]): any[] {
   if (!Array.isArray(nodes)) return [];
   return nodes.map((node) => {
     if (!node || typeof node !== 'object') return null;
@@ -180,7 +180,7 @@ function validateInlineNodes(nodes: any[]): any[] {
   }).filter(Boolean);
 }
 
-function validateContentBlocks(blocks: any): any[] | undefined {
+export function validateContentBlocks(blocks: any): any[] | undefined {
   if (!blocks) return undefined;
   if (!Array.isArray(blocks)) return [];
 
