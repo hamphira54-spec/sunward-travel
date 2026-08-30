@@ -183,7 +183,27 @@ export async function getEventsByCountry(countrySlug: string): Promise<TravelEve
 }
 
 export async function getRelatedEvents(slug: string, limit = 3): Promise<TravelEvent[]> {
-  return [];
+  const current = await getEventBySlug(slug);
+  if (!current) return [];
+
+  const upcomingEvents = await getUpcomingEvents();
+  return upcomingEvents
+    .filter((e) => e.slug !== slug)
+    .map((e) => {
+      let score = 0;
+      if (current.destinationSlug && e.destinationSlug === current.destinationSlug) score += 4;
+      if (current.countrySlug && e.countrySlug === current.countrySlug) score += 3;
+      if (e.category === current.category) score += 2;
+      const sharedTags = Array.isArray(e.tags) && Array.isArray(current.tags) 
+        ? e.tags.filter((t) => current.tags.includes(t)).length 
+        : 0;
+      score += sharedTags;
+      return { event: e, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ event }) => event);
 }
 
 

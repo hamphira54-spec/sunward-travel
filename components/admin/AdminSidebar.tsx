@@ -39,7 +39,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Destinations', href: '/admin/destinations', icon: MapPin },
       { label: 'Travel Guides', href: '/admin/guides', icon: BookOpen },
       { label: 'News & Articles', href: '/admin/news', icon: Newspaper },
-      { label: 'Events', href: '/admin/events', icon: CalendarDays, soon: true },
+      { label: 'Events', href: '/admin/events', icon: CalendarDays },
     ],
   },
   {
