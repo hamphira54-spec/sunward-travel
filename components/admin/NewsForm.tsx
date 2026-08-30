@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { upsertNews } from '@/app/admin/(protected)/news/actions';
 import Link from 'next/link';
 import ContentBlockEditor from '@/components/admin/ContentBlockEditor';
@@ -17,6 +17,21 @@ interface NewsFormProps {
 
 export default function NewsForm({ initialData, countries, destinations, authors, tags = [] }: NewsFormProps & { tags?: any[] }) {
   const [state, formAction, isPending] = useActionState(upsertNews, null);
+  const [isDirty, setIsDirty] = useState(false);
+  
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
+  
+
 
   const defaultHeroImage = initialData?.heroImage ? JSON.stringify(initialData.heroImage, null, 2) : '{\n  "src": "",\n  "alt": ""\n}';
   const defaultTags = initialData?.tags ? JSON.stringify(initialData.tags, null, 2) : '[]';
@@ -34,7 +49,7 @@ export default function NewsForm({ initialData, countries, destinations, authors
   const author = initialData?.author || {};
 
   return (
-    <form action={formAction} className="space-y-8">
+    <form action={formAction} onChange={() => setIsDirty(true)} onSubmit={() => setIsDirty(false)} className="space-y-8">
       {state?.error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-md border border-red-200">
           {state.error}
@@ -261,12 +276,23 @@ export default function NewsForm({ initialData, countries, destinations, authors
         >
           {isPending ? 'Saving...' : 'Save News Article'}
         </button>
+        {initialData?.id && (
+          <a
+            href={`/admin/preview/news/${initialData.id}`}
+            target="_blank"
+            className="bg-[#F0EDE8] text-[#2B221C] px-6 py-2.5 rounded-md font-medium hover:bg-[#E9D9CA] transition-colors border border-[#E9D9CA]"
+          >
+            Preview
+          </a>
+        )}
         <Link
           href="/admin/news"
           className="text-[#76675D] hover:text-[#2B221C] font-medium transition-colors"
         >
           Cancel
         </Link>
+        {isDirty && <span className="text-sm font-medium text-[#E8622C] ml-4">● Unsaved changes</span>}
+
       </div>
       <input type="hidden" name="tags" value={JSON.stringify(tagsArr)} />
         <input type="hidden" name="heroImage" value={heroImageObj ? JSON.stringify(heroImageObj) : ''} />

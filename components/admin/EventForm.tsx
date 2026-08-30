@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Event } from '@prisma/client';
 import { upsertEvent, deleteEvent } from '@/app/admin/(protected)/events/actions';
@@ -22,6 +22,21 @@ export default function EventForm({
 }) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+
+  const [isDirty, setIsDirty] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
   const [error, setError] = useState<string | null>(null);
 
   // Read existing publication metadata safely
@@ -436,6 +451,24 @@ export default function EventForm({
           >
             {isPending ? 'Saving...' : 'Save Event'}
           </button>
+        {event?.id && (
+          <a
+            href={`/admin/preview/events/${event.id}`}
+            target="_blank"
+            className="bg-[#F0EDE8] text-[#2B221C] px-6 py-2.5 rounded-md font-medium hover:bg-[#E9D9CA] transition-colors border border-[#E9D9CA]"
+          >
+            Preview
+          </a>
+        )}
+        {event?.id && (
+          <a
+            href={`/admin/preview/events/${event.id}`}
+            target="_blank"
+            className="bg-[#F0EDE8] text-[#2B221C] px-6 py-2.5 rounded-md font-medium hover:bg-[#E9D9CA] transition-colors border border-[#E9D9CA]"
+          >
+            Preview
+          </a>
+        )}
         </div>
       </div>
       <input type="hidden" name="tags" value={JSON.stringify(tagsArr)} />
