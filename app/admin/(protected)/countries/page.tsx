@@ -74,9 +74,7 @@ export default async function CountriesPage() {
                         type="submit"
                         className="text-red-500 hover:text-red-700 transition-colors"
                         title="Delete"
-                        onClick={(e) => {
-                          if (!confirm(`Are you sure you want to delete ${country.name}?`)) e.preventDefault();
-                        }}
+                        
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
