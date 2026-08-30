@@ -75,6 +75,11 @@ export async function deleteAuthor(id: string) {
       );
     }
 
+    const newsRef = await prisma.$queryRaw<any[]>`SELECT id, title FROM "News" WHERE "author"::text LIKE ${'%' + author.id + '%'} LIMIT 1`;
+    if (newsRef.length > 0) {
+      throw new Error(`Cannot delete: author "${author.name}" is referenced by News article "${newsRef[0].title}". Remove the author from all News first.`);
+    }
+
     await prisma.author.delete({ where: { id } });
   } catch (error: any) {
     console.error('[AuthorAction] deleteAuthor error:', error?.message);

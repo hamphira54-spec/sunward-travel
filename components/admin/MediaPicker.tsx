@@ -1,4 +1,5 @@
-﻿'use client';
+﻿/* eslint-disable @next/next/no-img-element */
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Image as ImageIcon, X, Search } from 'lucide-react';
