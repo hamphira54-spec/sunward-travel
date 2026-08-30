@@ -71,7 +71,7 @@ export function PublishingPanel({
     }
   }
   
-  if (currentStatus === 'review') {
+  if (currentStatus === 'in_review') {
     if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
       actions.push(<button key="approve" type="button" onClick={() => handleAction('APPROVE')} disabled={isPending} className="bg-[#F2C04A] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#D9A832]">Approve</button>);
       actions.push(<button key="reject" type="button" onClick={() => handleAction('REQUEST_CHANGES')} disabled={isPending} className="border border-red-500 text-red-500 px-4 py-2 rounded-lg font-medium hover:bg-red-50">Request Changes</button>);
