@@ -3,12 +3,13 @@ import { requireAdmin } from '@/lib/auth/requireAdmin';
 import { notFound } from 'next/navigation';
 import EventForm from '@/components/admin/EventForm';
 import Link from 'next/link';
+import AuditLog from '@/components/admin/AuditLog';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
 
 export const metadata = { title: 'Edit Event - Sunward Admin' };
 
 export default async function EditEventPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const { id } = await params;
 
   const [event, countries, destinations, tags] = await Promise.all([
@@ -41,7 +42,8 @@ export default async function EditEventPage({ params }: { params: Promise<{ id: 
         )}
       </div>
 
-      <EventForm event={event} countries={countries} destinations={destinations} tags={tags} />
+      <EventForm event={event} countries={countries} destinations={destinations}  tags={tags} adminRole={admin.role} />
+      <AuditLog contentType="event" contentId={id} />
     </div>
   );
 }

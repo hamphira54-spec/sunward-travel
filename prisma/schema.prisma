@@ -47,7 +47,7 @@ model Destination {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  countryRel Country @relation(fields: [countrySlug], references: [slug])
+  countryRel  Country @relation(fields: [countrySlug], references: [slug])
   countrySlug String
 
   relatedDestinations Json
@@ -60,8 +60,8 @@ model Destination {
 }
 
 model Guide {
-  id                 String   @id @default(cuid())
-  slug               String   @unique
+  id                 String  @id @default(cuid())
+  slug               String  @unique
   title              String
   excerpt            String
   category           String
@@ -72,17 +72,21 @@ model Guide {
   publishedAt        String
   updatedAt          String?
   readingTimeMinutes Int
-  featured           Boolean  @default(false)
+  featured           Boolean @default(false)
   body               Json?
   status             String?
   seo                Json
   affiliateCTAs      Json
   tocSections        Json
 
-  country         Country?     @relation(fields: [countrySlug], references: [slug])
-  countrySlug     String?
-  destination     Destination? @relation(fields: [destinationSlug], references: [slug])
-  destinationSlug String?
+  publishStatus String    @default("draft")
+  publishDate   DateTime?
+  scheduleDate  DateTime?
+
+  country          Country?     @relation(fields: [countrySlug], references: [slug])
+  countrySlug      String?
+  destination      Destination? @relation(fields: [destinationSlug], references: [slug])
+  destinationSlug  String?
   destinationLabel String
 
   @@index([status])
@@ -93,8 +97,8 @@ model Guide {
 }
 
 model News {
-  id                 String   @id @default(cuid())
-  slug               String   @unique
+  id                 String  @id @default(cuid())
+  slug               String  @unique
   title              String
   excerpt            String
   body               Json
@@ -104,10 +108,14 @@ model News {
   author             Json
   publication        Json
   sourceReferences   Json?
-  featured           Boolean  @default(false)
-  trending           Boolean  @default(false)
+  featured           Boolean @default(false)
+  trending           Boolean @default(false)
   readingTimeMinutes Int?
   seo                Json
+
+  publishStatus String    @default("draft")
+  publishDate   DateTime?
+  scheduleDate  DateTime?
 
   country         Country?     @relation(fields: [countrySlug], references: [slug])
   countrySlug     String?
@@ -121,27 +129,31 @@ model News {
 }
 
 model Event {
-  id                 String   @id @default(cuid())
-  slug               String   @unique
-  title              String
-  excerpt            String
-  body               Json
-  heroImage          Json
-  venue              Json?
-  startDate          String
-  endDate            String?
-  timezone           String?
-  allDay             Boolean?
-  category           String
-  officialUrl        String?
-  ticketUrl          String?
-  sourceReferences   Json?
-  organizer          String?
-  lifecycleStatus    String
-  publication        Json
-  featured           Boolean  @default(false)
-  seo                Json
-  tags               Json
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  title            String
+  excerpt          String
+  body             Json
+  heroImage        Json
+  venue            Json?
+  startDate        String
+  endDate          String?
+  timezone         String?
+  allDay           Boolean?
+  category         String
+  officialUrl      String?
+  ticketUrl        String?
+  sourceReferences Json?
+  organizer        String?
+  lifecycleStatus  String
+  publication      Json
+  featured         Boolean  @default(false)
+  seo              Json
+  tags             Json
+
+  publishStatus String    @default("draft")
+  publishDate   DateTime?
+  scheduleDate  DateTime?
 
   country         Country?     @relation(fields: [countrySlug], references: [slug])
   countrySlug     String?
@@ -207,3 +219,17 @@ model AdminUser {
   @@index([email])
 }
 
+model PublishingAudit {
+  id               String   @id @default(cuid())
+  contentType      String
+  contentId        String
+  action           String
+  fromStatus       String?
+  toStatus         String
+  actorAdminUserId String
+  actorRole        String
+  note             String?
+  createdAt        DateTime @default(now())
+
+  @@index([contentType, contentId])
+}

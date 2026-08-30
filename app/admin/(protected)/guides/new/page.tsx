@@ -7,7 +7,7 @@ import Link from 'next/link';
 export const metadata = { title: 'Create Travel Guide' };
 
 export default async function NewGuidePage() {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const [countries, destinations, authors, tags] = await Promise.all([
     prisma.country.findMany({ select: { slug: true, name: true }, orderBy: { name: 'asc' } }),
     prisma.destination.findMany({ select: { slug: true, name: true, country: true }, orderBy: { name: 'asc' } }),
@@ -30,7 +30,7 @@ export default async function NewGuidePage() {
         <h1 className="text-2xl font-bold text-[#2B221C] font-serif">Create Travel Guide</h1>
       </div>
 
-      <GuideForm countries={countries} destinations={destinations} authors={authors} tags={tags} />
+      <GuideForm countries={countries} destinations={destinations} authors={authors} tags={tags} adminRole={admin.role} />
     </div>
   );
 }

@@ -7,19 +7,19 @@ import type { TravelEvent, EventCategory } from '@/lib/content/events';
 // ─── Guide queries ────────────────────────────────────────────────────────────
 
 export async function getPublishedGuides(): Promise<TravelGuide[]> {
-  const guides = await prisma.guide.findMany({ where: { status: 'published' } });
+  const guides = await prisma.guide.findMany({ where: { publishStatus: 'published' } });
   return guides.map(mapGuide);
 }
 
 export async function getGuideBySlug(slug: string): Promise<TravelGuide | undefined> {
   const guide = await prisma.guide.findUnique({ where: { slug } });
-  if (!guide || guide.status !== 'published') return undefined;
+  if (!guide || guide.publishStatus !== 'published') return undefined;
   return mapGuide(guide);
 }
 
 export async function getFeaturedGuides(limit?: number): Promise<TravelGuide[]> {
   const guides = await prisma.guide.findMany({
-    where: { featured: true, status: 'published' },
+    where: { featured: true, publishStatus: 'published' },
     take: limit,
   });
   return guides.map(mapGuide);
@@ -27,7 +27,7 @@ export async function getFeaturedGuides(limit?: number): Promise<TravelGuide[]> 
 
 export async function getRecentGuides(limit?: number): Promise<TravelGuide[]> {
   const guides = await prisma.guide.findMany({
-    where: { status: 'published' },
+    where: { publishStatus: 'published' },
     orderBy: { publishedAt: 'desc' },
     take: limit,
   });
@@ -36,7 +36,7 @@ export async function getRecentGuides(limit?: number): Promise<TravelGuide[]> {
 
 export async function getGuidesByDestination(destinationSlug: string): Promise<TravelGuide[]> {
   const guides = await prisma.guide.findMany({
-    where: { destinationSlug, status: 'published' },
+    where: { destinationSlug, publishStatus: 'published' },
   });
   return guides.map(mapGuide);
 }
@@ -45,7 +45,7 @@ export async function getGuidesByCountry(countrySlug: string): Promise<TravelGui
   const guides = await prisma.guide.findMany({
     where: {
       OR: [{ countrySlug }, { destinationSlug: countrySlug }],
-      status: 'published',
+      publishStatus: 'published',
     },
   });
   return guides.map(mapGuide);
@@ -53,7 +53,7 @@ export async function getGuidesByCountry(countrySlug: string): Promise<TravelGui
 
 export async function getGuidesByCategory(category: GuideCategory): Promise<TravelGuide[]> {
   const guides = await prisma.guide.findMany({
-    where: { category, status: 'published' },
+    where: { category, publishStatus: 'published' },
   });
   return guides.map(mapGuide);
 }
@@ -61,7 +61,7 @@ export async function getGuidesByCategory(category: GuideCategory): Promise<Trav
 export async function getGuidesByTag(tag: string): Promise<TravelGuide[]> {
   const guides = await prisma.guide.findMany({
     where: {
-      status: 'published',
+      publishStatus: 'published',
       tags: { array_contains: tag }, // Prisma JSON filter
     },
   });
@@ -76,21 +76,21 @@ export async function getRelatedGuidesFor(slug: string, limit = 3): Promise<Trav
 // ─── News queries ─────────────────────────────────────────────────────────────
 
 export async function getAllPublishedNews(limit?: number): Promise<TravelNews[]> {
-  const news = await prisma.news.findMany({ take: limit });
-  return news.map(mapNews).filter((n: TravelNews) => n.publication.status === 'published');
+  const news = await prisma.news.findMany({ where: { publishStatus: 'published' }, take: limit });
+  return news.map(mapNews);
 }
 
 export async function getNewsBySlug(slug: string): Promise<TravelNews | undefined> {
   const article = await prisma.news.findUnique({ where: { slug } });
   if (!article) return undefined;
+  if (article.publishStatus !== 'published') return undefined;
   const mapped = mapNews(article);
-  if (mapped.publication.status !== 'published') return undefined;
   return mapped;
 }
 
 export async function getFeaturedNews(limit?: number): Promise<TravelNews[]> {
-  const news = await prisma.news.findMany({ where: { featured: true }, take: limit });
-  return news.map(mapNews).filter((n: TravelNews) => n.publication.status === 'published');
+  const news = await prisma.news.findMany({ where: { featured: true, publishStatus: 'published' }, take: limit });
+  return news.map(mapNews);
 }
 
 export async function getRecentNews(limit?: number): Promise<TravelNews[]> {
@@ -99,19 +99,19 @@ export async function getRecentNews(limit?: number): Promise<TravelNews[]> {
 
 export async function getNewsByCategory(category: NewsCategory, limit?: number): Promise<TravelNews[]> {
   const news = await prisma.news.findMany({ where: { category }, take: limit });
-  return news.map(mapNews).filter((n: TravelNews) => n.publication.status === 'published');
+  return news.map(mapNews);
 }
 
 export async function getNewsByDestination(destinationSlug: string): Promise<TravelNews[]> {
   const news = await prisma.news.findMany({ where: { destinationSlug } });
-  return news.map(mapNews).filter((n: TravelNews) => n.publication.status === 'published');
+  return news.map(mapNews);
 }
 
 export async function getNewsByCountry(countrySlug: string): Promise<TravelNews[]> {
   const news = await prisma.news.findMany({
     where: { OR: [{ countrySlug }, { destinationSlug: countrySlug }] },
   });
-  return news.map(mapNews).filter((n: TravelNews) => n.publication.status === 'published');
+  return news.map(mapNews);
 }
 
 export async function getRelatedNews(slug: string, limit = 3): Promise<TravelNews[]> {
@@ -141,15 +141,15 @@ export async function getRelatedNews(slug: string, limit = 3): Promise<TravelNew
 // ─── Event queries ─────────────────────────────────────────────────────────────
 
 export async function getAllPublishedEvents(limit?: number): Promise<TravelEvent[]> {
-  const events = await prisma.event.findMany({ take: limit });
-  return events.map(mapEvent).filter((e: TravelEvent) => e.publication.status === 'published');
+  const events = await prisma.event.findMany({ where: { publishStatus: 'published' }, take: limit });
+  return events.map(mapEvent);
 }
 
 export async function getEventBySlug(slug: string): Promise<TravelEvent | undefined> {
   const event = await prisma.event.findUnique({ where: { slug } });
   if (!event) return undefined;
+  if (event.publishStatus !== 'published') return undefined;
   const mapped = mapEvent(event);
-  if (mapped.publication.status !== 'published') return undefined;
   return mapped;
 }
 
@@ -158,29 +158,29 @@ export async function getUpcomingEvents(limit?: number): Promise<TravelEvent[]> 
     where: { lifecycleStatus: { notIn: ['cancelled', 'completed'] } },
     take: limit,
   });
-  return events.map(mapEvent).filter((e: TravelEvent) => e.publication.status === 'published');
+  return events.map(mapEvent);
 }
 
 export async function getFeaturedEvents(limit?: number): Promise<TravelEvent[]> {
   const events = await prisma.event.findMany({ where: { featured: true }, take: limit });
-  return events.map(mapEvent).filter((e: TravelEvent) => e.publication.status === 'published');
+  return events.map(mapEvent);
 }
 
 export async function getEventsByCategory(category: EventCategory, limit?: number): Promise<TravelEvent[]> {
   const events = await prisma.event.findMany({ where: { category }, take: limit });
-  return events.map(mapEvent).filter((e: TravelEvent) => e.publication.status === 'published');
+  return events.map(mapEvent);
 }
 
 export async function getEventsByDestination(destinationSlug: string): Promise<TravelEvent[]> {
   const events = await prisma.event.findMany({ where: { destinationSlug } });
-  return events.map(mapEvent).filter((e: TravelEvent) => e.publication.status === 'published');
+  return events.map(mapEvent);
 }
 
 export async function getEventsByCountry(countrySlug: string): Promise<TravelEvent[]> {
   const events = await prisma.event.findMany({
     where: { OR: [{ countrySlug }, { destinationSlug: countrySlug }] },
   });
-  return events.map(mapEvent).filter((e: TravelEvent) => e.publication.status === 'published');
+  return events.map(mapEvent);
 }
 
 export async function getRelatedEvents(slug: string, limit = 3): Promise<TravelEvent[]> {

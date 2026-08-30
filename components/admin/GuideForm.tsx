@@ -1,7 +1,9 @@
 'use client';
+
+import { PublishingPanel } from './PublishingPanel';
 import { useRouter } from 'next/navigation';
 
-import { useActionState, useState, useEffect } from 'react';
+import { useActionState, useState, useEffect, useRef } from 'react';
 import { upsertGuide } from '@/app/admin/(protected)/guides/actions';
 import Link from 'next/link';
 import ContentBlockEditor from '@/components/admin/ContentBlockEditor';
@@ -16,10 +18,12 @@ interface GuideFormProps {
   authors?: any[];
 }
 
-export default function GuideForm({ initialData, countries, destinations, authors = [], tags = [] }: GuideFormProps & { tags?: any[] }) {
-  const [state, formAction, isPending] = useActionState(upsertGuide, null);
+export default function GuideForm({ initialData, countries, destinations, authors = [], tags = [], adminRole = 'EDITOR' }: GuideFormProps & { tags?: any[], adminRole?: string }) {
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
   
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -29,7 +33,11 @@ export default function GuideForm({ initialData, countries, destinations, author
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    
+  
+  
+
+  return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isDirty]);
 
   
@@ -47,20 +55,39 @@ export default function GuideForm({ initialData, countries, destinations, author
   const defaultToc = initialData?.tocSections ? JSON.stringify(initialData.tocSections, null, 2) : '[]';
 
   
-  useEffect(() => {
-    if (state?.success) {
-      setIsDirty(false);
-      router.push('/admin/guides');
-    }
-  }, [state, router]);
+  
 
   const defaultPublishedAt = initialData?.publishedAt || new Date().toISOString().slice(0, 16);
 
+  async function handleSave(): Promise<boolean> {
+    if (!formRef.current) return false;
+    const formData = new FormData(formRef.current);
+    // Since useActionState actions take (prevState, formData)
+    const result = await upsertGuide(null, formData);
+    if (result?.error) {
+      setError(result.error);
+      return false;
+    }
+    setIsDirty(false);
+    return true;
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsPending(true);
+    setError(null);
+    const success = await handleSave();
+    if (success) {
+      router.push('/admin/guides');
+    }
+    setIsPending(false);
+  }
+
   return (
-    <form action={formAction} onChange={() => setIsDirty(true)}  className="space-y-8">
-      {state?.error && (
+    <form ref={formRef} onSubmit={handleSubmit} onChange={() => setIsDirty(true)} className="space-y-8 max-w-4xl pb-24">
+      {error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-md border border-red-200">
-          {state.error}
+          {error}
         </div>
       )}
 
@@ -277,33 +304,20 @@ export default function GuideForm({ initialData, countries, destinations, author
         </div>
       </div>
 
-      <div className="flex items-center gap-4 border-t border-[#E9D9CA] pt-6">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="bg-[#E8622C] text-white px-8 py-2.5 rounded-md font-medium hover:bg-[#C74A1E] transition-colors disabled:opacity-50"
-        >
-          {isPending ? 'Saving...' : 'Save Guide'}
-        </button>
-        {initialData?.id && (
-          <a
-            href={`/admin/preview/guides/${initialData.id}`}
-            target="_blank"
-            className="bg-[#F0EDE8] text-[#2B221C] px-6 py-2.5 rounded-md font-medium hover:bg-[#E9D9CA] transition-colors border border-[#E9D9CA]"
-          >
-            Preview
-          </a>
-        )}
-        <Link
-          href="/admin/guides"
-          className="text-[#76675D] hover:text-[#2B221C] font-medium transition-colors"
-        >
-          Cancel
-        </Link>
-        {isDirty && <span className="text-sm font-medium text-[#E8622C] ml-4">● Unsaved changes</span>}
-
-      </div>
-      <input type="hidden" name="tags" value={JSON.stringify(tagsArr)} />
+      <div className="fixed bottom-0 left-64 right-0 p-4 bg-white border-t border-[#E9D9CA] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50 flex items-center justify-between">
+    <button type="button" onClick={() => router.push('/admin/guides')} className="text-gray-600 hover:text-black font-medium">Cancel</button>
+    <PublishingPanel 
+      contentType="guide" 
+      contentId={initialData?.id || 'new'} 
+      currentStatus={initialData?.publishStatus || 'draft'} 
+      publishDate={initialData?.publishDate} 
+      scheduleDate={initialData?.scheduleDate} 
+      role={adminRole || 'EDITOR'} 
+      isDirty={isDirty} 
+      onSaveRequested={handleSave} 
+    />
+  </div>
+  <input type="hidden" name="tags" value={JSON.stringify(tagsArr)} />
         <input type="hidden" name="heroImage" value={heroImageObj ? JSON.stringify(heroImageObj) : ''} />
         <input type="hidden" name="cardImage" value={cardImageObj ? JSON.stringify(cardImageObj) : ''} />
         <input type="hidden" name="author" value={authorName} />

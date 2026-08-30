@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { PublishingPanel } from './PublishingPanel';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Event } from '@prisma/client';
 import { upsertEvent, deleteEvent } from '@/app/admin/(protected)/events/actions';
@@ -14,13 +16,16 @@ export default function EventForm({
   countries,
   destinations,
   tags = [],
+  adminRole = 'EDITOR',
 }: {
   event: Event | null;
   countries: any[];
   destinations: any[];
   tags?: any[];
+  adminRole?: string;
 }) {
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
   const [isPending, setIsPending] = useState(false);
 
   const [isDirty, setIsDirty] = useState(false);
@@ -60,27 +65,29 @@ export default function EventForm({
   const [tagsArr, setTagsArr] = useState<string[]>(Array.isArray(existingTags) ? existingTags : []);
   const [heroImageObj, setHeroImageObj] = useState<any>(event?.heroImage || null);
 
+  
+  async function handleSave(): Promise<boolean> {
+    if (!formRef.current) return false;
+    const formData = new FormData(formRef.current);
+    const result = await upsertEvent(formData);
+    if (result?.error) {
+      setError(result.error);
+      return false;
+    }
+    setIsDirty(false);
+    return true;
+  }
+  
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsPending(true);
     setError(null);
-
-    const formData = new FormData(e.currentTarget);
-
-    // Inject controlled state values that need to be fresh
-    // (sourceReferences and tags are controlled textareas — FormData already has them)
-
-    const result = await upsertEvent(formData);
-
-    if (result?.error) {
-      setError(result.error);
-      setIsPending(false);
-      return;
+    const success = await handleSave();
+    if (success) {
+      router.push('/admin/events');
     }
-    
-    // On success, navigate back to events list
-    setIsDirty(false);
-    router.push('/admin/events');
+    setIsPending(false);
   }
 
   async function handleDelete() {
@@ -99,7 +106,7 @@ export default function EventForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} onChange={() => setIsDirty(true)} className="space-y-8 max-w-4xl pb-24">
+    <form ref={formRef} onSubmit={handleSubmit} onChange={() => setIsDirty(true)} className="space-y-8 max-w-4xl pb-24">
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg font-medium">
           ⚠ {error}
@@ -413,68 +420,19 @@ export default function EventForm({
       </div>
 
       {/* ── Save Action Bar ─────────────────────────────────────────────────── */}
-      <div className="fixed bottom-0 left-64 right-0 p-4 bg-white border-t border-[#E9D9CA] flex items-center justify-between shadow-lg z-50">
-        <div className="flex items-center gap-4">
-          <select
-            value={pubStatus}
-            onChange={(e) => setPubStatus(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 font-medium focus:outline-none focus:ring-2 focus:ring-[#0D6E7A]"
-          >
-            <option value="draft">Save as Draft</option>
-            <option value="published">Publish Live</option>
-            <option value="archived">Archived</option>
-          </select>
-          <span className="text-xs text-gray-400">
-            {pubStatus === 'published' ? 'Publishing requires sources.' : pubStatus === 'archived' ? 'Archived: URL may still resolve.' : 'Draft: not publicly visible.'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {event && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              disabled={isPending}
-              className="text-red-600 font-medium px-4 py-2 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-            >
-              Delete Event
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => router.back()}
-            disabled={isPending}
-            className="text-gray-600 font-medium px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isPending}
-            className="bg-[#0D6E7A] text-white px-8 py-2 rounded-lg hover:bg-[#095663] transition-colors font-medium disabled:opacity-50"
-          >
-            {isPending ? 'Saving...' : 'Save Event'}
-          </button>
-        {event?.id && (
-          <a
-            href={`/admin/preview/events/${event.id}`}
-            target="_blank"
-            className="bg-[#F0EDE8] text-[#2B221C] px-6 py-2.5 rounded-md font-medium hover:bg-[#E9D9CA] transition-colors border border-[#E9D9CA]"
-          >
-            Preview
-          </a>
-        )}
-        {event?.id && (
-          <a
-            href={`/admin/preview/events/${event.id}`}
-            target="_blank"
-            className="bg-[#F0EDE8] text-[#2B221C] px-6 py-2.5 rounded-md font-medium hover:bg-[#E9D9CA] transition-colors border border-[#E9D9CA]"
-          >
-            Preview
-          </a>
-        )}
-        </div>
-      </div>
+      <div className="fixed bottom-0 left-64 right-0 p-4 bg-white border-t border-[#E9D9CA] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50 flex items-center justify-between">
+    <button type="button" onClick={() => router.push('/admin/events')} className="text-gray-600 hover:text-black font-medium">Cancel</button>
+    <PublishingPanel 
+      contentType="event" 
+      contentId={event?.id || 'new'} 
+      currentStatus={(event?.publishStatus as import('@/lib/content/types').ContentStatus) || 'draft'} 
+      publishDate={event?.publishDate} 
+      scheduleDate={event?.scheduleDate} 
+      role={adminRole || 'EDITOR'} 
+      isDirty={isDirty} 
+      onSaveRequested={handleSave} 
+    />
+  </div>
       <input type="hidden" name="tags" value={JSON.stringify(tagsArr)} />
       <input type="hidden" name="heroImage" value={heroImageObj ? JSON.stringify(heroImageObj) : ''} />
     </form>

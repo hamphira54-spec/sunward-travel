@@ -8,7 +8,7 @@ export const metadata = { title: 'Create News | Admin' };
 export const dynamic = 'force-dynamic';
 
 export default async function NewNewsPage() {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const [countries, destinations, authors, tags] = await Promise.all([
     prisma.country.findMany({ select: { slug: true, name: true }, orderBy: { name: 'asc' } }),
     prisma.destination.findMany({ select: { slug: true, name: true, country: true }, orderBy: { name: 'asc' } }),
@@ -22,7 +22,7 @@ export default async function NewNewsPage() {
         <Link href="/admin/news" className="text-[#76675D] hover:text-[#E8622C] transition-colors"><ArrowLeft className="w-5 h-5" /></Link>
         <h1 className="text-2xl font-bold text-[#2B221C] font-serif">Create News Article</h1>
       </div>
-      <NewsForm countries={countries} destinations={destinations} authors={authors} tags={tags} />
+      <NewsForm countries={countries} destinations={destinations} authors={authors} tags={tags} adminRole={admin.role} />
     </div>
   );
 }

@@ -25,6 +25,7 @@
 export type ContentStatus =
   | 'draft'
   | 'review'
+  | 'approved'
   | 'scheduled'
   | 'published'
   | 'archived';

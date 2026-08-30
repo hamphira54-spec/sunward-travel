@@ -1,6 +1,7 @@
 ﻿import { requireAdmin } from '@/lib/auth/requireAdmin';
 import prisma from '@/lib/db';
 import Link from 'next/link';
+import AuditLog from '@/components/admin/AuditLog';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import NewsForm from '@/components/admin/NewsForm';
@@ -9,7 +10,7 @@ export const metadata = { title: 'Edit News | Admin' };
 export const dynamic = 'force-dynamic';
 
 export default async function EditNewsPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const { id } = await params;
   
   const [article, countries, destinations, authors, tags] = await Promise.all([
@@ -43,7 +44,8 @@ export default async function EditNewsPage({ params }: { params: Promise<{ id: s
         )}
       </div>
 
-      <NewsForm initialData={article} countries={countries} destinations={destinations} authors={authors} tags={tags} />
+      <NewsForm initialData={article} countries={countries} destinations={destinations} authors={authors} tags={tags} adminRole={admin.role} />
+      <AuditLog contentType="news" contentId={id} />
     </div>
   );
 }

@@ -4,11 +4,12 @@ import prisma from '@/lib/db';
 import { notFound } from 'next/navigation';
 import { ChevronRight, BookOpen, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import AuditLog from '@/components/admin/AuditLog';
 
 export const metadata = { title: 'Edit Travel Guide' };
 
 export default async function EditGuidePage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const { id } = await params;
   
   const [guide, countries, destinations, authors, tags] = await Promise.all([
@@ -49,7 +50,8 @@ export default async function EditGuidePage({ params }: { params: Promise<{ id: 
         )}
       </div>
 
-      <GuideForm initialData={guide} countries={countries} destinations={destinations} authors={authors} tags={tags} />
+      <GuideForm initialData={guide} countries={countries} destinations={destinations} authors={authors} tags={tags} adminRole={admin.role} />
+      <AuditLog contentType="guide" contentId={id} />
     </div>
   );
 }
