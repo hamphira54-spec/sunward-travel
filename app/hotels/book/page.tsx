@@ -1,8 +1,9 @@
 import { ExternalLink, Building2 } from 'lucide-react';
 import type { Metadata } from 'next';
+import { providerRegistry, HotelSearchInput } from '@/lib/hotels';
 
 export const metadata: Metadata = {
-  title: 'Book Your Hotel — Sunward Travel',
+  title: 'Book Your Hotel - Sunward Travel',
   description: 'Compare hotel prices across Hotellook, Booking.com, Hotels.com and Airbnb.',
 };
 
@@ -33,10 +34,24 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
     ? Math.round((new Date(co).getTime() - new Date(ci).getTime()) / 86400000)
     : 0;
 
-  const hotellookUrl  = `https://hotellook.com/?marker=769903&locale=en&destination=${encodeURIComponent(dest)}&checkIn=${ci}&checkOut=${co}&adults=${adults}&rooms=${rooms}`;
-  const bookingUrl    = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(dest)}&checkin=${ci}&checkout=${co}&group_adults=${adults}&no_rooms=${rooms}`;
-  const hotelsComUrl  = `https://www.hotels.com/search.do?q-destination=${encodeURIComponent(dest)}&q-check-in=${ci}&q-check-out=${co}&q-rooms=${rooms}&q-room-0-adults=${adults}`;
-  const airbnbUrl     = `https://www.airbnb.com/s/${encodeURIComponent(dest)}/homes?checkin=${ci}&checkout=${co}&adults=${adults}`;
+  // Utilize the new architecture boundary for building affiliate URLs
+  const searchInput: HotelSearchInput = {
+    destination: dest || 'Hotels',
+    checkIn: ci ? new Date(ci) : undefined,
+    checkOut: co ? new Date(co) : undefined,
+    adults: parseInt(adults, 10) || 2,
+    rooms: parseInt(rooms, 10) || 1,
+  };
+
+  const hotellookProvider = providerRegistry.getProvider('hotellook');
+  const bookingProvider = providerRegistry.getProvider('booking');
+  const hotelsComProvider = providerRegistry.getProvider('hotelscom');
+  const airbnbProvider = providerRegistry.getProvider('airbnb');
+
+  const hotellookUrl = hotellookProvider?.buildSearchUrl(searchInput) || '#';
+  const bookingUrl = bookingProvider?.buildSearchUrl(searchInput) || '#';
+  const hotelsComUrl = hotelsComProvider?.buildSearchUrl(searchInput) || '#';
+  const airbnbUrl = airbnbProvider?.buildSearchUrl(searchInput) || '#';
 
   return (
     <main className="min-h-screen bg-sand">
@@ -51,7 +66,7 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
               <h1 className="font-display font-700 text-3xl">{dest || 'Hotels'}</h1>
               {ci && co && (
                 <p className="text-white/70 text-sm mt-1">
-                  {formatDate(ci)} → {formatDate(co)} · {nights} night{nights !== 1 ? 's' : ''} · {adults} guest{Number(adults) > 1 ? 's' : ''} · {rooms} room{Number(rooms) > 1 ? 's' : ''}
+                  {formatDate(ci)} — {formatDate(co)} • {nights} night{nights !== 1 ? 's' : ''} • {adults} guest{Number(adults) > 1 ? 's' : ''} • {rooms} room{Number(rooms) > 1 ? 's' : ''}
                 </p>
               )}
             </div>
@@ -62,7 +77,7 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
       {/* Booking options */}
       <div className="max-w-5xl mx-auto px-6 py-8 space-y-4">
 
-        {/* Hotellook — primary */}
+        {/* Hotellook - primary */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <div className="flex items-center gap-2 mb-3">
             <span className="bg-horizon text-ink text-[10px] font-700 px-2 py-0.5 rounded-full uppercase tracking-wide">Best Rates</span>
@@ -70,7 +85,7 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
               <p className="font-display font-700 text-ink text-lg">Hotellook</p>
-              <p className="text-sm text-mist mt-0.5">Compares 50+ booking sites — lowest price guaranteed</p>
+              <p className="text-sm text-mist mt-0.5">Compares 50+ booking sites - lowest price guaranteed</p>
             </div>
             <a href={hotellookUrl} target="_blank" rel="noopener noreferrer sponsored"
               className="flex items-center gap-2 bg-ocean hover:bg-ocean-dark text-white font-display font-700 text-sm px-5 py-2.5 rounded-lg transition-colors shrink-0">
@@ -84,7 +99,7 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
               <p className="font-display font-700 text-ink">Booking.com</p>
-              <p className="text-sm text-mist mt-0.5">World&apos;s largest hotel platform · free cancellation on most rooms</p>
+              <p className="text-sm text-mist mt-0.5">World&apos;s largest hotel platform — free cancellation on most rooms</p>
             </div>
             <a href={bookingUrl} target="_blank" rel="noopener noreferrer sponsored"
               className="flex items-center gap-2 border border-ocean text-ocean hover:bg-ocean hover:text-white font-display font-700 text-sm px-5 py-2.5 rounded-lg transition-colors shrink-0">
@@ -98,7 +113,7 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
               <p className="font-display font-700 text-ink">Hotels.com</p>
-              <p className="text-sm text-mist mt-0.5">Earn free nights — 1 free night for every 10 booked</p>
+              <p className="text-sm text-mist mt-0.5">Earn free nights - 1 free night for every 10 booked</p>
             </div>
             <a href={hotelsComUrl} target="_blank" rel="noopener noreferrer sponsored"
               className="flex items-center gap-2 border border-gray-200 hover:border-ocean text-ink font-display font-700 text-sm px-5 py-2.5 rounded-lg transition-colors shrink-0">
@@ -112,7 +127,7 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
               <p className="font-display font-700 text-ink">Airbnb</p>
-              <p className="text-sm text-mist mt-0.5">Apartments, villas & unique stays — great for groups and longer trips</p>
+              <p className="text-sm text-mist mt-0.5">Apartments, villas & unique stays - great for groups and longer trips</p>
             </div>
             <a href={airbnbUrl} target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 border border-gray-200 hover:border-ocean text-ink font-display font-700 text-sm px-5 py-2.5 rounded-lg transition-colors shrink-0">
@@ -122,7 +137,7 @@ export default async function BookHotelPage({ searchParams }: BookHotelPageProps
         </div>
 
         <p className="text-center text-[10px] text-mist/60 pt-2">
-          Sunward Travel earns a small commission when you book via our links — at no extra cost to you.{' '}
+          Sunward Travel earns a small commission when you book via our links - at no extra cost to you.{' '}
           <a href="/affiliate-disclosure" className="underline">Learn more</a>
         </p>
       </div>
