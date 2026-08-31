@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import CookieConsent from "./CookieConsent";
 
 /**
  * PublicLayoutShell
@@ -24,6 +25,7 @@ export default function PublicLayoutShell({ children }: { children: React.ReactN
         {children}
       </main>
       <Footer />
+      <CookieConsent />
     </>
   );
 }

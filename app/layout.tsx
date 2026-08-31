@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
 import Script from 'next/script';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import PublicLayoutShell from '@/components/layout/PublicLayoutShell';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/metadata';
+import { GA_MEASUREMENT_ID } from '@/lib/analytics';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -34,6 +36,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 };
 
@@ -92,6 +97,16 @@ export default function RootLayout({
             ]),
           }}
         />
+        <Script id="ga-consent-default" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+              'analytics_storage': 'denied'
+            });
+          `}
+        </Script>
+        {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
       </body>
     </html>
   );

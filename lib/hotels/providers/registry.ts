@@ -1,11 +1,6 @@
 import { HotelProvider } from './types';
 import { PlaceholderProvider } from './placeholder';
-import { 
-  LegacyHotellookProvider, 
-  LegacyBookingComProvider, 
-  LegacyHotelsComProvider, 
-  LegacyAirbnbProvider 
-} from './deep-links';
+import { LegacyHotellookProvider } from './deep-links';
 
 class ProviderRegistry {
   private providers: Map<string, HotelProvider> = new Map();
@@ -34,6 +29,3 @@ export const providerRegistry = new ProviderRegistry();
 // Auto-register available architecture providers
 providerRegistry.register(new PlaceholderProvider());
 providerRegistry.register(new LegacyHotellookProvider());
-providerRegistry.register(new LegacyBookingComProvider());
-providerRegistry.register(new LegacyHotelsComProvider());
-providerRegistry.register(new LegacyAirbnbProvider());
