@@ -17,6 +17,7 @@ import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 import TravelServiceLinks from '@/components/travel/TravelServiceLinks';
 import { EventCard } from '@/components/events/EventCard';
+import prisma from '@/lib/db';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 
@@ -76,7 +77,14 @@ export default async function DestinationPage({
   if (!dest || dest.countrySlug !== p.country) notFound();
 
   const country = COUNTRY_BY_SLUG[p.country];
-  const guides = (await getGuidesForDestination(dest.slug)).slice(0, 3);
+  let guides = (await getGuidesForDestination(dest.slug)).slice(0, 3);
+  
+  // M2: Check Prisma for pilot "where to stay" guides
+  const whereToStayGuide = await prisma.guide.findUnique({
+    where: { slug: `where-to-stay-in-${dest.slug}`, publishStatus: 'published' }
+  });
+  const hasWhereToStay = guides.some(g => g.slug === `where-to-stay-in-${dest.slug}`) || !!whereToStayGuide;
+
   const events = (await getEventsByDestination(dest.slug)).slice(0, 3);
   const related = getRelatedDestinations(dest);
 
@@ -265,15 +273,27 @@ export default async function DestinationPage({
             <div className="max-w-2xl">
               <SectionHeading
                 eyebrow="Where to Stay"
-                heading={`Hotels in ${dest.name}`}
-                subheading={`Whether you prefer a boutique hotel in the historic centre, a resort by the beach, or a budget guesthouse in a lively neighbourhood, ${dest.name} has options at every price point.`}
+                heading={
+                  hasWhereToStay
+                    ? `Where to Stay in ${dest.name}`
+                    : `Hotels in ${dest.name}`
+                }
+                subheading={
+                  hasWhereToStay
+                    ? `Read our detailed editorial guide to the best neighborhoods, accommodation styles, and traveler types for your stay in ${dest.name}.`
+                    : `Whether you prefer a boutique hotel in the historic centre, a resort by the beach, or a budget guesthouse in a lively neighbourhood, ${dest.name} has options at every price point.`
+                }
                 align="left"
               />
               <Link
-                href="/hotels"
+                href={
+                  hasWhereToStay
+                    ? `/guides/where-to-stay-in-${dest.slug}`
+                    : `/hotels`
+                }
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ocean text-white text-sm font-700 hover:bg-ocean-dark transition-colors"
               >
-                Search Hotels <ArrowRight size={14} />
+                {hasWhereToStay ? 'Explore where to stay' : 'Explore neighborhoods'} <ArrowRight size={14} />
               </Link>
             </div>
           </div>

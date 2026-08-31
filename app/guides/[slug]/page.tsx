@@ -14,6 +14,8 @@ import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
 import ContentRenderer from '@/components/content/ContentRenderer';
 
+import prisma from '@/lib/db';
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 const SITE_NAME = 'Sunward Travel';
 
@@ -27,7 +29,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const guide = GUIDE_BY_SLUG[slug];
+  let guide: any = GUIDE_BY_SLUG[slug];
+  if (!guide) {
+    const dbGuide = await prisma.guide.findUnique({ where: { slug } });
+    if (dbGuide) {
+      guide = {
+        ...dbGuide,
+        seo: dbGuide.seo as any,
+        heroImage: dbGuide.heroImage as any,
+      };
+    }
+  }
   if (!guide) return { title: 'Guide Not Found' };
   const canonical = `${SITE_URL}/guides/${slug}`;
   return {
@@ -50,7 +62,19 @@ export default async function GuidePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const guide = GUIDE_BY_SLUG[slug];
+  let guide: any = GUIDE_BY_SLUG[slug];
+  if (!guide) {
+    const dbGuide = await prisma.guide.findUnique({ where: { slug, publishStatus: 'published' } });
+    if (dbGuide) {
+      guide = {
+        ...dbGuide,
+        seo: dbGuide.seo as any,
+        heroImage: dbGuide.heroImage as any,
+        cardImage: dbGuide.cardImage as any,
+        body: dbGuide.body as any,
+      };
+    }
+  }
   if (!guide) notFound();
 
   const relatedGuides = getRelatedGuides(slug, 3);
@@ -69,7 +93,7 @@ export default async function GuidePage({
     { label: guide.title },
   ];
 
-  const categoryLabel = CATEGORY_LABELS[guide.category];
+  const categoryLabel = CATEGORY_LABELS[guide.category as keyof typeof CATEGORY_LABELS];
 
   const publishedDate = new Date(guide.publishedAt).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric',
