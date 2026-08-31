@@ -10,7 +10,7 @@ import type { EventCategory, EventStatus } from '@/lib/content/events';
 
 // ─── Allowed enum values (source of truth) ────────────────────────────────────
 
-const VALID_PUB_STATUSES: ContentStatus[] = ['draft', 'review', 'scheduled', 'published', 'archived'];
+const VALID_PUB_STATUSES: ContentStatus[] = ['draft', 'in_review', 'scheduled', 'published', 'archived'];
 const VALID_LIFECYCLE_STATUSES: EventStatus[] = ['scheduled', 'ongoing', 'postponed', 'cancelled', 'completed'];
 const VALID_CATEGORIES: EventCategory[] = [
   'festivals', 'culture', 'music', 'sports', 'food',

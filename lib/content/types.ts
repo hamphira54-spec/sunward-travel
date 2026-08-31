@@ -24,7 +24,7 @@
  */
 export type ContentStatus =
   | 'draft'
-  | 'review'
+  | 'in_review'
   | 'approved'
   | 'scheduled'
   | 'published'

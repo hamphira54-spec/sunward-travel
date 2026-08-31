@@ -12,7 +12,7 @@ export function canPerformAction(role: string, action: PublishingAction): boolea
     // Editor can only draft, submit for review, unpublish back to draft
     switch (action) {
       case 'SUBMIT_FOR_REVIEW':
-      case 'RESTORE_TO_DRAFT': // Wait, editors can revert their own? We'll just allow RESTORE_TO_DRAFT from 'review' or 'draft', maybe 'published' if allowed.
+      case 'RESTORE_TO_DRAFT': // Wait, editors can revert their own? We'll just allow RESTORE_TO_DRAFT from 'in_review' or 'draft', maybe 'published' if allowed.
         return true;
       default:
         return false;
@@ -29,7 +29,7 @@ export function getAvailableActions(status: ContentStatus, role: string): Publis
     if (canPerformAction(role, 'SUBMIT_FOR_REVIEW')) actions.push('SUBMIT_FOR_REVIEW');
   }
 
-  if (status === 'review') {
+  if (status === 'in_review') {
     if (canPerformAction(role, 'APPROVE')) actions.push('APPROVE');
     if (canPerformAction(role, 'REQUEST_CHANGES')) actions.push('REQUEST_CHANGES');
   }
@@ -59,7 +59,7 @@ export function getAvailableActions(status: ContentStatus, role: string): Publis
 
 export function getTargetStatus(action: PublishingAction): ContentStatus {
   switch (action) {
-    case 'SUBMIT_FOR_REVIEW': return 'review';
+    case 'SUBMIT_FOR_REVIEW': return 'in_review';
     case 'REQUEST_CHANGES': return 'draft';
     case 'APPROVE': return 'approved'; // Wait, approved is not in ContentStatus!
     case 'SCHEDULE': return 'scheduled';
