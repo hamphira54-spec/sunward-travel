@@ -44,4 +44,4 @@ In Phase M4, the Accommodation Content Engine was introduced.
 - Stay Areas are no longer parsed using fuzzy text matching against Headings and Lists.
 - Stay Areas are formally integrated into the CMS using the StayAreaBlock type (type: 'stay_area').
 - The Admin UI natively supports editing these blocks with a structured form, preventing malformed data.
-- 2 new pilot guides (Bangkok and Seoul) were successfully launched on this new framework.
+- 2 new pilot guides (Bangkok and Seoul) were successfully created as draft accommodation guides on this new framework.
