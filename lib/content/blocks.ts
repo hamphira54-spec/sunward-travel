@@ -118,6 +118,23 @@ export interface DividerBlock {
 }
 
 /**
+ * Structured data for a specific accommodation area / neighborhood.
+ */
+export interface StayAreaBlock {
+  type: 'stay_area';
+  id: string; // url-friendly slug
+  name: string;
+  summary: string;
+  bestForTitle?: string;
+  bestFor: string[];
+  atmosphere?: string;
+  transportNotes?: string;
+  nearbyHighlights?: string[];
+  considerations?: string[];
+  accommodationTypes: string[];
+}
+
+/**
  * Union of all supported content block types.
  * Used as the type for TravelGuide.body, TravelNews.body, TravelEvent.body.
  */
@@ -128,4 +145,5 @@ export type ContentBlock =
   | ListBlock
   | QuoteBlock
   | CalloutBlock
-  | DividerBlock;
+  | DividerBlock
+  | StayAreaBlock;

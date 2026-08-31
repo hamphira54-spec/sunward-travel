@@ -52,6 +52,9 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
       case 'divider':
         newBlock = { type: 'divider' };
         break;
+      case 'stay_area':
+        newBlock = { type: 'stay_area', id: '', name: '', summary: '', bestForTitle: 'Best for', bestFor: [], accommodationTypes: [], atmosphere: '', transportNotes: '', nearbyHighlights: [], considerations: [] };
+        break;
       default:
         return;
     }
@@ -126,7 +129,7 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
 
   if (!isClient) return <div className="h-32 bg-[#F0EDE8] animate-pulse rounded-lg" />;
 
-  const supportedTypes = ['paragraph', 'heading', 'image', 'list', 'quote', 'callout', 'divider'];
+  const supportedTypes = ['paragraph', 'heading', 'image', 'list', 'quote', 'callout', 'divider', 'stay_area'];
 
   return (
     <div className="space-y-4">
@@ -406,6 +409,113 @@ export default function ContentBlockEditor({ initialBlocks = [] }: ContentBlockE
                       <div className="w-full h-px bg-[#E9D9CA]" />
                       <span className="px-4 text-xs tracking-widest text-[#76675D]">DIVIDER</span>
                       <div className="w-full h-px bg-[#E9D9CA]" />
+                    </div>
+                  )}
+
+                  {block.type === 'stay_area' && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-[#76675D] mb-1">Name <span className="text-red-500">*</span></label>
+                          <input
+                            type="text"
+                            value={block.name || ''}
+                            onChange={(e) => updateBlock(idx, { name: e.target.value })}
+                            className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                            placeholder="e.g. Seminyak"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-[#76675D] mb-1">Slug (ID) <span className="text-red-500">*</span></label>
+                          <input
+                            type="text"
+                            value={block.id || ''}
+                            onChange={(e) => updateBlock(idx, { id: e.target.value })}
+                            className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                            placeholder="e.g. seminyak"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-[#76675D] mb-1">Summary (Short Description)</label>
+                        <textarea
+                          value={block.summary || ''}
+                          onChange={(e) => updateBlock(idx, { summary: e.target.value })}
+                          className="w-full border border-[#E9D9CA] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8622C]"
+                          rows={2}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-[#76675D] mb-1">Best For Title (default: Best for)</label>
+                          <input
+                            type="text"
+                            value={block.bestForTitle || ''}
+                            onChange={(e) => updateBlock(idx, { bestForTitle: e.target.value })}
+                            className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                            placeholder="e.g. Best for"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-[#76675D] mb-1">Atmosphere</label>
+                          <input
+                            type="text"
+                            value={block.atmosphere || ''}
+                            onChange={(e) => updateBlock(idx, { atmosphere: e.target.value })}
+                            className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                            placeholder="e.g. Busy, upscale, trendy"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-[#76675D] mb-1">Best For (comma-separated)</label>
+                          <input
+                            type="text"
+                            value={(block.bestFor || []).join(', ')}
+                            onChange={(e) => updateBlock(idx, { bestFor: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                            className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                            placeholder="e.g. Beach clubs, surfing, shopping"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-[#76675D] mb-1">Accommodation Types (comma-separated)</label>
+                          <input
+                            type="text"
+                            value={(block.accommodationTypes || []).join(', ')}
+                            onChange={(e) => updateBlock(idx, { accommodationTypes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                            className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                            placeholder="e.g. Luxury resorts, private villas"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-[#76675D] mb-1">Transport & Access Notes</label>
+                        <input
+                          type="text"
+                          value={block.transportNotes || ''}
+                          onChange={(e) => updateBlock(idx, { transportNotes: e.target.value })}
+                          className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                          placeholder="e.g. 30 mins from airport, heavy traffic"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-[#76675D] mb-1">Trade-offs & Considerations (comma-separated)</label>
+                        <input
+                          type="text"
+                          value={(block.considerations || []).join(', ')}
+                          onChange={(e) => updateBlock(idx, { considerations: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                          className="w-full border border-[#E9D9CA] rounded-md px-3 py-1.5 text-sm"
+                          placeholder="e.g. Traffic is notoriously bad, beaches not swimmable"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>

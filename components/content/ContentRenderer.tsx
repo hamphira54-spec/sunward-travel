@@ -162,6 +162,59 @@ function renderBlock(block: ContentBlock, i: number): React.ReactNode {
     case 'divider':
       return <hr key={i} />;
 
+    case 'stay_area':
+      return (
+        <div key={i} className="not-prose my-12 p-8 rounded-2xl bg-white shadow-sm border border-gray-100">
+          <h2 id={block.id} className="font-display text-2xl font-700 text-ink mb-2">
+            {block.name}{block.bestForTitle && block.bestFor.length > 0 ? `: ${block.bestForTitle} ${block.bestFor[0]}` : ''}
+          </h2>
+          <p className="text-mist mb-6">{block.summary}</p>
+          
+          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            {block.bestFor.length > 0 && (
+              <div>
+                <strong className="block text-ink mb-1">Best for:</strong>
+                <ul className="text-mist space-y-1 list-disc list-inside">
+                  {block.bestFor.map((item, idx) => <li key={idx}>{item}</li>)}
+                </ul>
+              </div>
+            )}
+            
+            {block.accommodationTypes.length > 0 && (
+              <div>
+                <strong className="block text-ink mb-1">Accommodation style:</strong>
+                <ul className="text-mist space-y-1 list-disc list-inside">
+                  {block.accommodationTypes.map((item, idx) => <li key={idx}>{item}</li>)}
+                </ul>
+              </div>
+            )}
+
+            {block.atmosphere && (
+              <div>
+                <strong className="block text-ink mb-1">Atmosphere:</strong>
+                <p className="text-mist">{block.atmosphere}</p>
+              </div>
+            )}
+
+            {block.transportNotes && (
+              <div>
+                <strong className="block text-ink mb-1">Transport & Access:</strong>
+                <p className="text-mist">{block.transportNotes}</p>
+              </div>
+            )}
+          </div>
+          
+          {block.considerations && block.considerations.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-gray-100">
+              <strong className="block text-ink mb-2 text-sm">Trade-offs & Considerations:</strong>
+              <ul className="text-mist text-sm space-y-1 list-disc list-inside">
+                {block.considerations.map((item, idx) => <li key={idx}>{item}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+      );
+
     default:
       return null;
   }

@@ -38,3 +38,10 @@ Data ingested from external hotel APIs is immediately routed through `normalizeH
 
 ## Observability
 An event foundation (`logHotelEvent`) in `lib/hotels/events/analytics.ts` defines typed events such as `hotel_search_started`, `hotel_search_failed`, and `hotel_provider_selected` which can be wired to commercial analytics engines in Phase M7.
+
+### Phase M4 Updates
+In Phase M4, the Accommodation Content Engine was introduced.
+- Stay Areas are no longer parsed using fuzzy text matching against Headings and Lists.
+- Stay Areas are formally integrated into the CMS using the StayAreaBlock type (type: 'stay_area').
+- The Admin UI natively supports editing these blocks with a structured form, preventing malformed data.
+- 2 new pilot guides (Bangkok and Seoul) were successfully launched on this new framework.

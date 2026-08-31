@@ -1,5 +1,5 @@
 import type { TravelGuide } from '@/lib/guides';
-import type { ContentBlock, HeadingBlock, ParagraphBlock, ListBlock } from '@/lib/content/blocks';
+import type { ContentBlock, HeadingBlock, ParagraphBlock, ListBlock, StayAreaBlock } from '@/lib/content/blocks';
 
 export interface StayArea {
   id: string;
@@ -8,6 +8,10 @@ export interface StayArea {
   bestForTitle: string;
   bestForList: string;
   accommodationStyle: string;
+  atmosphere?: string;
+  transportNotes?: string;
+  nearbyHighlights?: string[];
+  considerations?: string[];
 }
 
 export function extractStayAreasFromGuide(guide: TravelGuide): StayArea[] {
@@ -16,7 +20,25 @@ export function extractStayAreasFromGuide(guide: TravelGuide): StayArea[] {
   const areas: StayArea[] = [];
   let currentArea: Partial<StayArea> | null = null;
 
-  for (const block of guide.body) {
+  for (const block of guide.body as ContentBlock[]) {
+    // 1) Modern structured block
+    if (block.type === 'stay_area') {
+      areas.push({
+        id: block.id,
+        name: block.name,
+        shortDescription: block.summary,
+        bestForTitle: block.bestForTitle || 'Best for',
+        bestForList: block.bestFor.join(', '),
+        accommodationStyle: block.accommodationTypes.join(', '),
+        atmosphere: block.atmosphere,
+        transportNotes: block.transportNotes,
+        nearbyHighlights: block.nearbyHighlights,
+        considerations: block.considerations
+      });
+      continue;
+    }
+
+    // 2) Legacy fallback for unstructured pilot guides
     if (block.type === 'heading' && block.level === 2 && block.id && block.id !== 'overview') {
       if (currentArea && currentArea.id) {
         areas.push(currentArea as StayArea);
@@ -25,7 +47,7 @@ export function extractStayAreasFromGuide(guide: TravelGuide): StayArea[] {
       currentArea = {
         id: block.id,
         name: name.trim(),
-        bestForTitle: rest.join(':').replace('Best for', '').trim(),
+        bestForTitle: rest.length > 0 ? rest.join(':').replace('Best for', '').trim() : 'Best for',
         shortDescription: '',
         bestForList: '',
         accommodationStyle: ''

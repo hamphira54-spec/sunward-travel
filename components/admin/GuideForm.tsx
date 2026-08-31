@@ -10,6 +10,7 @@ import ContentBlockEditor from '@/components/admin/ContentBlockEditor';
 import TagPicker from '@/components/admin/TagPicker';
 import MediaPicker from '@/components/admin/MediaPicker';
 import AuthorPicker from '@/components/admin/AuthorPicker';
+import AccommodationChecklist from '@/components/admin/AccommodationChecklist';
 
 interface GuideFormProps {
   initialData?: any;
@@ -171,6 +172,7 @@ export default function GuideForm({ initialData, countries, destinations, author
 
         {/* Sidebar Column */}
         <div className="space-y-6">
+          <AccommodationChecklist formRef={formRef} />
           <div className="bg-white border border-[#E9D9CA] rounded-lg p-6 shadow-sm space-y-6">
             <h2 className="text-lg font-bold text-[#2B221C] font-serif border-b border-[#E9D9CA] pb-3">Publishing</h2>
             
