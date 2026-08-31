@@ -53,9 +53,15 @@ export function validateContentBlocks(blocks: any): any[] {
       throw new Error(`Invalid block at index ${i}`);
     }
 
+    // Handle legacy paragraph/list format without nodes
+    let nodes = block.nodes;
+    if (!nodes && block.data && typeof block.data.text === 'string') {
+      nodes = [{ type: 'text', content: block.data.text }];
+    }
+
     switch (block.type) {
       case 'paragraph':
-        return { type: 'paragraph', nodes: validateInlineNodes(block.nodes) };
+        return { type: 'paragraph', nodes: validateInlineNodes(nodes || []) };
       
       case 'heading':
         return { 
@@ -82,14 +88,18 @@ export function validateContentBlocks(blocks: any): any[] {
           ordered: !!block.ordered, 
           items: Array.isArray(block.items) ? block.items.map((item: any, j: number) => {
             if (!item || typeof item !== 'object') throw new Error(`Invalid list item at block ${i} index ${j}`);
-            return { nodes: validateInlineNodes(item.nodes) };
+            let itemNodes = item.nodes;
+            if (!itemNodes && item.data && typeof item.data.text === 'string') {
+              itemNodes = [{ type: 'text', content: item.data.text }];
+            }
+            return { nodes: validateInlineNodes(itemNodes || []) };
           }) : [] 
         };
       
       case 'quote':
         return { 
           type: 'quote', 
-          nodes: validateInlineNodes(block.nodes),
+          nodes: validateInlineNodes(nodes || []),
           attribution: typeof block.attribution === 'string' ? block.attribution : undefined
         };
         
@@ -98,15 +108,19 @@ export function validateContentBlocks(blocks: any): any[] {
           type: 'callout', 
           variant: ['tip', 'info', 'warning'].includes(block.variant) ? block.variant : 'info', 
           heading: typeof block.heading === 'string' ? block.heading : undefined, 
-          nodes: validateInlineNodes(block.nodes) 
+          nodes: validateInlineNodes(nodes || []) 
         };
       
-      case 'stay_area': case 'h2': case 'h3': return block; case 'divider':
+      case 'stay_area': 
+      case 'h2': 
+      case 'h3': 
+        return block; 
+        
+      case 'divider':
         return { type: 'divider' };
       
       default:
-        // Instead of silently destroying, reject the save.
-        throw new Error(`Unsupported or unknown block type: ${block.type}`);
+        return block;
     }
   });
 }

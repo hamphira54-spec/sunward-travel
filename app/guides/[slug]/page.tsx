@@ -208,14 +208,7 @@ export default async function GuidePage({
             {/* Tags */}
             {guide.tags && guide.tags.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">
-                {guide.tags.map((tag: string) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 bg-surface text-ink text-sm rounded-full"
-                  >
-                    #{tag}
-                  </span>
-                ))}
+                {guide.tags.map((tag: any) => { const tagLabel = typeof tag === 'string' ? tag : tag.label; return (<span key={tagLabel} className="px-3 py-1 bg-surface text-ink text-sm rounded-full">#{tagLabel}</span>); })}
               </div>
             )}
           </div>
