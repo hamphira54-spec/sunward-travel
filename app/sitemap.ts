@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { DESTINATIONS, COUNTRIES } from '@/lib/destinations-v2';
 import { getPublishedGuides, getAllPublishedNews, getAllPublishedEvents } from '@/lib/content/repository';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();

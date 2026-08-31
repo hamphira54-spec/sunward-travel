@@ -36,7 +36,7 @@ export default function EventPresentation({
       })
     : null;
 
-  const baseUrl = 'https://sunwardtravel.com';
+  const baseUrl = 'https://sunward-travel.vercel.app';
 
   const eventJsonLd = {
     '@context': 'https://schema.org',

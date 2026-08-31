@@ -8,7 +8,7 @@ import SectionHeading from '@/components/ui/SectionHeading';
 import TravelHero from '@/components/travel/TravelHero';
 
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
 
 export const metadata: Metadata = {
   title: 'Travel Guides: Destinations, Itineraries & Tips | Sunward Travel',

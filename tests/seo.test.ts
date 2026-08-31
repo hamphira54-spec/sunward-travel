@@ -35,7 +35,7 @@ describe('SEO Growth Engine Architecture', () => {
   it('D. Canonical/query-state policy - deterministic canonicalization in generateMetadata', async () => {
     // We pass mock params to generateMetadata
     const metadata = await generateMetadata({ params: Promise.resolve({ country: 'japan', destination: 'tokyo' }) });
-    assert.strictEqual(metadata.alternates?.canonical, 'https://sunwardtravel.com/destinations/japan/tokyo');
+    assert.strictEqual(metadata.alternates?.canonical, 'https://sunward-travel.vercel.app/destinations/japan/tokyo');
   });
 
   it('E. Structured-data commercial safety - No Hotel/Offer schemas in editorial', async () => {

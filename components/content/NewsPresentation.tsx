@@ -53,7 +53,7 @@ export default function NewsPresentation({
     ? new Date(article.publication.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : null;
 
-  const baseUrl = 'https://sunwardtravel.com';
+  const baseUrl = 'https://sunward-travel.vercel.app';
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',

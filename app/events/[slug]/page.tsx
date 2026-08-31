@@ -76,19 +76,19 @@ export default async function EventPage({ params }: EventPageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://sunwardtravel.com/'
+        item: 'https://sunward-travel.vercel.app/'
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Events',
-        item: 'https://sunwardtravel.com/events'
+        item: 'https://sunward-travel.vercel.app/events'
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: event.title,
-        item: `https://sunwardtravel.com/events/${event.slug}`
+        item: `https://sunward-travel.vercel.app/events/${event.slug}`
       }
     ]
   };

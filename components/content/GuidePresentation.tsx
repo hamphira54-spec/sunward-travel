@@ -40,7 +40,7 @@ export default function GuidePresentation({
     ];
 
     // JSON-LD Generation
-  const baseUrl = 'https://sunwardtravel.com';
+  const baseUrl = 'https://sunward-travel.vercel.app';
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',

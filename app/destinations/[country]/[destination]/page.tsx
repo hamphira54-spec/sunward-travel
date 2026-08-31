@@ -18,7 +18,7 @@ import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 import TravelServiceLinks from '@/components/travel/TravelServiceLinks';
 import { EventCard } from '@/components/events/EventCard';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
 const SITE_NAME = 'Sunward Travel';
 
 const KLOOK_BANGKOK_SRC =

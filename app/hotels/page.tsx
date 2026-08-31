@@ -15,7 +15,7 @@ import { GUIDE_BY_SLUG } from '@/lib/guides';
 
 export const metadata: Metadata = {
   title: 'Where to Stay - Accommodation Discovery | Sunward Travel',
-  description: 'Find the right area to stay before choosing your hotel. Explore neighborhoods, accommodation styles, and expert travel guides.', alternates: { canonical: 'https://sunwardtravel.com/hotels' },
+  description: 'Find the right area to stay before choosing your hotel. Explore neighborhoods, accommodation styles, and expert travel guides.', alternates: { canonical: 'https://sunward-travel.vercel.app/hotels' },
 };
 
 const POPULAR_DESTINATIONS = [

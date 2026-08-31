@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     'Discover top travel destinations across Southeast Asia and beyond. Compare flights, find hotels, book activities and transfers at Bangkok, Bali, Tokyo, Singapore, and more.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com'}/destinations`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app'}/destinations`,
   },
 };
 

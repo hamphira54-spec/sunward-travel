@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 
 const SITE_NAME = 'Sunward Travel';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
 const SITE_DESCRIPTION =
   'Compare flights, hotels, car rentals, and cruises worldwide. Sunward Travel helps you find the best deals and plan unforgettable trips — wherever the sun takes you.';
 

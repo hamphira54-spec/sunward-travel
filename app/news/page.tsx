@@ -7,7 +7,7 @@ import NewsCard from '@/components/news/NewsCard';
 import NewsCategoryFilter from '@/components/news/NewsCategoryFilter';
 import NewsletterSignup from '@/components/home/NewsletterSignup';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
 
 export const metadata: Metadata = {
   title: 'Travel News — Aviation, Destinations & Industry Updates | Sunward Travel',

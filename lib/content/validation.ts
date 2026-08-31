@@ -120,7 +120,7 @@ export function validateContentBlocks(blocks: any): any[] {
         return { type: 'divider' };
       
       default:
-        return block;
+        throw new Error(`Unknown content block type: ${block.type}`);
     }
   });
 }

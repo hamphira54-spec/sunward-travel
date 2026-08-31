@@ -18,7 +18,7 @@ import ContentRenderer from '@/components/content/ContentRenderer';
 import NewsCard from '@/components/news/NewsCard';
 import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
 const SITE_NAME = 'Sunward Travel';
 
 export async function generateStaticParams() {

@@ -13,7 +13,7 @@ import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
 import ContentRenderer from '@/components/content/ContentRenderer';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
 const SITE_NAME = 'Sunward Travel';
 
 export async function generateStaticParams() {

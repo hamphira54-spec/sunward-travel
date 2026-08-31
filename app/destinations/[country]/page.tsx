@@ -25,7 +25,7 @@ export async function generateMetadata({
   const country = COUNTRY_BY_SLUG[countrySlug];
   if (!country) return { title: 'Country Not Found' };
 
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app';
   const canonical = `${SITE_URL}/destinations/${countrySlug}`;
 
   return {
@@ -232,7 +232,7 @@ export default async function CountryPage({
               '@type': 'ListItem',
               position: i + 1,
               name: crumb.label,
-              ...(crumb.href ? { item: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com'}${crumb.href}` } : {}),
+              ...(crumb.href ? { item: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://sunward-travel.vercel.app'}${crumb.href}` } : {}),
             })),
           }),
         }}
