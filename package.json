@@ -11,7 +11,8 @@
     "db:migrate": "prisma migrate deploy",
     "db:status": "prisma migrate status",
     "db:seed": "prisma db seed",
-    "db:parity": "ts-node --project scripts/tsconfig.json -r dotenv/config -r tsconfig-paths/register scripts/db-parity.ts"
+    "db:parity": "ts-node --project scripts/tsconfig.json -r dotenv/config -r tsconfig-paths/register scripts/db-parity.ts",
+    "test": "npx tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
