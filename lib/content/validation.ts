@@ -101,7 +101,7 @@ export function validateContentBlocks(blocks: any): any[] {
           nodes: validateInlineNodes(block.nodes) 
         };
       
-      case 'divider':
+      case 'stay_area': return block; case 'divider':
         return { type: 'divider' };
       
       default:
