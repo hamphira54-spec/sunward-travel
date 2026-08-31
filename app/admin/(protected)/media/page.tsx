@@ -1,4 +1,4 @@
-﻿/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @next/next/no-img-element */
 import { requireAdmin } from '@/lib/auth/requireAdmin';
 import prisma from '@/lib/db';
 import Link from 'next/link';

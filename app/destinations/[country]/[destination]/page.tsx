@@ -7,8 +7,8 @@ import {
   DESTINATIONS, DESTINATION_BY_SLUG, COUNTRY_BY_SLUG,
   getRelatedDestinations,
 } from '@/lib/destinations-v2';
-import { getGuidesForDestination, CATEGORY_LABELS } from '@/lib/guides';
-import { getEventsByDestination } from '@/lib/content/repository';
+import { CATEGORY_LABELS } from '@/lib/guides';
+import { getEventsByDestination, getGuidesByDestination, getNewsByDestination } from '@/lib/content/repository';
 import TravelHero from '@/components/travel/TravelHero';
 import SectionHeading from '@/components/ui/SectionHeading';
 import AffiliateDisclosure from '@/components/travel/AffiliateDisclosure';
@@ -17,12 +17,10 @@ import TravelpayoutsWidget from '@/components/widgets/TravelpayoutsWidget';
 import DestinationBreadcrumb from '@/components/travel/DestinationBreadcrumb';
 import TravelServiceLinks from '@/components/travel/TravelServiceLinks';
 import { EventCard } from '@/components/events/EventCard';
-import prisma from '@/lib/db';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
+const SITE_NAME = 'Sunward Travel';
 
-// Klook widget — ONLY for Bangkok (klookCityId=10, klookCategory=3)
-// DO NOT change these affiliate params
 const KLOOK_BANGKOK_SRC =
   'https://tpwdg.com/content'
   + '?currency=USD&trs=566794&shmarker=769903'
@@ -48,15 +46,16 @@ export async function generateMetadata({
   const canonical = `${SITE_URL}/destinations/${countrySlug}/${destSlug}`;
 
   return {
-    title: `${dest.name} Travel Guide: Things to Do & Trip Planning | Sunward Travel`,
-    description: dest.shortDescription,
+    title: `${dest.name} Travel Guide: Trip Planning & Areas to Stay`,
+    description: `Discover where to stay, what to do, and travel tips for ${dest.name}, ${dest.country}. Read our complete travel guide for a perfect trip.`,
     alternates: {
       canonical,
     },
     openGraph: {
-      title: `${dest.name} Travel Guide | Sunward Travel`,
+      title: `${dest.name} Travel Guide & Itineraries`,
       description: dest.shortDescription,
       url: canonical,
+      siteName: SITE_NAME,
       images: [
         {
           url: dest.heroImage.src,
@@ -76,192 +75,118 @@ export default async function DestinationPage({
   const dest = DESTINATION_BY_SLUG[p.destination];
   if (!dest || dest.countrySlug !== p.country) notFound();
 
-  const country = COUNTRY_BY_SLUG[p.country];
-  let guides = (await getGuidesForDestination(dest.slug)).slice(0, 3);
-  
-  // M2: Check Prisma for pilot "where to stay" guides
-  const whereToStayGuide = await prisma.guide.findUnique({
-    where: { slug: `where-to-stay-in-${dest.slug}`, publishStatus: 'published' }
-  });
-  const hasWhereToStay = guides.some(g => g.slug === `where-to-stay-in-${dest.slug}`) || !!whereToStayGuide;
-
-  const events = (await getEventsByDestination(dest.slug)).slice(0, 3);
   const related = getRelatedDestinations(dest);
+  const guides = await getGuidesByDestination(dest.slug);
+  const events = await getEventsByDestination(dest.slug);
+  const news = await getNewsByDestination(dest.slug);
 
+  const country = COUNTRY_BY_SLUG[dest.countrySlug];
+  const hasWhereToStay = guides.some(g => g.slug === `where-to-stay-in-${dest.slug}`);
+
+  // JSON-LD
   const crumbs = [
     { label: 'Home', href: '/' },
     { label: 'Destinations', href: '/destinations' },
-    { label: country?.name ?? p.country, href: `/destinations/${p.country}` },
+    { label: country.name, href: `/destinations/${country.slug}` },
     { label: dest.name },
   ];
 
-  // Only show Klook widget if this destination has Klook activities enabled
-  // AND has a klookCityId configured
-  const showKlook =
-    dest.affiliate.activities.enabled &&
-    dest.affiliate.activities.provider === 'klook' &&
-    dest.affiliate.activities.klookCityId != null;
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((crumb, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: crumb.label,
+      item: crumb.href ? `${SITE_URL}${crumb.href}` : undefined,
+    })),
+  };
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: crumbs.map((crumb, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: crumb.label,
-      ...(crumb.href ? { item: `${SITE_URL}${crumb.href}` } : {}),
-    })),
+    '@type': 'TouristDestination',
+    name: dest.name,
+    description: dest.shortDescription,
+    image: dest.heroImage.src,
+    touristType: [
+      'Sightseeing',
+      'City Tour'
+    ],
+    containedInPlace: {
+      '@type': 'Country',
+      name: dest.country
+    }
   };
 
   return (
     <>
-      {/* Breadcrumb */}
-      <div className="bg-ink pt-16">
-        <div className="page-container py-3">
-          <DestinationBreadcrumb crumbs={crumbs} light />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      
+      {/* Breadcrumb row */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <DestinationBreadcrumb crumbs={crumbs} />
         </div>
       </div>
 
-      {/* Hero */}
       <TravelHero
+        heading={dest.name}
+        eyebrow={dest.country}
         imageSrc={dest.heroImage.src}
         imageAlt={dest.heroImage.alt}
-        eyebrow={dest.region}
-        heading={dest.name}
-        description={dest.shortDescription}
-        height="lg"
       />
 
-      {/* Quick facts + service links */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="page-container py-8">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Facts grid */}
-            <div className="flex-1">
-              <p className="text-[10px] text-ocean font-700 uppercase tracking-wider mb-4">{dest.name} at a Glance</p>
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[
-                  { icon: Banknote,     label: 'Currency',         value: dest.facts.currency },
-                  { icon: Languages,    label: 'Language',         value: dest.facts.languages.join(', ') },
-                  { icon: Globe,        label: 'Timezone',         value: dest.facts.timezone },
-                  { icon: MapPin,       label: 'Airport',          value: dest.facts.mainAirportName ?? dest.facts.airportCodes.join(', ') },
-                  { icon: CalendarDays, label: 'Best Time',        value: dest.facts.bestTimeToVisit },
-                  { icon: Clock,        label: 'Suggested Stay',   value: dest.facts.averageStay },
-                ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="flex items-start gap-3 bg-sand rounded-xl p-3.5">
-                    <Icon size={15} className="text-ocean mt-0.5 shrink-0" strokeWidth={1.8} />
-                    <div>
-                      <dt className="text-[10px] text-mist uppercase tracking-wider font-700">{label}</dt>
-                      <dd className="text-ink text-sm font-medium mt-0.5">{value}</dd>
-                    </div>
-                  </div>
-                ))}
-              </dl>
-            </div>
-            {/* Service links */}
-            <div className="lg:w-72">
-              <p className="text-[10px] text-ocean font-700 uppercase tracking-wider mb-4">Plan Your Trip</p>
-              <TravelServiceLinks destination={dest} size="sm" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About */}
-      <section className="section-md bg-sand">
-        <div className="page-container" style={{ maxWidth: '860px' }}>
-          <SectionHeading
-            eyebrow={dest.region}
-            heading={`About ${dest.name}`}
-            align="left"
-          />
-          <div className="prose-styles">
-            <p className="text-ink/80 leading-relaxed" style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
+      {/* Intro & Overview */}
+      <section className="section-md bg-white">
+        <div className="page-container">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="font-display font-700 text-ink mb-6" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)' }}>
+              {dest.tagline}
+            </h2>
+            <p className="text-mist text-lg leading-relaxed font-500">
               {dest.overview}
             </p>
           </div>
         </div>
       </section>
 
-      {/* Activities — Klook widget (Bangkok only) OR editorial CTA */}
-      <section className="section-md bg-white border-t border-gray-100">
-        <div className="page-container">
-          {showKlook ? (
-            <AffiliateWidgetShell
-              eyebrow="Featured Experiences"
-              heading={`Popular Experiences in ${dest.name}`}
-              subheading="Handpicked tours, day trips, and activities — book securely through our travel partner."
-              attribution="Experiences provided by our travel partner."
-            >
-              <TravelpayoutsWidget
+      {/* Top Affiliate CTA (Activities/Tours) */}
+      {dest.affiliate.activities.enabled && dest.slug === 'bangkok' && (
+        <section className="section-md bg-sand border-t border-gray-100">
+          <div className="page-container">
+            <SectionHeading
+              eyebrow="Tours & Tickets"
+              heading={`Top things to do in ${dest.name}`}
+            />
+            <AffiliateWidgetShell heading="Popular Experiences" attribution="Powered by Klook" className="mt-8">
+              <iframe
                 src={KLOOK_BANGKOK_SRC}
-                skeletonHeight={380}
-                timeout={14000}
+                width="100%"
+                height="480"
+                frameBorder="0"
+                scrolling="no"
+                title={`Klook widget for ${dest.name}`}
               />
             </AffiliateWidgetShell>
-          ) : (
-            <div className="bg-sand rounded-3xl p-8 sm:p-10">
-              <SectionHeading
-                eyebrow="Things to Do"
-                heading={`Experiences in ${dest.name}`}
-                subheading={`Explore guided tours, cultural experiences, and activities in ${dest.name} through our trusted travel partner.`}
-                align="left"
-              />
-              <Link
-                href="/activities"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ocean text-white text-sm font-700 hover:bg-ocean-dark transition-colors"
-              >
-                Browse Activities <ArrowRight size={14} />
-              </Link>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Flights CTA */}
-      {dest.affiliate.flights.enabled && (
-        <section className="section-md bg-ink">
-          <div className="page-container text-center">
-            <p className="text-[11px] text-horizon/80 uppercase tracking-[0.2em] font-700 mb-3">
-              Sunward Travel
-            </p>
-            <h2 className="font-display font-700 text-white mb-3" style={{ fontSize: 'clamp(1.25rem, 3vw, 1.75rem)' }}>
-              Compare Flights to {dest.name}
-            </h2>
-            <p className="text-white/55 text-sm mb-6 max-w-md mx-auto">
-              Search hundreds of airlines and find the best fares to {dest.facts.airportCodes.join(' / ')}.
-            </p>
-            <Link
-              href="/flights"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-horizon text-ink text-sm font-700 hover:bg-horizon-dark transition-colors"
-            >
-              Search Flights <ArrowRight size={14} />
-            </Link>
           </div>
         </section>
       )}
 
-      {/* Airport Transfers CTA */}
-      {dest.affiliate.transfers.enabled && (
+      {dest.affiliate.activities.enabled && dest.slug !== 'bangkok' && (
         <section className="section-md bg-sand border-t border-gray-100">
-          <div className="page-container">
-            <div className="bg-white rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border border-gray-100 shadow-sm">
-              <div>
-                <p className="text-[10px] text-ocean font-700 uppercase tracking-wider mb-2">Private Transfers</p>
-                <h2 className="font-display font-700 text-ink mb-2" style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)' }}>
-                  {dest.facts.mainAirportName ?? `${dest.name} Airport`} Transfer
-                </h2>
-                <p className="text-mist text-sm">
-                  Fixed price, professional driver, free cancellation &mdash; no taxi queues.
-                </p>
-              </div>
-              <Link
-                href="/airport-transfers"
-                className="shrink-0 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ocean text-white text-sm font-700 hover:bg-ocean-dark transition-colors"
-              >
-                Find Transfer <ArrowRight size={14} />
-              </Link>
-            </div>
+          <div className="page-container text-center">
+            <SectionHeading
+              eyebrow="Tours & Tickets"
+              heading={`Top things to do in ${dest.name}`}
+              subheading="Book guided tours, museum tickets, and memorable experiences."
+            />
+            <Link
+              href="/activities"
+              className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ocean text-white font-700 hover:bg-ocean-dark transition-colors"
+            >
+              Explore Activities <ArrowRight size={14} />
+            </Link>
           </div>
         </section>
       )}
@@ -300,31 +225,6 @@ export default async function DestinationPage({
         </section>
       )}
 
-      {/* Global Events */}
-      {events.length > 0 && (
-        <section className="section-md bg-white border-t border-gray-100">
-          <div className="page-container">
-            <SectionHeading
-              eyebrow="Events & Festivals"
-              heading={`What's happening in ${dest.name}`}
-              align="left"
-            />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {events.map((event) => (
-                <div key={event.slug} className="h-full">
-                  <EventCard event={event} variant="compact" />
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 text-center md:text-left">
-              <Link href={`/events?category=all`} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-surface text-ink text-sm font-700 hover:bg-gray-100 transition-colors">
-                View All Events <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Travel Guides */}
       {guides.length > 0 && (
         <section className="section-md bg-sand border-t border-gray-100">
@@ -334,7 +234,7 @@ export default async function DestinationPage({
               heading={`${dest.name} Travel Guides`}
               align="left"
             />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
               {guides.map((guide) => (
                 <Link
                   key={guide.slug}
@@ -352,13 +252,67 @@ export default async function DestinationPage({
                     />
                   </div>
                   <div className="p-4 flex-1 flex flex-col">
-                    <span className="text-[10px] text-coral font-700 uppercase tracking-wider mb-1.5">{CATEGORY_LABELS[guide.category]}</span>
+                    <span className="text-[10px] text-coral font-700 uppercase tracking-wider mb-1.5">{CATEGORY_LABELS[guide.category as keyof typeof CATEGORY_LABELS]}</span>
                     <h3 className="font-display font-700 text-ink text-sm leading-snug group-hover:text-ocean transition-colors">
                       {guide.title}
                     </h3>
                     <p className="text-mist text-xs mt-1.5 flex items-center gap-1">
                       <Clock size={10} /> {guide.readingTimeMinutes} min read
                     </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Global Events */}
+      {events.length > 0 && (
+        <section className="section-md bg-white border-t border-gray-100">
+          <div className="page-container">
+            <SectionHeading
+              eyebrow="Events & Festivals"
+              heading={`What's happening in ${dest.name}`}
+              align="left"
+            />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+              {events.map((event) => (
+                <div key={event.slug} className="h-full">
+                  <EventCard event={event} variant="compact" />
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 text-center md:text-left">
+              <Link href={`/events`} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-surface text-ink text-sm font-700 hover:bg-gray-100 transition-colors">
+                View All Events <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Related News */}
+      {news.length > 0 && (
+        <section className="section-md bg-sand border-t border-gray-100">
+          <div className="page-container">
+            <SectionHeading
+              eyebrow="Travel News"
+              heading={`Latest updates from ${dest.name}`}
+              align="left"
+            />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+              {news.map((item) => (
+                <Link
+                  key={item.slug}
+                  href={`/news/${item.slug}`}
+                  className="group flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-md transition-shadow"
+                >
+                  <div className="p-4 flex-1 flex flex-col">
+                    <span className="text-[10px] text-ocean font-700 uppercase tracking-wider mb-1.5">{item.category}</span>
+                    <h3 className="font-display font-700 text-ink text-sm leading-snug group-hover:text-ocean transition-colors">
+                      {item.title}
+                    </h3>
                   </div>
                 </Link>
               ))}
@@ -375,7 +329,7 @@ export default async function DestinationPage({
               eyebrow="Nearby"
               heading="You Might Also Like"
             />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
               {related.slice(0, 3).map((rel) => (
                 <Link
                   key={rel.slug}
@@ -410,12 +364,6 @@ export default async function DestinationPage({
           <AffiliateDisclosure />
         </div>
       </section>
-
-      {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
     </>
   );
 }

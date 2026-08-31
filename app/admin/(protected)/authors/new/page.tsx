@@ -1,4 +1,4 @@
-﻿import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin } from '@/lib/auth/requireAdmin';
 import AuthorForm from '@/components/admin/AuthorForm';
 
 export const metadata = { title: 'New Author — Sunward Admin' };

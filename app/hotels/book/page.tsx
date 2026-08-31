@@ -4,7 +4,7 @@ import { providerRegistry, HotelSearchInput } from '@/lib/hotels';
 
 export const metadata: Metadata = {
   title: 'Book Your Hotel - Sunward Travel',
-  description: 'Compare hotel prices across Hotellook, Booking.com, Hotels.com and Airbnb.',
+  description: 'Compare hotel prices across Hotellook, Booking.com, Hotels.com and Airbnb.', robots: { index: false },
 };
 
 interface BookHotelPageProps {

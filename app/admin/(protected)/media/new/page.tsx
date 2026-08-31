@@ -1,4 +1,4 @@
-﻿import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { requireAdmin } from '@/lib/auth/requireAdmin';
 import MediaUploadForm from '@/components/admin/MediaUploadForm';
 
 export const metadata = { title: 'Upload Media — Sunward Admin' };

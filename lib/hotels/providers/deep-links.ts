@@ -40,7 +40,7 @@ export class LegacyHotellookProvider extends BaseDeepLinkProvider {
     const dest = encodeURIComponent(destination);
     const ci = checkIn ? checkIn.toISOString().slice(0, 10) : '';
     const co = checkOut ? checkOut.toISOString().slice(0, 10) : '';
-    return `https://hotellook.com/?marker=769903&locale=en&destination=${dest}&checkIn=${ci}&checkOut=${co}&adults=${adults}&rooms=${rooms}`;
+    return `https://hotellook.com/?shmarker=769903&locale=en&destination=${dest}&checkIn=${ci}&checkOut=${co}&adults=${adults}&rooms=${rooms}`;
   }
 }
 

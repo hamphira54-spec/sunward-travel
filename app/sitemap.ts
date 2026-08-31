@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { DESTINATIONS, COUNTRIES } from '@/lib/destinations-v2';
-import { GUIDES } from '@/lib/guides';
-import { getAllPublishedNews, getAllPublishedEvents } from '@/lib/content/repository';
+import { getPublishedGuides, getAllPublishedNews, getAllPublishedEvents } from '@/lib/content/repository';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sunwardtravel.com';
 
@@ -44,9 +43,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Guide articles
-  const guideRoutes: MetadataRoute.Sitemap = GUIDES.map((g) => ({
+  const guides = await getPublishedGuides();
+  const guideRoutes: MetadataRoute.Sitemap = guides.map((g) => ({
     url: `${BASE_URL}/guides/${g.slug}`,
-    lastModified: new Date(g.publishedAt),
+    lastModified: g.updatedAt ? new Date(g.updatedAt) : new Date(g.publishedAt),
     changeFrequency: 'monthly',
     priority: 0.7,
   }));

@@ -33,8 +33,8 @@ export default function BookingWidget({
     : '';
 
   const aviasalesUrl = path
-    ? `https://www.aviasales.com/search/${path}?marker=769903&trs=566794`
-    : `https://www.aviasales.com/?marker=769903&trs=566794`;
+    ? `https://www.aviasales.com/search/${path}?shmarker=769903&trs=566794`
+    : `https://www.aviasales.com/?shmarker=769903&trs=566794`;
 
   // Alternative search links
   const googleFlightsUrl = origin && destination && departDate
